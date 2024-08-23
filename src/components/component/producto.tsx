@@ -88,7 +88,7 @@ export function Producto() {
             </div>
             <p className="text-lg">
               These classic leather shoes are the perfect addition to your wardrobe. Crafted with premium materials and
-              attention to detail, they offer both style and comfort. Whether you're dressing up for a special occasion
+              attention to detail, they offer both style and comfort. Whether you re dressing up for a special occasion
               or looking for a versatile everyday shoe, these are sure to become a staple in your closet.
             </p>
             <div className="flex flex-col md:flex-row items-center justify-between">
