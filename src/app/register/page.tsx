@@ -1,5 +1,7 @@
-import { Register } from '@/components/component/register'
-import React from 'react'
+import React from 'react';
+// src/app/register/page.tsx
+import Register from '@/components/component/register'; // Importar el componente como default
+
 
 function page() {
   return (

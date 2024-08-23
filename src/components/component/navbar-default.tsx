@@ -6,9 +6,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { JSX, SVGProps } from "react";
-import { Bagel_Fat_One } from "next/font/google";
-import { ShoppingBag } from "lucide-react";
+import { SVGProps } from "react";
+
 
 export function NavbarDefault() {
   return (
@@ -134,9 +133,7 @@ function MenuIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function MountainIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
+function MountainIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

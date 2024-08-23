@@ -9,39 +9,62 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        card: 'hsl(var(--card))',
-        cardForeground: 'hsl(var(--card-foreground))',
-        popover: 'hsl(var(--popover))',
-        popoverForeground: 'hsl(var(--popover-foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        // Aquí puedes agregar más colores personalizados
-        customBlue: '#1e3a8a', // Ejemplo de color personalizado
-        customGreen: '#10b981', // Ejemplo de color personalizado
-      },
+            "border": "hsl(var(--border))",
+            "input": "hsl(var(--input))",
+            "ring": "hsl(var(--ring))",
+            "background": "hsl(var(--background))",
+            "foreground": "hsl(var(--foreground))",
+            "primary": {
+              "DEFAULT": "hsl(var(--primary))",
+              "foreground": "hsl(var(--primary-foreground))"
+            },
+            "secondary": {
+              "DEFAULT": "hsl(var(--secondary))",
+              "foreground": "hsl(var(--secondary-foreground))"
+            },
+            "destructive": {
+              "DEFAULT": "hsl(var(--destructive))",
+              "foreground": "hsl(var(--destructive-foreground))"
+            },
+            "muted": {
+              "DEFAULT": "hsl(var(--muted))",
+              "foreground": "hsl(var(--muted-foreground))"
+            },
+            "accent": {
+              "DEFAULT": "hsl(var(--accent))",
+              "foreground": "hsl(var(--accent-foreground))"
+            },
+            "popover": {
+              "DEFAULT": "hsl(var(--popover))",
+              "foreground": "hsl(var(--popover-foreground))"
+            },
+            "card": {
+              "DEFAULT": "hsl(var(--card))",
+              "foreground": "hsl(var(--card-foreground))"
+            }, 
+            customBlue: '#1e3a8a',
+        customGreen: '#10b981',
+        customRed: '#e53e3e',
+        customYellow: '#f6e05e',
+        customPurple: '#6b46c1',
+        customPink: '#d53f8c',
+        customOrange: '#ed8936',
+        customTeal: '#38b2ac',
+        customGray: '#e2e8f0',
+        customIndigo: '#4c51bf',
+        customCyan: '#00bcd4',
+        customLime: '#c6ff00',
+        customAmber: '#ffc107',
+        customSlate: '#2d3748',
+        customRose: '#fbb6ce',
+        customViolet: '#7f5fc7',
+        customFuchsia: '#d53f8c',
+        customEmerald: '#34d399',
+        customCoolGray: '#6b7280',
+        customTrueGray: '#9e9e9e',
+        customWarmGray: '#9e9e9e',
+        customRoseGray: '#d6d3d1',
+          },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
