@@ -7,7 +7,7 @@ export function ProductosDestacados() {
       <h2 className="text-3xl font-bold mb-6 text-center">Productos Destacados</h2>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="relative overflow-hidden rounded-lg group">
-          <Link href="#" className="absolute inset-0 z-10" prefetch={false}>
+          <Link href="/product" className="absolute inset-0 z-10" prefetch={false}>
             <span className="sr-only">Ver producto</span>
           </Link>
           <img
@@ -28,7 +28,7 @@ export function ProductosDestacados() {
           </div>
         </div>
         <div className="relative overflow-hidden rounded-lg group">
-          <Link href="#" className="absolute inset-0 z-10" prefetch={false}>
+          <Link href="/product" className="absolute inset-0 z-10" prefetch={false}>
             <span className="sr-only">Ver producto</span>
           </Link>
           <img
@@ -49,7 +49,7 @@ export function ProductosDestacados() {
           </div>
         </div>
         <div className="relative overflow-hidden rounded-lg group">
-          <Link href="#" className="absolute inset-0 z-10" prefetch={false}>
+          <Link href="/product" className="absolute inset-0 z-10" prefetch={false}>
             <span className="sr-only">Ver producto</span>
           </Link>
           <img
@@ -70,7 +70,7 @@ export function ProductosDestacados() {
           </div>
         </div>
         <div className="relative overflow-hidden rounded-lg group">
-          <Link href="#" className="absolute inset-0 z-10" prefetch={false}>
+          <Link href="/product" className="absolute inset-0 z-10" prefetch={false}>
             <span className="sr-only">Ver producto</span>
           </Link>
           <img

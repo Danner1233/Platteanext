@@ -27,6 +27,7 @@ import Link from "next/link"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { JSX, SVGProps } from "react"
 
 export function Login() {
   return (
@@ -57,7 +58,7 @@ export function Login() {
               <Input id="password" type="password" required />
             </div>
             <div className="flex gap-4">
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full bg-customBlue">
                 Iniciar sesión
               </Button>
             </div>
@@ -84,7 +85,7 @@ export function Login() {
   )
 }
 
-function ArrowLeftIcon(props) {
+function ArrowLeftIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

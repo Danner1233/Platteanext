@@ -17,7 +17,9 @@ To read more about using these font, please visit the Next.js documentation:
 - App Directory: https://nextjs.org/docs/app/building-your-application/optimizing/fonts
 - Pages Directory: https://nextjs.org/docs/pages/building-your-application/optimizing/fonts
 **/
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import Image from "next/image"
+import Link from "next/link"
 
 export function Carrusel() {
   return (
@@ -25,34 +27,40 @@ export function Carrusel() {
       <Carousel className="w-full h-full">
         <CarouselContent>
           <CarouselItem>
-            <img
-              src="/placeholder.svg"
-              width={1920}
-              height={1080}
-              alt="Carousel Image 1"
-              className="w-full h-full object-cover"
-              style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
-            />
+            <Link href="/page1">
+              <Image
+                src="/placeholder.svg"
+                width={1920}
+                height={1080}
+                alt="Carousel Image 1"
+                className="w-full h-full object-cover"
+                style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
+              />
+            </Link>
           </CarouselItem>
           <CarouselItem>
-            <img
-              src="/placeholder.svg"
-              width={1920}
-              height={1080}
-              alt="Carousel Image 2"
-              className="w-full h-full object-cover"
-              style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
-            />
+            <Link href="/page2">
+              <Image
+                src="/placeholder.svg"
+                width={1920}
+                height={1080}
+                alt="Carousel Image 2"
+                className="w-full h-full object-cover"
+                style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
+              />
+            </Link>
           </CarouselItem>
           <CarouselItem>
-            <img
-              src="/placeholder.svg"
-              width={1920}
-              height={1080}
-              alt="Carousel Image 3"
-              className="w-full h-full object-cover"
-              style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
-            />
+            <Link href="/page3">
+              <Image
+                src="/placeholder.svg"
+                width={1920}
+                height={1080}
+                alt="Carousel Image 3"
+                className="w-full h-full object-cover"
+                style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
+              />
+            </Link>
           </CarouselItem>
         </CarouselContent>
         <CarouselPrevious />
