@@ -7,10 +7,10 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between w-full">
           <div className="text-sm mb-4 md:mb-0">Plattea &copy; 2024</div>
           <div className="flex gap-4 text-sm">
-            <Link href="#" className="hover:underline" prefetch={false}>
+            <Link href="/contactus" className="hover:underline" prefetch={false}>
               Contáctanos
             </Link>
-            <Link href="#" className="hover:underline" prefetch={false}>
+            <Link href="aboutus" className="hover:underline" prefetch={false}>
               Sobre nosotros
             </Link>
           </div>
