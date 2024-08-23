@@ -27,7 +27,7 @@ export function ProductosTienda() {
           <span className="sr-only">View</span>
         </Link>
         <img
-          src="/images.png"
+          src="/placeholder.svg"
           alt="Product 1"
           width={400}
           height={400}
