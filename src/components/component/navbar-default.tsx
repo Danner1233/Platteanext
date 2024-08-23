@@ -7,6 +7,7 @@ import {
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { SVGProps } from "react";
+import { ShoppingBag } from "lucide-react";
 
 
 export function NavbarDefault() {
