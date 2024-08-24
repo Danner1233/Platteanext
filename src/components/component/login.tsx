@@ -5,27 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { JSX, SVGProps } from "react";
-import { useState } from "react";
-import './LoginValidation';
-import Validation from "./LoginValidation";
-import { ValidationErrors } from "./LoginValidation";
+
+
 
 export function Login() {
-  const [values, setValues] = useState({
-    email: '',
-    password: '',
-  });
-
-  const [errors, setErrors]= useState<ValidationErrors>({})
-
-  const handleInput =(event: React.ChangeEvent<HTMLInputElement>)=>{
-    setValues(prev =>({...prev, [event.target.name]: [event.target.value]}))
-  }
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
-    event.preventDefault();
-    setErrors (Validation(values));
-  }
 
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
@@ -36,7 +19,6 @@ export function Login() {
               <Link
                 href="/"
                 className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-                prefetch={false}
               >
                 <ArrowLeftIcon className="w-4 h-4 mr-2" />
                 Volver atrás
@@ -45,7 +27,7 @@ export function Login() {
             <h1 className="text-3xl font-bold">Iniciar sesión</h1>
             <p className="text-muted-foreground">Ingresa tu correo y contraseña para acceder a tu cuenta</p>
           </div>
-          <form action="#" onSubmit={handleSubmit} className="space-y-4">
+          <form action="#"  className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Correo electrónico</Label>
               <Input
@@ -53,9 +35,7 @@ export function Login() {
                 name="email"
                 type="email"
                 placeholder="m@example.com"
-                onChange={handleInput}
               />
-              {errors.email && <span className='text-customRed'>{errors.email}</span>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Contraseña</Label>
@@ -63,9 +43,8 @@ export function Login() {
                 id="password"
                 name="password"
                 type="password"
-                onChange={handleInput}
+
               />
-              {errors.password && <span className="text-customRed">{errors.password }</span>}
             </div>
             <div className="flex gap-4">
               <Button type="submit" className="w-full bg-customBlue">
@@ -75,7 +54,7 @@ export function Login() {
           </form>
           <div className="mt-4 text-center text-sm">
             ¿No tienes una cuenta?{" "}
-            <Link href="/register" className="underline" prefetch={false}>
+            <Link href="/register" className="underline">
               Regístrate
             </Link>
           </div>
