@@ -4,11 +4,45 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { JSX, SVGProps } from "react";
-
-
+import { useRouter } from 'next/navigation';
+import { JSX, SVGProps, useState } from 'react';
 
 export function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    setError(""); // Limpiar cualquier error previo
+ 
+    try {
+      const response = await fetch("http://localhost:4000/api/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ CorreoPersona: email, ClavePersona: password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Guardar el token en localStorage o en cookies
+        localStorage.setItem("token", data.token);
+        console.log("token", data.token);
+        // Redirigir a la página deseada
+        router.push("./");
+      } else {
+        // Mostrar el mensaje de error
+        setError(data.message || "Error al iniciar sesión.");
+      }
+    } catch (err) {
+      console.error("Error al intentar iniciar sesión:", err);
+      setError("Ocurrió un error. Por favor, inténtalo nuevamente.");
+    }
+  };
 
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
@@ -27,7 +61,7 @@ export function Login() {
             <h1 className="text-3xl font-bold">Iniciar sesión</h1>
             <p className="text-muted-foreground">Ingresa tu correo y contraseña para acceder a tu cuenta</p>
           </div>
-          <form action="#"  className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Correo electrónico</Label>
               <Input
@@ -35,6 +69,8 @@ export function Login() {
                 name="email"
                 type="email"
                 placeholder="m@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -43,9 +79,11 @@ export function Login() {
                 id="password"
                 name="password"
                 type="password"
-
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <div className="flex gap-4">
               <Button type="submit" className="w-full bg-customBlue">
                 Iniciar sesión
