@@ -66,13 +66,6 @@ export function Configuracion() {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="notifications">Notificaciones</Label>
-              <div className="flex items-center gap-2">
-                <Checkbox id="notifications" defaultChecked />
-                <label htmlFor="notifications">Recibir notificaciones</label>
-              </div>
-            </div>
           </div>
         </div>
       </div>
