@@ -1,22 +1,21 @@
+"use client";
+
 import Link from "next/link";
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
+import { NavigationMenu, NavigationMenuList, NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { JSX, SVGProps } from "react";
 
 export function Navbar() {
+  const logout = () => {
+    // Elimina el token de localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('IdPersona');
+
+    window.location.href = '/'; 
+  };
+
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
@@ -139,9 +138,7 @@ export function Navbar() {
             <DropdownMenuItem>
               <Link href="/configuracion">Configuración</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="/login">Cerrar sesión</Link>
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>Cerrar sesión</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
