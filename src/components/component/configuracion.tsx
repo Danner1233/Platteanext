@@ -1,11 +1,30 @@
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
+"use client";
+
+import { useRef } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function Configuracion() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleChangePhotoClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      // Implementa la lógica para manejar la foto aquí (ej. subir al servidor o previsualizar)
+      console.log("Archivo seleccionado:", file);
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto p-6 md:p-10 dark:bg-background dark:text-foreground">
       <h1 className="text-3xl font-bold mb-6">Configuración de Perfil</h1>
@@ -28,7 +47,18 @@ export function Configuracion() {
                   <AvatarImage src="/placeholder-user.jpg" alt="Profile Picture" />
                   <AvatarFallback>JD</AvatarFallback>
                 </Avatar>
-                <Button variant="outline">Cambiar Foto</Button>
+                <Button variant="outline" onClick={handleChangePhotoClick}>
+                  Cambiar Foto
+                </Button>
+                {/* Hidden file input */}
+                <input
+                  id="profile-picture"
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
               </div>
             </div>
             <div>
@@ -70,8 +100,8 @@ export function Configuracion() {
         </div>
       </div>
       <div className="mt-8 flex justify-end">
-        <Button>Guardar Cambios</Button>
+        <Button className="bg-plattea1">Guardar Cambios</Button>
       </div>
     </div>
-  )
+  );
 }

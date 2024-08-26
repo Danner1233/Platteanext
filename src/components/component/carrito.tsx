@@ -135,7 +135,7 @@ export function Carrito() {
             <Button variant="outline" className="flex-1">
               Continuar comprando
             </Button>
-            <Button className="flex-1">Proceder al pago</Button>
+            <Button className="flex-1 bg-plattea1">Proceder al pago</Button>
           </div>
         </div>
       </div>

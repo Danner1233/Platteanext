@@ -1,24 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { NavigationMenu, NavigationMenuList, NavigationMenuLink } from "@/components/ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuLink,
+} from "@/components/ui/navigation-menu";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem
+} from "@/components/ui/dropdown-menu";
 import { JSX, SVGProps } from "react";
 
 export function Navbar() {
   const logout = () => {
     // Elimina el token de localStorage
     localStorage.removeItem('token');
-
     window.location.href = '/'; 
   };
 
   return (
-    <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6">
+    <header className="bg-plattea1 flex h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
-        <MountainIcon className="h-6 w-6" />
+        <MountainIcon className="h-6 w-6 text-plattea2" />
         <span className="sr-only">Acme Inc</span>
       </Link>
       <NavigationMenu className="hidden lg:flex">
@@ -26,7 +36,7 @@ export function Navbar() {
           <NavigationMenuLink asChild>
             <Link
               href="/"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-plattea1 px-4 py-2 text-sm font-medium text-plattea2 transition-colors hover:bg-plattea2 hover:text-plattea1 focus:bg-plattea2 focus:text-plattea1 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-plattea2/50 data-[state=open]:bg-plattea2/50"
               prefetch={false}
             >
               Inicio
@@ -35,7 +45,7 @@ export function Navbar() {
           <NavigationMenuLink asChild>
             <Link
               href="/shops"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-plattea1 px-4 py-2 text-sm font-medium text-plattea2 transition-colors hover:bg-plattea2 hover:text-plattea1 focus:bg-plattea2 focus:text-plattea1 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-plattea2/50 data-[state=open]:bg-plattea2/50"
               prefetch={false}
             >
               Tiendas
@@ -44,7 +54,7 @@ export function Navbar() {
           <NavigationMenuLink asChild>
             <Link
               href="/products"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-plattea1 px-4 py-2 text-sm font-medium text-plattea2 transition-colors hover:bg-plattea2 hover:text-plattea1 focus:bg-plattea2 focus:text-plattea1 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-plattea2/50 data-[state=open]:bg-plattea2/50"
               prefetch={false}
             >
               Productos
@@ -53,7 +63,7 @@ export function Navbar() {
           <NavigationMenuLink asChild>
             <Link
               href="/workwithus"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-plattea1 px-4 py-2 text-sm font-medium text-plattea2 transition-colors hover:bg-plattea2 hover:text-plattea1 focus:bg-plattea2 focus:text-plattea1 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-plattea2/50 data-[state=open]:bg-plattea2/50"
               prefetch={false}
             >
               Trabaja con nosotros
@@ -63,34 +73,34 @@ export function Navbar() {
       </NavigationMenu>
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="lg:hidden">
+          <Button variant="outline" size="icon" className="lg:hidden bg-plattea1 text-plattea2">
             <MenuIcon className="h-6 w-6" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left">
+        <SheetContent side="left" className="bg-plattea2">
           <Link href="/" prefetch={false}>
-            <MountainIcon className="h-6 w-6" />
+            <MountainIcon className="h-6 w-6 text-plattea1" />
             <span className="sr-only">Acme Inc</span>
           </Link>
           <div className="grid gap-2 py-6">
             <Link
               href="/shops"
-              className="flex w-full items-center py-2 text-lg font-semibold"
+              className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"
               prefetch={false}
             >
               Tiendas
             </Link>
             <Link
               href="/products"
-              className="flex w-full items-center py-2 text-lg font-semibold"
+              className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"
               prefetch={false}
             >
               Productos
             </Link>
             <Link
               href="/workwithus"
-              className="flex w-full items-center py-2 text-lg font-semibold"
+              className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"
               prefetch={false}
             >
               Trabaja con nosotros
@@ -101,7 +111,7 @@ export function Navbar() {
       <div className="ml-auto flex gap-2 items-center">
         {/* Ícono de carrito */}
         <Link href="/carrito">
-          <Button variant="outline" size="icon">
+          <Button size="icon" className="bg-plattea1 text-plattea2">
             <CartIcon className="h-6 w-6" />
             <span className="sr-only">Carrito</span>
           </Button>
@@ -111,9 +121,8 @@ export function Navbar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="outline"
               size="icon"
-              className="overflow-hidden rounded-full"
+              className="overflow-hidden rounded-full bg-plattea1 text-plattea2"
             >
               <img
                 src="/placeholder.svg"
@@ -125,19 +134,19 @@ export function Navbar() {
               />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="bg-plattea2">
+            <DropdownMenuLabel className="text-plattea1">Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href="/perfil">Perfil</Link>
+              <Link href="/perfil" className="text-plattea1">Perfil</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href="/favoritos">Favoritos</Link>
+              <Link href="/favoritos" className="text-plattea1">Favoritos</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href="/configuracion">Configuración</Link>
+              <Link href="/configuracion" className="text-plattea1">Configuración</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={logout}>Cerrar sesión</DropdownMenuItem>
+            <DropdownMenuItem onClick={logout} className="text-plattea1">Cerrar sesión</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

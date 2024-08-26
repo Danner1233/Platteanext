@@ -99,7 +99,7 @@ export function Login() {
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <div className="flex gap-4">
-              <Button type="submit" className="w-full bg-customBlue">
+              <Button type="submit" className="w-full bg-plattea1">
                 Iniciar sesión
               </Button>
             </div>
