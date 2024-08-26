@@ -11,7 +11,6 @@ export function Navbar() {
   const logout = () => {
     // Elimina el token de localStorage
     localStorage.removeItem('token');
-    localStorage.removeItem('IdPersona');
 
     window.location.href = '/'; 
   };
