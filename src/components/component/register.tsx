@@ -137,7 +137,7 @@ export function Register() {
               </div>
             )}
             <div className="flex gap-4">
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full bg-plattea1">
                 Registrarse
               </Button>
             </div>

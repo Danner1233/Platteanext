@@ -44,6 +44,9 @@ const config: Config = {
             }, 
             customBlue: '#1e3a8a',
         customGreen: '#10b981',
+        plattea1: '#1C2833',
+        platteaGreenv2: '#48C9B0',
+        plattea2: '#F7F9F9',
         customRed: '#e53e3e',
         customYellow: '#f6e05e',
         customPurple: '#6b46c1',
@@ -64,6 +67,7 @@ const config: Config = {
         customTrueGray: '#9e9e9e',
         customWarmGray: '#9e9e9e',
         customRoseGray: '#d6d3d1',
+        platteaBlack: '#000000',
           },
       borderRadius: {
         lg: 'var(--radius)',

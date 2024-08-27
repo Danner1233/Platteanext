@@ -23,7 +23,7 @@ export function ProductosDestacados() {
             <p className="text-sm text-muted-foreground">Encanto antiguo</p>
             <div className="flex items-center justify-between">
               <h4 className="text-base font-semibold md:text-lg">$79.99</h4>
-              <Button size="sm">Comprar</Button>
+              <Button size="sm" className="bg-plattea1 text-plattea2">Comprar</Button>
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@ export function ProductosDestacados() {
             <p className="text-sm text-muted-foreground">Audio cristalino</p>
             <div className="flex items-center justify-between">
               <h4 className="text-base font-semibold md:text-lg">$69.99</h4>
-              <Button size="sm">Comprar</Button>
+              <Button size="sm" className="bg-plattea1 text-plattea2">Comprar</Button>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ export function ProductosDestacados() {
             <p className="text-sm text-muted-foreground">Elegante y práctico</p>
             <div className="flex items-center justify-between">
               <h4 className="text-base font-semibold md:text-lg">$49.99</h4>
-              <Button size="sm">Comprar</Button>
+              <Button size="sm" className="bg-plattea1 text-plattea2">Comprar</Button>
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@ export function ProductosDestacados() {
             <p className="text-sm text-muted-foreground">Protección UV</p>
             <div className="flex items-center justify-between">
               <h4 className="text-base font-semibold md:text-lg">$29.99</h4>
-              <Button size="sm">Comprar</Button>
+              <Button size="sm" className="bg-plattea1 text-plattea2">Comprar</Button>
             </div>
           </div>
         </div>
