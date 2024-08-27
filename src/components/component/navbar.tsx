@@ -6,8 +6,53 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { JSX, SVGProps } from "react";
+import { useEffect, useState } from "react";
+import { jwtDecode } from 'jwt-decode';
+interface DecodedToken {
+  IdPersona: string;
+}
+
+interface Profile {
+  FotoPersonaURL: string;
+}
 
 export function Navbar() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found");
+        }
+
+        const decoded: DecodedToken = jwtDecode(token);
+        const userId = decoded.IdPersona;
+
+        const response = await fetch(`http://localhost:4000/api/persona/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response);
+        if (response.ok) {
+          const data: Profile = await response.json();
+          setProfile(data);
+          console.log(data);
+        } else {
+          throw new Error("Error fetching profile");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+      
+    fetchProfile();
+  }, []);
+
+  if (error) return <p>Error: {error}</p>;
   const logout = () => {
     // Elimina el token de localStorage
     localStorage.removeItem('token');
@@ -116,7 +161,7 @@ export function Navbar() {
               className="overflow-hidden rounded-full"
             >
               <img
-                src="/placeholder.svg"
+                src={profile?.FotoPersonaURL || "/placeholder-user.jpg"}
                 width={36}
                 height={36}
                 alt="Avatar"

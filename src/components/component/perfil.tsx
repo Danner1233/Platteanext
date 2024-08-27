@@ -4,6 +4,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
 
+
 interface DecodedToken {
   IdPersona: string;
 }
