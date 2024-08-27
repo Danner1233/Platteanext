@@ -1,15 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
-
 
 interface DecodedToken {
   IdPersona: string;
@@ -20,14 +16,23 @@ interface Profile {
   NombrePersona: string;
   ApellidoPersona: string;
   CorreoPersona: string;
-  Ubicacion: string;
-  Descripcion: string;
-  tiendas: any[];
+  CiudadPersona: string;
+  DescripcionPersona: string;
+  DireccionPersona: string;
 }
 
 export function Configuracion() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+
+  // Estados para los campos del formulario
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [ciudad, setCiudad] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [direccion, setDireccion] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -45,11 +50,15 @@ export function Configuracion() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response);
         if (response.ok) {
           const data: Profile = await response.json();
           setProfile(data);
-          console.log(data);
+          setNombre(data.NombrePersona);
+          setApellido(data.ApellidoPersona);
+          setCorreo(data.CorreoPersona);
+          setCiudad(data.CiudadPersona);
+          setDescripcion(data.DescripcionPersona);
+          setDireccion(data.DireccionPersona);
         } else {
           throw new Error("Error fetching profile");
         }
@@ -57,9 +66,10 @@ export function Configuracion() {
         console.error(error);
       }
     };
-      
+
     fetchProfile();
   }, []);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChangePhotoClick = () => {
@@ -70,11 +80,56 @@ export function Configuracion() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      // Implementa la lógica para manejar la foto aquí (ej. subir al servidor o previsualizar)
-      console.log("Archivo seleccionado:", file);
+      setFile(event.target.files[0]);
     }
   };
+
+  const handleSaveChanges = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const decoded: DecodedToken = jwtDecode(token);
+      const userId = decoded.IdPersona;
+
+      const formData = new FormData();
+      formData.append("NombrePersona", nombre);
+      formData.append("ApellidoPersona", apellido);
+      formData.append("CorreoPersona", correo);
+      formData.append("CiudadPersona", ciudad);
+      formData.append("DescripcionPersona", descripcion);
+      formData.append("DireccionPersona", direccion);
+      if (file) {
+        formData.append("FotoPersona", file);
+      }
+
+      const response = await fetch(`http://localhost:4000/api/persona/${userId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        // Maneja la respuesta exitosa
+        const updatedProfile = await response.json();
+        setProfile(updatedProfile);
+        alert("Perfil actualizado con éxito");
+        // Refresca la página
+        window.location.reload();
+      } else {
+        // Maneja errores del servidor
+        throw new Error("Error al actualizar el perfil");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Ocurrió un error al actualizar el perfil");
+    }
+  };
+
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -87,16 +142,16 @@ export function Configuracion() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="first-name">Nombre</Label>
-                <Input id="first-name" type="text" defaultValue={profile?.NombrePersona || "Nombre Usuario"} />
+                <Input id="first-name" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
               </div>
               <div>
                 <Label htmlFor="last-name">Apellido</Label>
-                <Input id="last-name" type="text" defaultValue={profile?.ApellidoPersona || "Apellido Usuario"} />
+                <Input id="last-name" type="text" value={apellido} onChange={(e) => setApellido(e.target.value)} required />
               </div>
             </div>
             <div>
               <Label htmlFor="email">Correo Electrónico</Label>
-              <Input id="email" type="email" defaultValue={profile?.CorreoPersona || "Apellido Usuario"} />
+              <Input id="email" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
             </div>
             <div>
               <Label htmlFor="profile-picture">Foto de Perfil</Label>
@@ -108,7 +163,6 @@ export function Configuracion() {
                 <Button variant="outline" onClick={handleChangePhotoClick}>
                   Cambiar Foto
                 </Button>
-                {/* Hidden file input */}
                 <input
                   id="profile-picture"
                   type="file"
@@ -119,58 +173,30 @@ export function Configuracion() {
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="password">Contraseña</Label>
-              <Input id="password" type="password" defaultValue="********" />
-            </div>
           </div>
         </div>
         <div>
           <h2 className="text-2xl font-bold mb-4">Preferencias</h2>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="theme">Tema</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecciona un tema" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Claro</SelectItem>
-                  <SelectItem value="dark">Oscuro</SelectItem>
-                  <SelectItem value="system">Sistema</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="language">Idioma</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecciona un idioma" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Español</SelectItem>
-                  <SelectItem value="fr">Français</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="location">Ubicación</Label>
-              <Input id="location" type="text" defaultValue="Ciudad, País" />
+              <Label htmlFor="location">Ciudad</Label>
+              <Input id="location" type="text" value={ciudad} onChange={(e) => setCiudad(e.target.value)} required />
             </div>
             <div>
               <Label htmlFor="description">Descripción</Label>
-              <Input id="description" type="text" defaultValue="Una breve descripción sobre ti" />
+              <Input id="description" type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} required />
             </div>
             <div>
-              <Label htmlFor="direccion">Direccion</Label>
-              <Input id="direccion" type="text" defaultValue="Direccion" />
+              <Label htmlFor="direccion">Dirección</Label>
+              <Input id="direccion" type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} required />
             </div>
           </div>
         </div>
       </div>
       <div className="mt-8 flex justify-end">
-        <Button className="bg-plattea1">Guardar Cambios</Button>
+        <Button className="bg-plattea1" onClick={handleSaveChanges}>
+          Guardar Cambios
+        </Button>
       </div>
     </div>
   );

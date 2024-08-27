@@ -12,8 +12,11 @@ interface DecodedToken {
 interface Profile {
   FotoPersonaURL: string;
   NombrePersona: string;
-  Ubicacion: string;
-  Descripcion: string;
+  ApellidoPersona: string;
+  CorreoPersona: string;
+  CiudadPersona: string;
+  DescripcionPersona: string;
+  DireccionPersona: string;
   tiendas: any[];
 }
 
@@ -65,12 +68,13 @@ export function Perfil() {
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-xl font-bold">{profile?.NombrePersona || "Nombre Usuario"}</h2>
-              <p className="text-muted-foreground">{profile?.Ubicacion || "Ubicación desconocida"}</p>
+              <h2 className="text-xl font-bold">{profile?.NombrePersona || "Nombre Usuario"}  {profile?.ApellidoPersona || ""}</h2>
+
+              <p className="text-muted-foreground">{profile?.CiudadPersona || "Ubicación desconocida"}, {profile?.DireccionPersona}</p>
             </div>
           </div>
           <p className="mt-4 text-muted-foreground">
-            {profile?.Descripcion || "Descripción no disponible"}
+            {profile?.DescripcionPersona || "Descripción no disponible"}
           </p>
         </div>
         <div className="bg-background rounded-lg shadow-md p-6">
