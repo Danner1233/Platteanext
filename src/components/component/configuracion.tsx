@@ -110,6 +110,10 @@ export function Configuracion() {
               <Label htmlFor="description">Descripción</Label>
               <Input id="description" type="text" defaultValue="Una breve descripción sobre ti" />
             </div>
+            <div>
+              <Label htmlFor="direccion">Direccion</Label>
+              <Input id="direccion" type="text" defaultValue="Direccion" />
+            </div>
           </div>
         </div>
       </div>
