@@ -32,9 +32,15 @@ export function Configuracion() {
         <div>
           <h2 className="text-2xl font-bold mb-4">Información Personal</h2>
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Nombre</Label>
-              <Input id="name" type="text" defaultValue="John Doe" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="first-name">Nombre</Label>
+                <Input id="first-name" type="text" defaultValue="John" />
+              </div>
+              <div>
+                <Label htmlFor="last-name">Apellido</Label>
+                <Input id="last-name" type="text" defaultValue="Doe" />
+              </div>
             </div>
             <div>
               <Label htmlFor="email">Correo Electrónico</Label>
@@ -95,6 +101,14 @@ export function Configuracion() {
                   <SelectItem value="fr">Français</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <Label htmlFor="location">Ubicación</Label>
+              <Input id="location" type="text" defaultValue="Ciudad, País" />
+            </div>
+            <div>
+              <Label htmlFor="description">Descripción</Label>
+              <Input id="description" type="text" defaultValue="Una breve descripción sobre ti" />
             </div>
           </div>
         </div>

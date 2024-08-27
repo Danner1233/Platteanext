@@ -42,7 +42,7 @@ const config: Config = {
               "DEFAULT": "hsl(var(--card))",
               "foreground": "hsl(var(--card-foreground))"
             }, 
-            customBlue: '#1e3a8a',
+        customBlue: '#1e3a8a',
         customGreen: '#10b981',
         plattea1: '#1C2833',
         platteaGreenv2: '#48C9B0',
