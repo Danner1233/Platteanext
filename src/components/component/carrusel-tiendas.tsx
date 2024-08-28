@@ -31,7 +31,7 @@ export function CarruselTiendas() {
               <div className="p-4">
                 <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
+                    src="/moda.jpg"
                     alt="Moda"
                     width={400}
                     height={300}
@@ -49,7 +49,7 @@ export function CarruselTiendas() {
               <div className="p-4">
                 <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
+                    src="/electrodomesticos.jpg"
                     alt="Electrónica"
                     width={400}
                     height={300}
@@ -57,7 +57,7 @@ export function CarruselTiendas() {
                     style={{ aspectRatio: "300/200", objectFit: "cover" }}
                   />
                   <div className="bg-background p-4">
-                    <h3 className="text-lg font-semibold">Electrónica</h3>
+                    <h3 className="text-lg font-semibold">Electrodomesticos</h3>
                     <p className="text-muted-foreground group-hover:underline transition-colors">Ver más</p>
                   </div>
                 </Link>
@@ -67,7 +67,7 @@ export function CarruselTiendas() {
               <div className="p-4">
                 <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
+                    src="/hogar.jpg"
                     alt="Hogar"
                     width={400}
                     height={300}
@@ -85,7 +85,7 @@ export function CarruselTiendas() {
               <div className="p-4">
                 <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
+                    src="/deportes.jpg"
                     alt="Deportes"
                     width={400}
                     height={300}
@@ -103,7 +103,7 @@ export function CarruselTiendas() {
               <div className="p-4">
                 <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
+                    src="/juguetes.jpg"
                     alt="Juguetes"
                     width={400}
                     height={300}
@@ -121,7 +121,7 @@ export function CarruselTiendas() {
               <div className="p-4">
                 <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
+                    src="/belleza.jpg"
                     alt="Belleza"
                     width={400}
                     height={300}

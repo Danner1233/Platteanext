@@ -41,7 +41,7 @@ export function BannerWork() {
         </div>
         <div className="flex justify-center w-full">
           <img
-            src="/placeholder.svg"
+            src="/bannerwork.png"
             alt="Tienda virtual"
             width="400"
             height="400"

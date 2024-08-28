@@ -36,7 +36,7 @@ export function Register() {
 
       if (response.ok) {
         console.log('Usuario creado correctamente:', data);
-        router.push('./');
+        router.push('./login');
       } else {
         setError(data.message);
       }
@@ -152,7 +152,7 @@ export function Register() {
       </div>
       <div className="hidden bg-muted lg:block">
         <img
-          src="/placeholder.svg"
+          src="/registro.jpg"
           alt="Imagen de registro"
           width="1920"
           height="1080"
