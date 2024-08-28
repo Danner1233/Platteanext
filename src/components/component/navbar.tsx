@@ -17,8 +17,53 @@ import {
   DropdownMenuItem
 } from "@/components/ui/dropdown-menu";
 import { JSX, SVGProps } from "react";
+import { useEffect, useState } from "react";
+import { jwtDecode } from 'jwt-decode';
+interface DecodedToken {
+  IdPersona: string;
+}
+
+interface Profile {
+  FotoPersonaURL: string;
+}
 
 export function Navbar() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found");
+        }
+
+        const decoded: DecodedToken = jwtDecode(token);
+        const userId = decoded.IdPersona;
+
+        const response = await fetch(`http://localhost:4000/api/persona/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response);
+        if (response.ok) {
+          const data: Profile = await response.json();
+          setProfile(data);
+          console.log(data);
+        } else {
+          throw new Error("Error fetching profile");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+      
+    fetchProfile();
+  }, []);
+
+  if (error) return <p>Error: {error}</p>;
   const logout = () => {
     // Elimina el token de localStorage
     localStorage.removeItem('token');
@@ -27,9 +72,15 @@ export function Navbar() {
 
   return (
     <header className="bg-plattea1 flex h-20 w-full shrink-0 items-center px-4 md:px-6">
+<<<<<<< HEAD
       <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
         <CustomLogo className="h-12 w-12 text-plattea2" /> {/* Logo para vista de escritorio */}
         <span className="sr-only">Plattea</span>
+=======
+      <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
+        <MountainIcon className="h-6 w-6 text-plattea" />
+        <span className="sr-only">Acme Inc</span>
+>>>>>>> 3a9f0ac9c05342d7fcbc8d8b6f088658924a12c3
       </Link>
       <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList>
@@ -125,7 +176,7 @@ export function Navbar() {
               className="overflow-hidden rounded-full bg-plattea1 text-plattea2"
             >
               <img
-                src="/placeholder.svg"
+                src={profile?.FotoPersonaURL || "/placeholder-user.jpg"}
                 width={36}
                 height={36}
                 alt="Avatar"

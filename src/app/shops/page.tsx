@@ -11,9 +11,6 @@ function page() {
         <NavbarDefault />
         <CarruselTiendas />
         <Tiendas />
-        <TiendasM />
-        <TiendasM />
-        <TiendasM />
         <Footer />
     </div>
   )
