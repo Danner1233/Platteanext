@@ -25,6 +25,7 @@ To read more about using these font, please visit the Next.js documentation:
 **/
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { JSX, SVGProps } from "react"
 
 export function Favoritos() {
   return (
@@ -123,7 +124,7 @@ export function Favoritos() {
   )
 }
 
-function XIcon(props) {
+function XIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
   IdPersona: string;
@@ -19,6 +19,7 @@ interface Profile {
   CiudadPersona: string;
   DescripcionPersona: string;
   DireccionPersona: string;
+  TelefonoPersona?: string; // Añadido el número de celular opcional
 }
 
 export function Configuracion() {
@@ -33,6 +34,7 @@ export function Configuracion() {
   const [ciudad, setCiudad] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [direccion, setDireccion] = useState("");
+  const [telefono, setTelefono] = useState("");
 
   // Estado para saber si hay cambios
   const [hasChanges, setHasChanges] = useState(false);
@@ -48,11 +50,14 @@ export function Configuracion() {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(`http://localhost:4000/api/persona/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:4000/api/persona/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (response.ok) {
           const data: Profile = await response.json();
           setProfile(data);
@@ -62,6 +67,7 @@ export function Configuracion() {
           setCiudad(data.CiudadPersona);
           setDescripcion(data.DescripcionPersona);
           setDireccion(data.DireccionPersona);
+          setTelefono(data.TelefonoPersona || ""); // Asignar el número de celular
         } else {
           throw new Error("Error fetching profile");
         }
@@ -119,17 +125,21 @@ export function Configuracion() {
       formData.append("CiudadPersona", ciudad);
       formData.append("DescripcionPersona", descripcion);
       formData.append("DireccionPersona", direccion);
+      formData.append("TelefonoPersona", telefono); // Añadido el número de celular
       if (file) {
         formData.append("FotoPersona", file);
       }
 
-      const response = await fetch(`http://localhost:4000/api/persona/${userId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        `http://localhost:4000/api/persona/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         // Maneja la respuesta exitosa
@@ -150,71 +160,130 @@ export function Configuracion() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 md:p-10 dark:bg-background dark:text-foreground">
-      <h1 className="text-3xl font-bold mb-6">Configuración de Perfil</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Información Personal</h2>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="first-name">Nombre</Label>
-                <Input id="first-name" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-9">
+      <div className="w-full max-w-4xl mx-auto p-6 md:p-10 dark:bg-background dark:text-foreground">
+        <h1 className="text-3xl font-bold mb-6">Configuración de Perfil</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Información Personal</h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="first-name">Nombre</Label>
+                  <Input
+                    id="first-name"
+                    type="text"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="last-name">Apellido</Label>
+                  <Input
+                    id="last-name"
+                    type="text"
+                    value={apellido}
+                    onChange={(e) => setApellido(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
               <div>
-                <Label htmlFor="last-name">Apellido</Label>
-                <Input id="last-name" type="text" value={apellido} onChange={(e) => setApellido(e.target.value)} required />
+                <Label htmlFor="direccion">Dirección</Label>
+                <Input
+                  id="direccion"
+                  type="text"
+                  value={direccion}
+                  onChange={(e) => setDireccion(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="location">Ciudad</Label>
+                <Input
+                  id="location"
+                  type="text"
+                  value={ciudad}
+                  onChange={(e) => setCiudad(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="descripcion">Descripción</Label>
+                <textarea
+                  id="descripcion"
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                  rows={4} // Puedes ajustar el número de filas iniciales
+                  className="w-full p-2 border rounded-md resize-none"
+                />
+              </div>
+              <div>
+                <Label htmlFor="profile-picture">Foto de Perfil</Label>
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage
+                      src={profile?.FotoPersonaURL || "/placeholder-user.jpg"}
+                      alt="Profile Picture"
+                    />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <Button variant="outline" onClick={handleChangePhotoClick}>
+                    Cambiar Foto
+                  </Button>
+                  <input
+                    id="profile-picture"
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                </div>
               </div>
             </div>
-            <div>
-              <Label htmlFor="email">Correo Electrónico</Label>
-              <Input id="email" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
-            </div>
-            <div>
-              <Label htmlFor="profile-picture">Foto de Perfil</Label>
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={profile?.FotoPersonaURL || "/placeholder-user.jpg"} alt="Profile Picture" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <Button variant="outline" onClick={handleChangePhotoClick}>
-                  Cambiar Foto
-                </Button>
-                <input
-                  id="profile-picture"
-                  type="file"
-                  accept="image/*"
-                  ref={fileInputRef}
-                  style={{ display: 'none' }}
-                  onChange={handleFileChange}
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Contacto</h2>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="email">Correo Electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="telefono">Número de Celular</Label>
+                <Input
+                  id="telefono"
+                  type="text"
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)}
+                  required
                 />
               </div>
             </div>
           </div>
         </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Preferencias</h2>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="location">Ciudad</Label>
-              <Input id="location" type="text" value={ciudad} onChange={(e) => setCiudad(e.target.value)} required />
-            </div>
-            <div>
-              <Label htmlFor="description">Descripción</Label>
-              <Input id="description" type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} required />
-            </div>
-            <div>
-              <Label htmlFor="direccion">Dirección</Label>
-              <Input id="direccion" type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} required />
-            </div>
-          </div>
+        <div className="mt-8 flex justify-end">
+          <Button className="bg-plattea1" onClick={handleSaveChanges}>
+            Guardar Cambios
+          </Button>
         </div>
       </div>
+<<<<<<< HEAD
       <div className="mt-8 flex justify-end">
         <Button className="bg-plattea1" onClick={handleSaveChanges} disabled={!hasChanges}>
           Guardar Cambios
         </Button>
       </div>
+=======
+>>>>>>> a05886c2f78a5fd6105175be0a8de88487bbba79
     </div>
   );
 }
