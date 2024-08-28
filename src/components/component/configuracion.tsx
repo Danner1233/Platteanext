@@ -34,6 +34,9 @@ export function Configuracion() {
   const [descripcion, setDescripcion] = useState("");
   const [direccion, setDireccion] = useState("");
 
+  // Estado para saber si hay cambios
+  const [hasChanges, setHasChanges] = useState(false);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -69,6 +72,21 @@ export function Configuracion() {
 
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    if (profile) {
+      // Check if there are any changes
+      setHasChanges(
+        nombre !== profile.NombrePersona ||
+        apellido !== profile.ApellidoPersona ||
+        correo !== profile.CorreoPersona ||
+        ciudad !== profile.CiudadPersona ||
+        descripcion !== profile.DescripcionPersona ||
+        direccion !== profile.DireccionPersona ||
+        file !== null
+      );
+    }
+  }, [nombre, apellido, correo, ciudad, descripcion, direccion, file, profile]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -117,7 +135,6 @@ export function Configuracion() {
         // Maneja la respuesta exitosa
         const updatedProfile = await response.json();
         setProfile(updatedProfile);
-        alert("Perfil actualizado con éxito");
         // Refresca la página
         window.location.reload();
       } else {
@@ -194,7 +211,7 @@ export function Configuracion() {
         </div>
       </div>
       <div className="mt-8 flex justify-end">
-        <Button className="bg-plattea1" onClick={handleSaveChanges}>
+        <Button className="bg-plattea1" onClick={handleSaveChanges} disabled={!hasChanges}>
           Guardar Cambios
         </Button>
       </div>

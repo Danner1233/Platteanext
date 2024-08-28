@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+    images: {
+      domains: ['localhost'], // Añade aquí los dominios desde los que quieres permitir la carga de imágenes
+    },
+  };
+  
+  export default nextConfig;
+  

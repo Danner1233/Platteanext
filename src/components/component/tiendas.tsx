@@ -10,6 +10,8 @@ interface Tienda {
   DescripcionTienda: string;
   DireccionTienda: string;
   MiniaturaTiendaURL: string;
+  CiudadTienda: string;
+  
 }
 
 export function Tiendas() {
@@ -60,7 +62,7 @@ export function Tiendas() {
               <span className="sr-only">Ver tienda</span>
             </Link>
             <Image
-              src={tienda.MiniaturaTiendaURL || "/placeholder.svg"}
+              src={tienda.MiniaturaTiendaURL}
               alt={tienda.NombreTienda}
               width={400}
               height={300}
@@ -69,7 +71,7 @@ export function Tiendas() {
             />
             <div className="p-4 bg-background">
               <h3 className="text-lg font-semibold md:text-xl">{tienda.NombreTienda}</h3>
-              <p className="text-sm text-muted-foreground">{tienda.DescripcionTienda}</p>
+              <p className="text-sm text-muted-foreground">Ciudad: {tienda.CiudadTienda}</p>
               <p className="text-sm text-muted-foreground">Ubicación: {tienda.DireccionTienda}</p>
             </div>
           </div>

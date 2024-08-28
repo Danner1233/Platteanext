@@ -34,7 +34,7 @@ export function Perfil() {
 
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
-
+        
         const response = await fetch(`http://localhost:4000/api/persona/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
