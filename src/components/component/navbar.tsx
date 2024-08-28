@@ -72,15 +72,9 @@ export function Navbar() {
 
   return (
     <header className="bg-plattea1 flex h-20 w-full shrink-0 items-center px-4 md:px-6">
-<<<<<<< HEAD
       <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
         <CustomLogo className="h-12 w-12 text-plattea2" /> {/* Logo para vista de escritorio */}
         <span className="sr-only">Plattea</span>
-=======
-      <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
-        <MountainIcon className="h-6 w-6 text-plattea" />
-        <span className="sr-only">Acme Inc</span>
->>>>>>> 3a9f0ac9c05342d7fcbc8d8b6f088658924a12c3
       </Link>
       <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList>
