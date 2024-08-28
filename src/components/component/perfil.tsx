@@ -2,8 +2,7 @@
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
-import { jwtDecode } from 'jwt-decode';
-
+import {jwtDecode} from 'jwt-decode';
 
 interface DecodedToken {
   IdPersona: string;
@@ -19,7 +18,6 @@ interface Profile {
   DireccionPersona: string;
   tiendas: any[];
 }
-
 export function Perfil() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string>("");
@@ -34,25 +32,30 @@ export function Perfil() {
 
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
-        
+
+        console.log('Decoded Token:', decoded); // Verifica el token decodificado
+
         const response = await fetch(`http://localhost:4000/api/persona/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response);
+
+        console.log('Response:', response); // Verifica la respuesta de la API
+
         if (response.ok) {
           const data: Profile = await response.json();
+          console.log('Profile data:', data); // Verifica los datos del perfil obtenidos
           setProfile(data);
-          console.log(data);
         } else {
           throw new Error("Error fetching profile");
         }
       } catch (error) {
         console.error(error);
+        setError("Error al obtener el perfil");
       }
     };
-      
+
     fetchProfile();
   }, []);
 
@@ -64,12 +67,10 @@ export function Perfil() {
         <div className="bg-background rounded-lg shadow-md p-6">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={profile?.FotoPersonaURL || "/placeholder-user.jpg"} alt="User Avatar" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarImage src={profile?.FotoPersonaURL || "/OIP.jpeg"} alt="User Avatar" />
             </Avatar>
             <div>
               <h2 className="text-xl font-bold">{profile?.NombrePersona || "Nombre Usuario"}  {profile?.ApellidoPersona || ""}</h2>
-
               <p className="text-muted-foreground">{profile?.CiudadPersona || "Ubicación desconocida"}, {profile?.DireccionPersona}</p>
             </div>
           </div>

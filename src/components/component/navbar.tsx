@@ -1,24 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuLink,
+import {NavigationMenu,NavigationMenuList,NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem
-} from "@/components/ui/dropdown-menu";
+import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent, DropdownMenuLabel,DropdownMenuSeparator,DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import { JSX, SVGProps } from "react";
 import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
+
 interface DecodedToken {
   IdPersona: string;
 }
@@ -182,8 +173,7 @@ export function Navbar() {
           <DropdownMenuContent align="end" className="bg-plattea2">
             <DropdownMenuLabel className="text-plattea1">Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href="/perfil" className="text-plattea1">Perfil</Link>
+            <DropdownMenuItem><Link href="/perfil" className="text-plattea1">Perfil</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link href="/historial" className="text-plattea1">Historial</Link>
