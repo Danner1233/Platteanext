@@ -1,16 +1,14 @@
-import { BannerPerfil } from '@/components/component/banner-perfil'
+import { EditarProducto } from '@/components/component/editar-producto'
 import { Footer } from '@/components/component/footer'
 import { Navbar } from '@/components/component/navbar'
-import { ProductosPerfil } from '@/components/component/productos-perfil'
 import React from 'react'
 
 function page() {
   return (
     <div>
         <Navbar />
-        <BannerPerfil />
-        <ProductosPerfil />
-        <Footer />
+        <EditarProducto />
+        <Footer /> 
     </div>
   )
 }

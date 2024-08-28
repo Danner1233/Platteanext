@@ -32,7 +32,10 @@ import { JSX, SVGProps } from "react"
 
 export function Tarjeta() {
   return (
-    <div className="flex justify-center">
+
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-9">
+
+<div className="flex justify-center">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Agregar Tarjeta de Crédito</CardTitle>
@@ -75,6 +78,8 @@ export function Tarjeta() {
           <Button className="ml-auto">Agregar Tarjeta</Button>
         </CardFooter>
       </Card>
+    </div>
+
     </div>
   )
 }
