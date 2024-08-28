@@ -1,16 +1,32 @@
+"use client"
+
 import { AgregarProducto } from '@/components/component/agregar-producto'
 import { Footer } from '@/components/component/footer'
-import { Navbar } from '@/components/component/navbar'
 import React from 'react'
 
-function page() {
+import { useEffect, useState } from 'react';
+import { NavbarDefault } from '@/components/component/navbar-default'
+import { Navbar } from '@/components/component/navbar'
+function Page() {
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    setIsLoggedIn(true);
+  }
+}, []);
   return (
     <div>
-        <Navbar /> 
+      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
         <AgregarProducto /> 
         <Footer /> 
     </div>
   )
 }
 
-export default page
+export default Page
+
+
+
+
+

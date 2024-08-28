@@ -1,3 +1,5 @@
+"use client"
+
 import { Error } from '@/components/component/error'
 import React from 'react'
 

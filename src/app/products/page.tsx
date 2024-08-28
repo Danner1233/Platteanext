@@ -1,22 +1,36 @@
-
+"use client"
 import { FiltroProductos } from '@/components/component/filtro-productos'
 import { Footer } from '@/components/component/footer'
 import { NavbarDefault } from '@/components/component/navbar-default'
 import { Productos } from '@/components/component/productos'
 import React from 'react'
+import { useEffect, useState } from 'react';
+import { Navbar } from '@/components/component/navbar';
 
-function page() {
 
+function Page() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
   return (
     <div>
-        <NavbarDefault />
-        <FiltroProductos />
-        <Productos />
-        <Productos />
-        <Productos />
-        <Footer />
+      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+      <FiltroProductos />
+      <Productos />
+      <Productos />
+      <Productos />
+      <Footer />
     </div>
   )
 }
 
-export default page
+export default Page
+
+
+
+

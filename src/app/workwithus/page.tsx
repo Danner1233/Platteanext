@@ -1,13 +1,28 @@
+"use client"
+
 import { BannerWork } from '@/components/component/banner-work'
 import { ComprarTienda } from '@/components/component/comprar-tienda'
 import { Footer } from '@/components/component/footer'
 import { NavbarDefault } from '@/components/component/navbar-default'
 import React from 'react'
+import { Navbar} from '@/components/component/navbar'
+import { useEffect, useState } from 'react';
 
-function page() {
+
+
+function Page() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
     <div>
-        <NavbarDefault />
+        {isLoggedIn ? <Navbar /> : <NavbarDefault />}
         <BannerWork />
         <ComprarTienda />
         <Footer />
@@ -15,4 +30,6 @@ function page() {
   )
 }
 
-export default page
+export default Page
+
+
