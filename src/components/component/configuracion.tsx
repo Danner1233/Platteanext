@@ -270,20 +270,13 @@ export function Configuracion() {
             </div>
           </div>
         </div>
-        <div className="mt-8 flex justify-end">
-          <Button className="bg-plattea1" onClick={handleSaveChanges}>
-            Guardar Cambios
-          </Button>
-        </div>
-      </div>
-<<<<<<< HEAD
-      <div className="mt-8 flex justify-end">
+       <div className="mt-8 flex justify-end">
         <Button className="bg-plattea1" onClick={handleSaveChanges} disabled={!hasChanges}>
           Guardar Cambios
         </Button>
+      </div> 
       </div>
-=======
->>>>>>> a05886c2f78a5fd6105175be0a8de88487bbba79
+      
     </div>
   );
 }
