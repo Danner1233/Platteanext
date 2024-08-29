@@ -29,7 +29,7 @@ export function CarruselTiendas() {
           <CarouselContent>
             <CarouselItem className="md:basis-1/2 lg:basis-1/3">
               <div className="p-4">
-                <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
+                <Link href="/categoriamoda" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
                     src="/moda.jpg"
                     alt="Moda"
@@ -47,7 +47,7 @@ export function CarruselTiendas() {
             </CarouselItem>
             <CarouselItem className="md:basis-1/3 lg:basis-1/3">
               <div className="p-4">
-                <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
+                <Link href="/categoriaelectrodomesticos" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
                     src="/electrodomesticos.jpg"
                     alt="Electrónica"
@@ -65,7 +65,7 @@ export function CarruselTiendas() {
             </CarouselItem>
             <CarouselItem className="md:basis-1/3 lg:basis-1/3">
               <div className="p-4">
-                <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
+                <Link href="/categoriahogar" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
                     src="/hogar.jpg"
                     alt="Hogar"
@@ -83,7 +83,7 @@ export function CarruselTiendas() {
             </CarouselItem>
             <CarouselItem className="md:basis-1/3 lg:basis-1/3">
               <div className="p-4">
-                <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
+                <Link href="/categoriadeportes" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
                     src="/deportes.jpg"
                     alt="Deportes"
@@ -101,7 +101,7 @@ export function CarruselTiendas() {
             </CarouselItem>
             <CarouselItem className="md:basis-1/3 lg:basis-1/3">
               <div className="p-4">
-                <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
+                <Link href="/categoriajuguetes" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
                     src="/juguetes.jpg"
                     alt="Juguetes"
@@ -119,7 +119,7 @@ export function CarruselTiendas() {
             </CarouselItem>
             <CarouselItem className="md:basis-1/3 lg:basis-1/3">
               <div className="p-4">
-                <Link href="#" className="block rounded-lg overflow-hidden group" prefetch={false}>
+                <Link href="/categoriabelleza" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
                     src="/belleza.jpg"
                     alt="Belleza"
