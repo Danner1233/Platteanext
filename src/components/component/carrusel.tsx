@@ -10,7 +10,7 @@ import { JSX, SVGProps } from "react";
 
 export function Carrusel() {
   return (
-    <section className="bg-background py-12 md:py-16 lg:py-10">
+    <section className="bg-background py-8 md:py-12 lg:py-8">
       <div className="container mx-auto px-4 md:px-6 lg:px-7">
         <div className="relative">
           <Carousel className="w-full">
@@ -20,12 +20,11 @@ export function Carrusel() {
                   <video
                     src="/plattea.mp4" // Ruta al video en la carpeta public
                     width={1200}
-                    height={600}
+                    height={350} // Ajusta el height aquí
                     autoPlay
                     loop
                     muted
-                    className="h-[500px] w-full object-cover"
-                    // Ajusta las clases según tus necesidades
+                    className="h-[350px] w-full object-cover" // Ajusta la clase aquí
                   />
                   <Link
                     href="#"
@@ -42,9 +41,9 @@ export function Carrusel() {
                   <img
                     src="/bannerinicio2.jpg"
                     width={1200}
-                    height={600}
+                    height={350} // Ajusta el height aquí
                     alt="Producto 2"
-                    className="h-[500px] w-full object-cover"
+                    className="h-[350px] w-full object-cover" // Ajusta la clase aquí
                   />
                   <Link
                     href="#"
@@ -61,9 +60,9 @@ export function Carrusel() {
                   <img
                     src="/bannerinicio3.avif"
                     width={1200}
-                    height={600}
+                    height={350} // Ajusta el height aquí
                     alt="Producto 3"
-                    className="h-[500px] w-full object-cover"
+                    className="h-[350px] w-full object-cover" // Ajusta la clase aquí
                   />
                   <Link
                     href="#"
@@ -89,6 +88,7 @@ export function Carrusel() {
     </section>
   );
 }
+
 
 function ArrowRightIcon(
   props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
