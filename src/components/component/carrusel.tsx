@@ -17,12 +17,15 @@ export function Carrusel() {
             <CarouselContent>
               <CarouselItem>
                 <div className="relative">
-                  <img
-                    src="/placeholder.svg"
+                  <video
+                    src="/plattea.mp4" // Ruta al video en la carpeta public
                     width={1200}
                     height={600}
-                    alt="Producto 1"
-                    className="h-[500px] w-full object-cover" // Altura aumentada
+                    autoPlay
+                    loop
+                    muted
+                    className="h-[500px] w-full object-cover"
+                    // Ajusta las clases según tus necesidades
                   />
                   <Link
                     href="#"
@@ -41,7 +44,7 @@ export function Carrusel() {
                     width={1200}
                     height={600}
                     alt="Producto 2"
-                    className="h-[500px] w-full object-cover" // Altura aumentada
+                    className="h-[500px] w-full object-cover"
                   />
                   <Link
                     href="#"
@@ -60,7 +63,7 @@ export function Carrusel() {
                     width={1200}
                     height={600}
                     alt="Producto 3"
-                    className="h-[500px] w-full object-cover" // Altura aumentada
+                    className="h-[500px] w-full object-cover"
                   />
                   <Link
                     href="#"

@@ -1,20 +1,18 @@
-"use client"
+"use client";
 
-import { CarruselTiendas } from '@/components/component/carrusel-tiendas';
-import { Footer } from '@/components/component/footer';
+import { CarruselTiendas } from "@/components/component/carrusel-tiendas";
+import { Footer } from "@/components/component/footer";
+import { Tiendas } from "@/components/component/tiendas";
+import React, { useEffect, useState } from "react";
+import { NavbarDefault } from "@/components/component/navbar-default";
+import { Navbar } from "@/components/component/navbar";
+import Head from "next/head"; // Asegúrate de importar Head correctamente
 
-import { Tiendas } from '@/components/component/tiendas';
-import { TiendasM } from '@/components/component/tiendas-m';
-
-import React, { useEffect, useState } from 'react';
-import { NavbarDefault } from '@/components/component/navbar-default';
-import { Navbar } from '@/components/component/navbar';
-
-function Page() {  // Cambio aquí: 'page' a 'Page'
+function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
     }
@@ -22,6 +20,10 @@ function Page() {  // Cambio aquí: 'page' a 'Page'
 
   return (
     <div>
+      <Head>
+        <title>Tu Título Aquí</title> {/* Título de la pestaña */}
+      </Head>
+
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <CarruselTiendas />
       <Tiendas />
@@ -30,6 +32,4 @@ function Page() {  // Cambio aquí: 'page' a 'Page'
   );
 }
 
-export default Page;  // Cambio aquí: 'page' a 'Page'
-
-
+export default Page;

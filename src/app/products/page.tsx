@@ -22,8 +22,6 @@ function Page() {
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <FiltroProductos />
       <Productos />
-      <Productos />
-      <Productos />
       <Footer />
     </div>
   )

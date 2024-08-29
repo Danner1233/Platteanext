@@ -19,7 +19,7 @@ interface Profile {
   CiudadPersona: string;
   DescripcionPersona: string;
   DireccionPersona: string;
-  TelefonoPersona?: string; // Añadido el número de celular opcional
+  TelefonoPersona?: string;
 }
 
 export function Configuracion() {
@@ -27,7 +27,6 @@ export function Configuracion() {
   const [error, setError] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
 
-  // Estados para los campos del formulario
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
@@ -36,7 +35,6 @@ export function Configuracion() {
   const [direccion, setDireccion] = useState("");
   const [telefono, setTelefono] = useState("");
 
-  // Estado para saber si hay cambios
   const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
@@ -73,6 +71,7 @@ export function Configuracion() {
         }
       } catch (error) {
         console.error(error);
+        setError("Error al cargar el perfil");
       }
     };
 
@@ -81,15 +80,14 @@ export function Configuracion() {
 
   useEffect(() => {
     if (profile) {
-      // Check if there are any changes
       setHasChanges(
         nombre !== profile.NombrePersona ||
-        apellido !== profile.ApellidoPersona ||
-        correo !== profile.CorreoPersona ||
-        ciudad !== profile.CiudadPersona ||
-        descripcion !== profile.DescripcionPersona ||
-        direccion !== profile.DireccionPersona ||
-        file !== null
+          apellido !== profile.ApellidoPersona ||
+          correo !== profile.CorreoPersona ||
+          ciudad !== profile.CiudadPersona ||
+          descripcion !== profile.DescripcionPersona ||
+          direccion !== profile.DireccionPersona ||
+          file !== null
       );
     }
   }, [nombre, apellido, correo, ciudad, descripcion, direccion, file, profile]);
@@ -97,14 +95,13 @@ export function Configuracion() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChangePhotoClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
     }
   };
 
@@ -125,7 +122,7 @@ export function Configuracion() {
       formData.append("CiudadPersona", ciudad);
       formData.append("DescripcionPersona", descripcion);
       formData.append("DireccionPersona", direccion);
-      formData.append("TelefonoPersona", telefono); // Añadido el número de celular
+      formData.append("TelefonoPersona", telefono);
       if (file) {
         formData.append("FotoPersona", file);
       }
@@ -142,19 +139,37 @@ export function Configuracion() {
       );
 
       if (response.ok) {
-        // Maneja la respuesta exitosa
         const updatedProfile = await response.json();
         setProfile(updatedProfile);
-        // Refresca la página
-        window.location.reload();
+        window.location.reload(); // Consider using a more elegant solution for updating UI
       } else {
-        // Maneja errores del servidor
         throw new Error("Error al actualizar el perfil");
       }
     } catch (error) {
       console.error(error);
       alert("Ocurrió un error al actualizar el perfil");
     }
+  };
+
+  const [imageIndex, setImageIndex] = useState(0);
+  const images = [
+    "/placeholder.svg?height=400&width=1200",
+    "/placeholder.svg?height=400&width=1200",
+    "/placeholder.svg?height=400&width=1200",
+  ];
+
+  const handleNextImage = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.onchange = (event) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        images[imageIndex] = URL.createObjectURL(file);
+        setImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }
+    };
+    fileInput.click();
   };
 
   if (error) return <p>Error: {error}</p>;
@@ -215,7 +230,7 @@ export function Configuracion() {
                   id="descripcion"
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
-                  rows={4} // Puedes ajustar el número de filas iniciales
+                  rows={4}
                   className="w-full p-2 border rounded-md resize-none"
                 />
               </div>
@@ -240,6 +255,24 @@ export function Configuracion() {
                     style={{ display: "none" }}
                     onChange={handleFileChange}
                   />
+                </div>
+                <Label htmlFor="banner-picture p-2">Cambiar banner</Label>
+                <div className="relative p-3">
+                  <img
+                    src={images[imageIndex]}
+                    alt="Banner"
+                    width={1200}
+                    height={400}
+                    className="w-full aspect-[3/1] object-cover"
+                  />
+                </div>
+                <div className="flex justify-center mt-4">
+                  <Button
+                    onClick={handleNextImage}
+                    variant="outline"
+                  >
+                    Cambiar imagen
+                  </Button>
                 </div>
               </div>
             </div>
@@ -267,16 +300,20 @@ export function Configuracion() {
                   required
                 />
               </div>
+              <h2 className="text-2xl font-bold mb-4">Preferencias</h2>
             </div>
           </div>
         </div>
-       <div className="mt-8 flex justify-end">
-        <Button className="bg-plattea1" onClick={handleSaveChanges} disabled={!hasChanges}>
-          Guardar Cambios
-        </Button>
-      </div> 
+        <div className="mt-8 flex justify-end">
+          <Button
+            className="bg-plattea1"
+            onClick={handleSaveChanges}
+            disabled={!hasChanges}
+          >
+            Guardar Cambios
+          </Button>
+        </div>
       </div>
-      
     </div>
   );
 }
