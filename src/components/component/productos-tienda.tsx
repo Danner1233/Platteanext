@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface Producto {
   IdProducto: string;
@@ -11,23 +11,23 @@ interface Producto {
   StockProducto: string;
   PrecioProducto: string;
   FotoProductoURL: string;
-  DireccionPersona: string;
-  tiendas: any[];
 }
 
 export function ProductosTienda() {
-  const router = useRouter();
-  const { IdTienda } = router.query;
+  const params = useParams(); // Usa useParams para obtener parámetros de la ruta
+  const idTienda = params.id; // Obtén el id de los parámetros de la URL
+
+  console.log('idTienda:', idTienda); // Verifica el id obtenido de la URL
 
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (IdTienda) {
+    if (idTienda) {
       const fetchProductos = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/api/tienda/producto/${IdTienda}`);
+          const response = await fetch(`http://localhost:4000/api/tienda/producto/${idTienda}`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -42,7 +42,7 @@ export function ProductosTienda() {
 
       fetchProductos();
     }
-  }, [IdTienda]);
+  }, [idTienda]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
