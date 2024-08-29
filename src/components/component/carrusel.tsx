@@ -13,7 +13,12 @@ export function Carrusel() {
     <section className="bg-background py-8 md:py-12 lg:py-8">
       <div className="container mx-auto px-4 md:px-6 lg:px-7">
         <div className="relative">
-          <Carousel className="w-full">
+        <Carousel
+          className="w-full"
+          autoplay={true}
+          infinite={true}
+          autoplayInterval={3000}
+        >
             <CarouselContent>
               <CarouselItem>
                 <div className="relative">

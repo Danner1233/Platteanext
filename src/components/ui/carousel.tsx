@@ -19,6 +19,9 @@ type CarouselProps = {
   plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
   setApi?: (api: CarouselApi) => void
+  autoplay?: boolean
+  autoplayInterval?: number
+  infinite?: boolean
 }
 
 type CarouselContextProps = {
@@ -54,6 +57,9 @@ const Carousel = React.forwardRef<
       plugins,
       className,
       children,
+      autoplay = false,
+      autoplayInterval = 3000,
+      infinite = false,
       ...props
     },
     ref
@@ -62,6 +68,7 @@ const Carousel = React.forwardRef<
       {
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
+        loop: infinite, // Habilita el loop infinito si es necesario
       },
       plugins
     )
@@ -72,7 +79,6 @@ const Carousel = React.forwardRef<
       if (!api) {
         return
       }
-
       setCanScrollPrev(api.canScrollPrev())
       setCanScrollNext(api.canScrollNext())
     }, [])
@@ -85,24 +91,10 @@ const Carousel = React.forwardRef<
       api?.scrollNext()
     }, [api])
 
-    const handleKeyDown = React.useCallback(
-      (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === "ArrowLeft") {
-          event.preventDefault()
-          scrollPrev()
-        } else if (event.key === "ArrowRight") {
-          event.preventDefault()
-          scrollNext()
-        }
-      },
-      [scrollPrev, scrollNext]
-    )
-
     React.useEffect(() => {
       if (!api || !setApi) {
         return
       }
-
       setApi(api)
     }, [api, setApi])
 
@@ -110,7 +102,6 @@ const Carousel = React.forwardRef<
       if (!api) {
         return
       }
-
       onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
@@ -120,14 +111,25 @@ const Carousel = React.forwardRef<
       }
     }, [api, onSelect])
 
+    React.useEffect(() => {
+      if (autoplay) {
+        const interval = setInterval(() => {
+          if (api) {
+            api.scrollNext()
+          }
+        }, autoplayInterval)
+
+        return () => clearInterval(interval)
+      }
+    }, [autoplay, autoplayInterval, api])
+
     return (
       <CarouselContext.Provider
         value={{
           carouselRef,
           api: api,
           opts,
-          orientation:
-            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+          orientation,
           scrollPrev,
           scrollNext,
           canScrollPrev,
@@ -136,7 +138,6 @@ const Carousel = React.forwardRef<
       >
         <div
           ref={ref}
-          onKeyDownCapture={handleKeyDown}
           className={cn("relative", className)}
           role="region"
           aria-roledescription="carousel"
@@ -206,7 +207,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute  h-8 w-8 rounded-full",
+        "absolute h-8 w-8 rounded-full",
         orientation === "horizontal"
           ? "-left-12 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",

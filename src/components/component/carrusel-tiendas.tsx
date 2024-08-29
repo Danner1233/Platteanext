@@ -25,7 +25,12 @@ export function CarruselTiendas() {
     <section className="py-12 px-4 md:px-6">
       <div className="container mx-auto">
         <h2 className="text-2xl font-bold mb-6">Explora nuestras categorías</h2>
-        <Carousel className="w-full">
+        <Carousel
+          className="w-full"
+          autoplay={true}
+          infinite={true}
+          autoplayInterval={3000}
+        >
           <CarouselContent>
             <CarouselItem className="md:basis-1/2 lg:basis-1/3">
               <div className="p-4">
@@ -50,14 +55,14 @@ export function CarruselTiendas() {
                 <Link href="/categoriaelectrodomesticos" className="block rounded-lg overflow-hidden group" prefetch={false}>
                   <img
                     src="/electrodomesticos.jpg"
-                    alt="Electrónica"
+                    alt="Electrodomésticos"
                     width={400}
                     height={300}
                     className="w-full h-48 object-cover group-hover:opacity-50 transition-opacity"
                     style={{ aspectRatio: "300/200", objectFit: "cover" }}
                   />
                   <div className="bg-background p-4">
-                    <h3 className="text-lg font-semibold">Electrodomesticos</h3>
+                    <h3 className="text-lg font-semibold">Electrodomésticos</h3>
                     <p className="text-muted-foreground group-hover:underline transition-colors">Ver más</p>
                   </div>
                 </Link>

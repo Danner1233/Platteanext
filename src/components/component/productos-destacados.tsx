@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export function ProductosDestacados() {
   return (
-    <section className="mt-5 p-4 md:p-6">
+    <section className="mt-5 p-4 md:p-1">
       <h2 className="text-3xl font-bold mb-6 text-center">Productos Destacados</h2>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="relative overflow-hidden rounded-lg group">
