@@ -42,20 +42,19 @@ export function Banner() {
 
   return (
     <section className="w-full">
-      <div className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[90vh]">
+      <div className="relative w-full h-64"> {/* Ajusta la altura según lo que consideres apropiado */}
         <Image
           src={tienda?.BannerTiendaURL || '/default-banner.jpg'} // Usar una URL por defecto si no se encuentra la imagen
           alt="Banner Image"
           layout="fill" // Ocupar todo el contenedor
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
-          style={{ aspectRatio: "1920/720", objectFit: "cover" }}
+          style={{ aspectRatio: "16/9", objectFit: "cover" }} // Ajusta la proporción según sea necesario
         />
       </div>
-      <div className="flex flex-col items-center justify-center py-11 md:py-10 lg:py-10">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">{tienda?.NombreTienda || '/default-banner.jpg'}</h1>
+      <div className="flex flex-col items-center justify-center py-6 md:py-8 lg:py-10">
+        <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">{tienda?.NombreTienda || 'Nombre de Tienda'}</h1>
       </div>
     </section>
-
   );
 }

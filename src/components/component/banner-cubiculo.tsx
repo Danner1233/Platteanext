@@ -46,7 +46,7 @@ export function BannerCubiculo() {
                 Sube una imagen para personalizar el banner de tu sitio web.
               </p>
             </div>
-            <div className="flex flex-col gap-2 min-[400px]:flex-row">
+            <div className="flex flex-col gap-2 min-[200px]:flex-row">
               <label
                 htmlFor="image-upload"
                 className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
