@@ -20,12 +20,14 @@ interface Profile {
   DescripcionPersona: string;
   DireccionPersona: string;
   TelefonoPersona?: string;
+  bannerPersonaURL?: string;
 }
 
 export function Configuracion() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
 
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -87,21 +89,35 @@ export function Configuracion() {
           ciudad !== profile.CiudadPersona ||
           descripcion !== profile.DescripcionPersona ||
           direccion !== profile.DireccionPersona ||
-          file !== null
+          telefono !== profile.TelefonoPersona ||
+          file !== null ||
+          bannerFile !== null
       );
     }
-  }, [nombre, apellido, correo, ciudad, descripcion, direccion, file, profile]);
+  }, [nombre, apellido, correo, ciudad, descripcion, direccion, telefono, file, bannerFile, profile]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
 
   const handleChangePhotoClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleChangeBannerClick = () => {
+    bannerInputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
+    }
+  };
+
+  const handleBannerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setBannerFile(selectedFile);
     }
   };
 
@@ -126,6 +142,9 @@ export function Configuracion() {
       if (file) {
         formData.append("FotoPersona", file);
       }
+      if (bannerFile) {
+        formData.append("bannerPersona", bannerFile);
+      }
 
       const response = await fetch(
         `http://localhost:4000/api/persona/${userId}`,
@@ -149,27 +168,6 @@ export function Configuracion() {
       console.error(error);
       alert("Ocurrió un error al actualizar el perfil");
     }
-  };
-
-  const [imageIndex, setImageIndex] = useState(0);
-  const images = [
-    "/placeholder.svg?height=400&width=1200",
-    "/placeholder.svg?height=400&width=1200",
-    "/placeholder.svg?height=400&width=1200",
-  ];
-
-  const handleNextImage = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.onchange = (event) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        images[imageIndex] = URL.createObjectURL(file);
-        setImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-      }
-    };
-    fileInput.click();
   };
 
   if (error) return <p>Error: {error}</p>;
@@ -256,30 +254,34 @@ export function Configuracion() {
                     onChange={handleFileChange}
                   />
                 </div>
-                <Label htmlFor="banner-picture p-2">Cambiar banner</Label>
+              </div>
+              <div>
+                <Label htmlFor="banner-picture">Banner</Label>
                 <div className="relative p-3">
                   <img
-                    src={images[imageIndex]}
+                    src={profile?.bannerPersonaURL || "/placeholder.svg?height=400&width=1200"}
                     alt="Banner"
                     width={1200}
                     height={400}
                     className="w-full aspect-[3/1] object-cover"
                   />
-                </div>
-                <div className="flex justify-center mt-4">
                   <Button
-                    onClick={handleNextImage}
                     variant="outline"
+                    className="absolute top-2 right-2"
+                    onClick={handleChangeBannerClick}
                   >
-                    Cambiar imagen
+                    Cambiar Banner
                   </Button>
+                  <input
+                    id="banner-picture"
+                    type="file"
+                    accept="image/*"
+                    ref={bannerInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleBannerChange}
+                  />
                 </div>
               </div>
-            </div>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Contacto</h2>
-            <div className="space-y-4">
               <div>
                 <Label htmlFor="email">Correo Electrónico</Label>
                 <Input
@@ -291,24 +293,22 @@ export function Configuracion() {
                 />
               </div>
               <div>
-                <Label htmlFor="telefono">Número de Celular</Label>
+                <Label htmlFor="phone">Teléfono</Label>
                 <Input
-                  id="telefono"
+                  id="phone"
                   type="text"
                   value={telefono}
                   onChange={(e) => setTelefono(e.target.value)}
-                  required
                 />
               </div>
-              <h2 className="text-2xl font-bold mb-4">Preferencias</h2>
             </div>
           </div>
         </div>
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 text-center">
           <Button
-            className="bg-plattea1"
             onClick={handleSaveChanges}
             disabled={!hasChanges}
+            className="w-full md:w-auto"
           >
             Guardar Cambios
           </Button>

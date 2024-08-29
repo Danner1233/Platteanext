@@ -12,6 +12,7 @@ interface DecodedToken {
 
 interface Profile {
   FotoPersonaURL: string;
+  bannerPersonaURL:  string;
   NombrePersona: string;
   ApellidoPersona: string;
   CorreoPersona: string;
@@ -68,7 +69,7 @@ export function BannerPerfil() {
     <Card className="w-full rounded-2x2 overflow-hidden">
       <div className="h-70 bg-[#1e1e1e] relative flex justify-center">
         <img
-          src="/placeholder.svg"
+          src={profile?.bannerPersonaURL}
           alt="Banner"
           className="w-full h-full object-cover"
           width="768"
