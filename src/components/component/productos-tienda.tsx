@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -52,10 +52,10 @@ export function ProductosTienda() {
       {productos.map((producto) => (
         
         <div key={producto.IdProducto} className="relative overflow-hidden rounded-lg group">
-          <Link href={`/product/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
+          <Link href={`/producto/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
             <span className="sr-only">View</span>
           </Link>
-          <Image
+          <img
             src={producto.FotoProductoURL || "/placeholder.svg"}
             alt={producto.NombreProducto}
             width={400}
