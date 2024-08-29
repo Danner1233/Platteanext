@@ -66,6 +66,7 @@ export function ProductosPerfil() {
         </div>
         <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
           {tiendas.map((tienda) => (
+            <Link key={tienda.IdTienda} href={`/shop/${tienda.IdTienda}`}>
             <div key={tienda.IdTienda} className="relative group overflow-hidden rounded-lg">
               <Image
                 src={tienda.MiniaturaTiendaURL || "/placeholder.svg"}
@@ -80,6 +81,8 @@ export function ProductosPerfil() {
                 <p className="text-sm">{tienda.DescripcionTienda}</p>
               </div>
             </div>
+            </Link>
+            
           ))}
           <div className="relative group overflow-hidden rounded-lg">
             <Image
