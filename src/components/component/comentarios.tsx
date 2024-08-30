@@ -24,7 +24,7 @@ import { JSX, SVGProps } from "react"
 
 export function Comentarios() {
   return (
-    <div className="mx-auto px-4 md:px-6 max-w-2xl grid gap-12">
+    <div className="mx-auto px-4 md:px-6 max-w-2x2 grid gap-12">
       <h2 className="text-2xl font-bold">Comentarios de los clientes</h2>
       <div className="flex gap-4">
         <Avatar className="w-10 h-10 border">

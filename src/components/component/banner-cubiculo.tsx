@@ -86,7 +86,7 @@ export function BannerCubiculo() {
           </div>
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Personaliza tu banner</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Edita tu banner</h2>
               <p className="max-w-[600px] text-muted-foreground md:text-xl">
                 Sube una imagen para personalizar el banner de tu sitio web.
               </p>
