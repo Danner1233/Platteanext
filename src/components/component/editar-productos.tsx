@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { JSX, SVGProps } from "react";
+import { AgregarProducto } from "./agregar-producto";
 
 export function EditarProductos() {
   return (
@@ -41,15 +42,10 @@ export function EditarProductos() {
             </div>
           </div>
         </div>
-        
       </div>
       <div className="m-4 p-2">
-          <Link href="/agregarproducto">
-          <button className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
-            Agregar Producto
-          </button>
-          </Link>
-        </div>
+        <AgregarProducto />
+      </div>
     </div>
   );
 }
