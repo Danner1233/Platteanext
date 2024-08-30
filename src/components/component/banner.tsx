@@ -42,7 +42,7 @@ export function Banner() {
 
   return (
     <section className="w-full">
-      <div className="relative w-full h-64"> {/* Ajusta la altura según lo que consideres apropiado */}
+      <div className="relative w-full h-80"> {/* Ajusta la altura según lo que consideres apropiado */}
         <Image
           src={tienda?.BannerTiendaURL || '/default-banner.jpg'} // Usar una URL por defecto si no se encuentra la imagen
           alt="Banner Image"
