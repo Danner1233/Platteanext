@@ -57,7 +57,8 @@ export function AgregarTienda() {
 
       if (response.ok) {
         alert("Tienda creada correctamente");
-        router.push("/administracioncubiculo"); // Redirecciona a la página deseada
+        router.push("/administracioncubiculo");
+        localStorage.setItem("", data.token); // Redirecciona a la página deseada
       } else {
         const errorData = await response.json();
         console.error('Detalles del error:', errorData);
