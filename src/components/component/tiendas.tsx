@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 interface Tienda {
   IdTienda: string;
@@ -50,7 +49,7 @@ export function Tiendas() {
               <Link href={`/shop/${tienda.IdTienda}`} className="absolute inset-0 z-10" prefetch={false}>
                 <span className="sr-only">Ver tienda</span>
               </Link>
-              <Image
+              <img
                 src={tienda.MiniaturaTiendaURL}
                 alt={tienda.NombreTienda}
                 width={400}
@@ -61,7 +60,7 @@ export function Tiendas() {
               <div className="p-4 bg-background">
                 <h3 className="text-lg font-semibold md:text-xl">{tienda.NombreTienda}</h3>
                 <p className="text-sm text-muted-foreground">Ciudad: {tienda.CiudadTienda}</p>
-                <p className="text-sm text-muted-foreground">Ubicación: {tienda.DireccionTienda}</p>
+                <p className="text-sm text-muted-foreground">Direccion: {tienda.DireccionTienda}</p>
               </div>
             </div>
           </Link>

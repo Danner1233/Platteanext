@@ -35,7 +35,26 @@ export function AgregarTienda() {
   const [ciudad, setCiudad] = useState("");
   const [telefono, setTelefono] = useState("");
 
+  const [miniatura, setMiniatura] = useState<File | null>(null);
+  const [banner, setBanner] = useState<File | null>(null);
+
+  const [previewMiniatura, setPreviewMiniatura] = useState<string | null>(null);
+  const [previewBanner, setPreviewBanner] = useState<string | null>(null);
+
   const router = useRouter(); // Hook de Next.js para la redirección
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>, type: 'miniatura' | 'banner') => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (type === 'miniatura') {
+        setMiniatura(file);
+        setPreviewMiniatura(URL.createObjectURL(file));
+      } else if (type === 'banner') {
+        setBanner(file);
+        setPreviewBanner(URL.createObjectURL(file));
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,35 +65,38 @@ export function AgregarTienda() {
       return;
     }
 
+    const formData = new FormData();
+
+    const decoded: DecodedToken = jwtDecode(token);
+    const userId = decoded.IdPersona;
+
+
+    formData.append("IdPersona", userId);
+    formData.append("NombreTienda", nombre);
+    formData.append("IdCategoriaFK", categoria);
+    formData.append("DescripcionTienda", descripcion);
+    formData.append("DireccionTienda", direccion);
+    formData.append("CiudadTienda", ciudad);
+    formData.append("TelefonoTienda", telefono);
+
+    if (miniatura) formData.append("MiniaturaTienda", miniatura);
+    if (banner) formData.append("BannerTienda", banner);
+
     try {
-      const decoded: DecodedToken = jwtDecode(token);
-      const userId = decoded.IdPersona;
-
-      const nuevaTienda = {
-        IdPersona: userId,
-        NombreTienda: nombre,
-        IdCategoriaFK: categoria,
-        DescripcionTienda: descripcion,
-        DireccionTienda: direccion,
-        CiudadTienda: ciudad,
-        TelefonoTienda: telefono, // Asegúrate de que este campo sea aceptado por el backend
-      };
-
       const response = await fetch(
         "http://localhost:4000/api/tienda/persona/",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(nuevaTienda),
+          body: formData,
         }
       );
 
       if (response.ok) {
         alert("Tienda creada correctamente");
-        router.push("/administracioncubiculo"); // Redirecciona a la página deseada
+        router.push("/administracioncubiculo");
       } else {
         const errorData = await response.json();
         console.error("Detalles del error:", errorData);
@@ -84,20 +106,6 @@ export function AgregarTienda() {
       console.error("Error al crear la tienda:", error);
       alert("Hubo un error al crear la tienda. Inténtalo de nuevo más tarde.");
     }
-  };
-  const [selectedImage, setSelectedImage] = useState<Blob | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      setPreviewImage(URL.createObjectURL(file));
-    }
-  };
-
-  const handleConfirmImage = () => {
-    console.log("Imagen confirmada:", selectedImage);
   };
 
   return (
@@ -122,10 +130,12 @@ export function AgregarTienda() {
               <SelectValue placeholder="Selecciona una categoría" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1">Ropa</SelectItem>
-              <SelectItem value="2">Electrónica</SelectItem>
-              <SelectItem value="3">Comida</SelectItem>
-              <SelectItem value="4">Otros</SelectItem>
+              <SelectItem value="1">Moda</SelectItem>
+              <SelectItem value="2">Electrodometicos</SelectItem>
+              <SelectItem value="3">Hogar</SelectItem>
+              <SelectItem value="4">Deportes</SelectItem>
+              <SelectItem value="5">Juguetes</SelectItem>
+              <SelectItem value="6">Belleza</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -171,9 +181,9 @@ export function AgregarTienda() {
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="relative aspect-[3/1] overflow-hidden rounded-xl">
-                {previewImage ? (
+                {previewBanner ? (
                   <img
-                    src={previewImage}
+                    src={previewBanner}
                     alt="Banner"
                     width={1200}
                     height={400}
@@ -189,59 +199,82 @@ export function AgregarTienda() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                    Sube tu Imagen
+                    Sube tu Banner
                   </h2>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Sube una imagen para personalizar el banner de tu sitio web.
+                    Sube una imagen para personalizar el banner de tu tienda.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[200px]:flex-row">
                   <label
-                    htmlFor="image-upload"
+                    htmlFor="banner-upload"
                     className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
                   >
-                    Cargar imagen
+                    Cargar imagen de banner
                     <input
-                      id="image-upload"
+                      id="banner-upload"
                       type="file"
                       accept="image/*"
                       className="sr-only"
-                      onChange={handleImageChange}
+                      onChange={(e) => handleImageChange(e, 'banner')}
                     />
                   </label>
-                  {selectedImage && (
-                    <Button onClick={handleConfirmImage}>
-                      Confirmar imagen
+                  {banner && (
+                    <Button onClick={() => setPreviewBanner(URL.createObjectURL(banner))}>
+                      Confirmar banner
                     </Button>
                   )}
                 </div>
               </div>
             </div>
-            <Card className="m-7">
-              <CardHeader>
-                <CardTitle>Editar foto de tienda</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-center">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 mt-12">
+              <div className="relative aspect-[3/1] overflow-hidden rounded-xl">
+                {previewMiniatura ? (
                   <img
-                    src="/placeholder.svg"
-                    alt="Foto de la tienda"
+                    src={previewMiniatura}
+                    alt="Miniatura"
                     width={400}
                     height={300}
-                    className="rounded-md object-cover"
+                    className="h-full w-full object-cover"
                     style={{ aspectRatio: "400/300", objectFit: "cover" }}
                   />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
+                    <ImageIcon className="h-12 w-12" />
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col justify-center space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                    Sube tu Miniatura
+                  </h2>
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                    Sube una imagen para personalizar la miniatura de tu tienda.
+                  </p>
                 </div>
-                <div className="mt-4">
-                  <Label htmlFor="image">Cargar imagen</Label>
-                  <Input id="image" type="file" />
+                <div className="flex flex-col gap-2 min-[200px]:flex-row">
+                  <label
+                    htmlFor="miniatura-upload"
+                    className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
+                  >
+                    Cargar imagen de miniatura
+                    <input
+                      id="miniatura-upload"
+                      type="file"
+                      accept="image/*"
+                      className="sr-only"
+                      onChange={(e) => handleImageChange(e, 'miniatura')}
+                    />
+                  </label>
+                  {miniatura && (
+                    <Button onClick={() => setPreviewMiniatura(URL.createObjectURL(miniatura))}>
+                      Confirmar miniatura
+                    </Button>
+                  )}
                 </div>
-              </CardContent>
-              <CardFooter className="flex justify-end gap-2">
-                <Button variant="outline">Cancelar</Button>
-                <Button>Guardar</Button>
-              </CardFooter>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
         <Button type="submit" className="w-full sm:w-auto">

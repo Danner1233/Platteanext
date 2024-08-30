@@ -19,6 +19,7 @@ function Page() {
     <div>
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <AgregarTienda />
+      
       <Footer />
     </div>
   )
