@@ -6,17 +6,25 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 
 export function Carrito() {
-  const [quantities, setQuantities] = useState([0, 0, 0]);
+  const [quantities, setQuantities] = useState([1, 1, 1]);
 
   const handleQuantityChange = (index: number, value: number) => {
-    const newQuantities = [...quantities];
-    newQuantities[index] = value;
-    setQuantities(newQuantities);
+    if (value > 0) {
+      const newQuantities = [...quantities];
+      newQuantities[index] = value;
+      setQuantities(newQuantities);
+    }
   };
 
-  const handleRemoveItem = (index: number) => {
-    // Eliminar producto - función vacía
-  };
+  // Función de eliminación comentada
+  // const handleRemoveItem = (index: number) => {
+  //   const newQuantities = quantities.filter((_, i) => i !== index);
+  //   setQuantities(newQuantities);
+  // };
+
+  const subtotal = 149.97 * quantities.reduce((acc, quantity) => acc + quantity, 0);
+  const shipping = 5;
+  const total = subtotal + shipping;
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 sm:px-2 lg:px-8">
@@ -58,10 +66,10 @@ export function Carrito() {
                 >
                   <PlusIcon className="h-4 w-4" />
                 </Button>
+                {/* Botón de eliminar comentado */}
                 <Button
                   size="icon"
                   variant="outline"
-                  onClick={() => handleRemoveItem(index)}
                 >
                   <RemoveIcon className="h-4 w-4 text-red-600" />
                 </Button>
@@ -72,12 +80,7 @@ export function Carrito() {
         <div className="bg-muted/40 rounded-md p-6 space-y-4 sm:mt-4 lg:mt-0">
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span className="font-medium">
-              $
-              {(
-                149.97 * quantities.reduce((acc, quantity) => acc + quantity, 0)
-              ).toFixed(2)}
-            </span>
+            <span className="font-medium">${subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
             <span>Envío</span>
@@ -86,14 +89,7 @@ export function Carrito() {
           <Separator />
           <div className="flex justify-between items-center">
             <span className="text-lg font-medium">Total</span>
-            <span className="text-lg font-medium">
-              $
-              {(
-                149.97 *
-                  quantities.reduce((acc, quantity) => acc + quantity, 0) +
-                5
-              ).toFixed(2)}
-            </span>
+            <span className="text-lg font-medium">${total.toFixed(2)}</span>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Link href="/products">

@@ -79,6 +79,63 @@ export function Carrusel() {
                   </Link>
                 </div>
               </CarouselItem>
+              <CarouselItem>
+                <div className="relative">
+                  <img
+                    src="/offer3.png"
+                    width={1200}
+                    height={350} // Ajusta el height aquí
+                    alt="Producto 3"
+                    className="h-[350px] w-full object-cover" // Ajusta la clase aquí
+                  />
+                  <Link
+                    href="#"
+                    className="bg-plattea1 text-plattea2 absolute bottom-4 right-4 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium focus:outline-none"
+                    prefetch={false}
+                  >
+                    Ver más
+                    <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+              </CarouselItem>
+              <CarouselItem>
+                <div className="relative">
+                  <img
+                    src="/offer4.png"
+                    width={1200}
+                    height={350} // Ajusta el height aquí
+                    alt="Producto 3"
+                    className="h-[350px] w-full object-cover" // Ajusta la clase aquí
+                  />
+                  <Link
+                    href="#"
+                    className="bg-plattea1 text-plattea2 absolute bottom-4 right-4 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium focus:outline-none"
+                    prefetch={false}
+                  >
+                    Ver más
+                    <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+              </CarouselItem>
+              <CarouselItem>
+                <div className="relative">
+                  <img
+                    src="/offer5.png"
+                    width={1200}
+                    height={350} // Ajusta el height aquí
+                    alt="Producto 3"
+                    className="h-[350px] w-full object-cover" // Ajusta la clase aquí
+                  />
+                  <Link
+                    href="#"
+                    className="bg-plattea1 text-plattea2 absolute bottom-4 right-4 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium focus:outline-none"
+                    prefetch={false}
+                  >
+                    Ver más
+                    <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+              </CarouselItem>
             </CarouselContent>
             <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-background/50 p-2 text-primary-foreground focus:outline-none">
               <ChevronLeftIcon className="h-6 w-6" />
