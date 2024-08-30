@@ -176,12 +176,6 @@ export function Navbar() {
             <DropdownMenuItem><Link href="/perfil" className="text-plattea1">Perfil</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href="/historial" className="text-plattea1">Historial</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="/favoritos" className="text-plattea1">Favoritos</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
               <Link href="/configuracion" className="text-plattea1">Configuración</Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={logout} className="text-plattea1">Cerrar sesión</DropdownMenuItem>

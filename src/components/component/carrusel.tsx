@@ -44,7 +44,7 @@ export function Carrusel() {
               <CarouselItem>
                 <div className="relative">
                   <img
-                    src="/bannerinicio2.jpg"
+                    src="/offer1.png"
                     width={1200}
                     height={350} // Ajusta el height aquí
                     alt="Producto 2"
@@ -63,7 +63,7 @@ export function Carrusel() {
               <CarouselItem>
                 <div className="relative">
                   <img
-                    src="/bannerinicio3.avif"
+                    src="/offer2.png"
                     width={1200}
                     height={350} // Ajusta el height aquí
                     alt="Producto 3"

@@ -2,10 +2,20 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { JSX, SVGProps } from "react";
 import { AgregarProducto } from "./agregar-producto";
+import { ArrowLeftIcon } from "lucide-react";
 
 export function EditarProductos() {
   return (
     <div>
+      <div className="left-4 pt-8 pb-8">
+        <Link
+          href="/"
+          className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        >
+          <ArrowLeftIcon className="w-4 h-4 mr-2" />
+          Volver atrás
+        </Link>
+      </div>
       <h1 className="text-2xl font-bold mb-6">Administración de Productos</h1>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
         <div className="bg-card rounded-lg overflow-hidden shadow-sm">
