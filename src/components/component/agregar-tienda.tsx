@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import { ImageIcon } from "lucide-react";
 import {
   Card,
@@ -44,13 +43,16 @@ export function AgregarTienda() {
 
   const router = useRouter(); // Hook de Next.js para la redirección
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>, type: 'miniatura' | 'banner') => {
+  const handleImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: "miniatura" | "banner"
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (type === 'miniatura') {
+      if (type === "miniatura") {
         setMiniatura(file);
         setPreviewMiniatura(URL.createObjectURL(file));
-      } else if (type === 'banner') {
+      } else if (type === "banner") {
         setBanner(file);
         setPreviewBanner(URL.createObjectURL(file));
       }
@@ -70,7 +72,6 @@ export function AgregarTienda() {
 
     const decoded: DecodedToken = jwtDecode(token);
     const userId = decoded.IdPersona;
-
 
     formData.append("IdPersona", userId);
     formData.append("NombreTienda", nombre);
@@ -96,8 +97,10 @@ export function AgregarTienda() {
       );
 
       if (response.ok) {
+        const responseData = await response.json();
+        const tiendaId = responseData.IdTienda; // Asegúrate de que el backend retorne el ID de la tienda creada
         alert("Tienda creada correctamente");
-        router.push("/administracioncubiculo");
+        router.push(`/administracioncubiculo/${tiendaId}`);
       } else {
         const errorData = await response.json();
         console.error("Detalles del error:", errorData);
@@ -111,9 +114,7 @@ export function AgregarTienda() {
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="mb-6 text-3xl font-bold sm:text-4xl">
-        Agregar Nueva Tienda
-      </h1>
+      <h1 className="mb-6 text-3xl font-bold sm:text-4xl">Agregar Nueva Tienda</h1>
       <form className="grid gap-6 sm:gap-8 md:gap-10" onSubmit={handleSubmit}>
         <div className="grid gap-2">
           <Label htmlFor="name">Nombre de la Tienda</Label>
@@ -132,7 +133,7 @@ export function AgregarTienda() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="1">Moda</SelectItem>
-              <SelectItem value="2">Electrodometicos</SelectItem>
+              <SelectItem value="2">Electrodomésticos</SelectItem>
               <SelectItem value="3">Hogar</SelectItem>
               <SelectItem value="4">Deportes</SelectItem>
               <SelectItem value="5">Juguetes</SelectItem>
@@ -217,11 +218,15 @@ export function AgregarTienda() {
                       type="file"
                       accept="image/*"
                       className="sr-only"
-                      onChange={(e) => handleImageChange(e, 'banner')}
+                      onChange={(e) => handleImageChange(e, "banner")}
                     />
                   </label>
                   {banner && (
-                    <Button onClick={() => setPreviewBanner(URL.createObjectURL(banner))}>
+                    <Button
+                      onClick={() =>
+                        setPreviewBanner(URL.createObjectURL(banner))
+                      }
+                    >
                       Confirmar banner
                     </Button>
                   )}
@@ -234,10 +239,10 @@ export function AgregarTienda() {
                   <img
                     src={previewMiniatura}
                     alt="Miniatura"
-                    width={400}
-                    height={300}
+                    width={600}
+                    height={600}
                     className="h-full w-full object-cover"
-                    style={{ aspectRatio: "400/300", objectFit: "cover" }}
+                    style={{ aspectRatio: "600/600", objectFit: "cover" }}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
@@ -256,20 +261,24 @@ export function AgregarTienda() {
                 </div>
                 <div className="flex flex-col gap-2 min-[200px]:flex-row">
                   <label
-                    htmlFor="miniatura-upload"
+                    htmlFor="miniature-upload"
                     className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
                   >
                     Cargar imagen de miniatura
                     <input
-                      id="miniatura-upload"
+                      id="miniature-upload"
                       type="file"
                       accept="image/*"
                       className="sr-only"
-                      onChange={(e) => handleImageChange(e, 'miniatura')}
+                      onChange={(e) => handleImageChange(e, "miniatura")}
                     />
                   </label>
                   {miniatura && (
-                    <Button onClick={() => setPreviewMiniatura(URL.createObjectURL(miniatura))}>
+                    <Button
+                      onClick={() =>
+                        setPreviewMiniatura(URL.createObjectURL(miniatura))
+                      }
+                    >
                       Confirmar miniatura
                     </Button>
                   )}
@@ -278,9 +287,7 @@ export function AgregarTienda() {
             </div>
           </div>
         </div>
-        <Button type="submit" className="w-full sm:w-auto">
-          Crear tienda
-        </Button>
+        <Button type="submit">Crear Tienda</Button>
       </form>
     </div>
   );

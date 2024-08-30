@@ -9,9 +9,6 @@ function page() {
     <div>
         <NavbarDefault />
         <CategoriaBelleza />
-        <CategoriaRelleno />
-        <CategoriaRelleno />
-        <CategoriaRelleno />
         <Footer />
     </div>
   )

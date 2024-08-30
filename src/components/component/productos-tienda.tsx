@@ -50,14 +50,7 @@ export function ProductosTienda() {
     <div className="px-4 md:px-6 py-12">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold">Productos de la Tienda</h2>
-        <div className="flex space-x-4">
-          <Link href={`/editartienda/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-            <Settings className="w-6 h-6" />
-          </Link>
-          <Link href={`/administracioncubiculo/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-            <Edit className="w-6 h-6" />
-          </Link>
-        </div>
+        
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {productos.map((producto) => (
@@ -80,6 +73,7 @@ export function ProductosTienda() {
           </div>
         ))}
       </div>
+      
     </div>
   );
 }

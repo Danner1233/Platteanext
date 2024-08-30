@@ -8,7 +8,7 @@ import React from 'react'
 import { useEffect, useState } from 'react';
 import { NavbarDefault } from '@/components/component/navbar-default'
 import { Navbar } from '@/components/component/navbar'
-
+import { AgregarProducto } from '@/components/component/agregar-producto'
 
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,6 +22,9 @@ function Page() {
     <div>
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <EditarProductos />
+      <div className="m-4 p-2">
+        <AgregarProducto />
+      </div>
       <Footer />
     </div>
   )

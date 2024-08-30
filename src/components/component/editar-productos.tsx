@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { AgregarProducto } from "./agregar-producto";
+
 import { ArrowLeftIcon } from "lucide-react";
 
 interface Producto {
@@ -59,43 +59,45 @@ export function EditarProductos() {
       </div>
       <h1 className="text-2xl font-bold mb-6">Administración de Productos</h1>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-        {productos.map((producto) => (
-          <div key={producto.IdProducto} className="bg-card rounded-lg overflow-hidden shadow-sm">
-            <div className="relative group">
-              <img
-                src={producto.FotoProductoURL || "/placeholder.svg"}
-                alt={`Imagen de ${producto.NombreProducto}`}
-                width={600}
-                height={400}
-                className="w-full h-[200px] object-cover"
-                style={{ aspectRatio: "600/400", objectFit: "cover" }}
-              />
-              <div className="absolute top-4 right-4 flex gap-2">
-                <Link href={`/editarproducto/${producto.IdProducto}`}>
-                  <Button size="icon" variant="ghost">
-                    <FilePenIcon className="w-5 h-5" />
-                    <span className="sr-only">Editar</span>
+        {productos.length > 0 ? (
+          productos.map((producto) => (
+            <div key={producto.IdProducto} className="bg-card rounded-lg overflow-hidden shadow-sm">
+              <div className="relative group">
+                <img
+                  src={producto.FotoProductoURL || "/placeholder.svg"}
+                  alt={`Imagen de ${producto.NombreProducto}`}
+                  width={600}
+                  height={400}
+                  className="w-full h-[200px] object-cover"
+                  style={{ aspectRatio: "600/400", objectFit: "cover" }}
+                />
+                <div className="absolute top-4 right-4 flex gap-2">
+                  <Link href={`/editarproducto/${producto.IdProducto}`}>
+                    <Button size="icon" variant="ghost">
+                      <FilePenIcon className="w-5 h-5" />
+                      <span className="sr-only">Editar</span>
+                    </Button>
+                  </Link>
+                  <Button size="icon" variant="ghost" onClick={() => handleDelete(producto.IdProducto)}>
+                    <TrashIcon className="w-5 h-5" />
+                    <span className="sr-only">Eliminar</span>
                   </Button>
-                </Link>
-                <Button size="icon" variant="ghost" onClick={() => handleDelete(producto.IdProducto)}>
-                  <TrashIcon className="w-5 h-5" />
-                  <span className="sr-only">Eliminar</span>
-                </Button>
+                </div>
+              </div>
+              <div className="p-4 grid gap-2">
+                <h3 className="font-semibold text-lg">{producto.NombreProducto}</h3>
+                <p className="text-sm text-muted-foreground">{producto.DescripcionProducto}</p>
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-lg">${producto.PrecioProducto}</span>
+                </div>
               </div>
             </div>
-            <div className="p-4 grid gap-2">
-              <h3 className="font-semibold text-lg">{producto.NombreProducto}</h3>
-              <p className="text-sm text-muted-foreground">{producto.DescripcionProducto}</p>
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-lg">${producto.PrecioProducto}</span>
-              </div>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No hay productos disponibles. Puedes agregar uno nuevo a continuación.</p>
+        )}
       </div>
-      <div className="m-4 p-2">
-        <AgregarProducto />
-      </div>
+    
     </div>
   );
 

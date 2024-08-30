@@ -2,7 +2,8 @@
 import Image from "next/image";
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
+import Link from 'next/link';
+import { Edit, Settings } from 'lucide-react';
 interface Tienda {
   NombreTienda: string;
   BannerTiendaURL: string;
@@ -55,6 +56,14 @@ export function Banner() {
       <div className="flex flex-col items-center justify-center py-6 md:py-8 lg:py-10">
         <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">{tienda?.NombreTienda || 'Nombre de Tienda'}</h1>
       </div>
-    </section>
+      <div className="flex space-x-4">
+        <Link href={`/editartienda/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
+          <Settings className="w-6 h-6" />
+        </Link>
+        <Link href={`/administracioncubiculo/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
+          <Edit className="w-6 h-6" />
+        </Link>
+      </div>
+    </section >
   );
 }
