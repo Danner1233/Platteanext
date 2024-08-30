@@ -1,17 +1,29 @@
 import { CategoriaBelleza } from '@/components/component/categoria-belleza'
-import { CategoriaRelleno } from '@/components/component/categoria-relleno'
 import { Footer } from '@/components/component/footer'
+import React, { useState, useEffect } from 'react';
 import { NavbarDefault } from '@/components/component/navbar-default'
-import React from 'react'
+import { Navbar } from '@/components/component/navbar'
 
-function page() {
+function Page() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
   return (
     <div>
-        <NavbarDefault />
-        <CategoriaBelleza />
-        <Footer />
+      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+      <CategoriaBelleza />
+      <Footer />
     </div>
   )
 }
 
-export default page
+export default Page
+
+
+
+
+

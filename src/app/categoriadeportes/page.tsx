@@ -1,20 +1,29 @@
-import React from 'react'
-import { Footer } from '@/components/component/footer'
-import { NavbarDefault } from '@/components/component/navbar-default'
-import { CategoriaDeportes } from '@/components/component/categoria-deportes'
-import { CategoriaRelleno } from '@/components/component/categoria-relleno'
 
-function page() {
+import { Footer } from '@/components/component/footer'
+import { CategoriaDeportes } from '@/components/component/categoria-deportes'
+import { NavbarDefault } from '@/components/component/navbar-default'
+import { Navbar } from '@/components/component/navbar'
+import React, { useState, useEffect } from 'react';
+function Page() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
   return (
     <div>
-        <NavbarDefault />
-        <CategoriaDeportes />
-        <CategoriaRelleno />
-        <CategoriaRelleno />
-        <CategoriaRelleno />
-        <Footer />
+      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+      <CategoriaDeportes />
+
+      <Footer />
     </div>
   )
 }
 
-export default page
+export default Page
+
+
+
+
