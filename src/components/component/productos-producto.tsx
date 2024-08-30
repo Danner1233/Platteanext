@@ -12,7 +12,7 @@ import {
 export function ProductosProducto() {
   return (
     <section className="w-full py-12">
-      <div className="container grid gap-6 md:gap-8 px-4 md:px-6">
+      <div className="container mx-auto grid gap-6 md:gap-8 px-4 md:px-6">
         <h2 className="text-2xl font-bold">Productos Similares</h2>
         <Carousel
         autoplay={true}
