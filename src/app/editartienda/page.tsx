@@ -1,14 +1,12 @@
 "use client"
 
-import { BannerCubiculo } from '@/components/component/banner-cubiculo'
-import { EditarFotoCubiculo } from '@/components/component/editar-foto-cubiculo'
-import { EditarProductos } from '@/components/component/editar-productos'
 import { Footer } from '@/components/component/footer'
+import { SobreNosotros } from '@/components/component/sobre-nosotros'
 import React from 'react'
 import { useEffect, useState } from 'react';
 import { NavbarDefault } from '@/components/component/navbar-default'
 import { Navbar } from '@/components/component/navbar'
-
+import { EditarTienda } from '@/components/component/editar-tienda';
 
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,16 +18,12 @@ function Page() {
   }, []);
   return (
     <div>
+
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
-      <EditarProductos />
+      <EditarTienda />
       <Footer />
     </div>
   )
 }
 
 export default Page
-
-
-
-
-
