@@ -62,7 +62,7 @@ export function ProductosTienda() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {productos.map((producto) => (
           <div key={producto.IdProducto} className="relative overflow-hidden rounded-lg group">
-            <Link href={`/producto/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
+            <Link href={`/product/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
               <span className="sr-only">View</span>
             </Link>
             <img
