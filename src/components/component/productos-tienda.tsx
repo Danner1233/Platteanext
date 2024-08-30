@@ -52,7 +52,7 @@ export function ProductosTienda() {
       {productos.map((producto) => (
         
         <div key={producto.IdProducto} className="relative overflow-hidden rounded-lg group">
-          <Link href={`/producto/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
+          <Link href={`/product/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
             <span className="sr-only">View</span>
           </Link>
           <img

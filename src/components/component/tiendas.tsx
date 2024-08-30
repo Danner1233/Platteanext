@@ -60,7 +60,7 @@ export function Tiendas() {
               <div className="p-4 bg-background">
                 <h3 className="text-lg font-semibold md:text-xl">{tienda.NombreTienda}</h3>
                 <p className="text-sm text-muted-foreground">Ciudad: {tienda.CiudadTienda}</p>
-                <p className="text-sm text-muted-foreground">Ubicación: {tienda.DireccionTienda}</p>
+                <p className="text-sm text-muted-foreground">Direccion: {tienda.DireccionTienda}</p>
               </div>
             </div>
           </Link>
