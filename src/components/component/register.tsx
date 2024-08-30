@@ -152,7 +152,7 @@ export function Register() {
       </div>
       <div className="hidden bg-muted lg:block">
         <img
-          src="/registro.jpg"
+          src="/Registrarse.jpg"
           alt="Imagen de registro"
           width="1920"
           height="1080"

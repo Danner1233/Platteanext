@@ -41,7 +41,7 @@ export function Tiendas() {
   return (
     <div>
       <div className="container mx-auto">
-        <h2 className="text-2xl font-bold mb-6">Tiendas</h2>
+        <h2 className="text-2xl font-bold mb-5">Tiendas</h2>
       </div>
       <section className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
         {tiendas.map((tienda) => (

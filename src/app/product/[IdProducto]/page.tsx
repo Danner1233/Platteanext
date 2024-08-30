@@ -7,6 +7,8 @@ import { Footprints } from 'lucide-react'
 import React from 'react'
 import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/component/navbar';
+import { ProductosProducto } from '@/components/component/productos-producto'
+import { Comentarios } from '@/components/component/comentarios'
 
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,6 +23,8 @@ function Page() {
     <div>
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <Producto />
+      <ProductosProducto />
+      <Comentarios />
       <Footer />
     </div>
   )

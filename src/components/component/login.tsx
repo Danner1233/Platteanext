@@ -114,7 +114,7 @@ export function Login() {
       </div>
       <div className="hidden bg-muted lg:block">
         <img
-          src="/registro.jpg"
+          src="/InicioSesion.jpg"
           alt="Imagen de inicio de sesión"
           width="1920"
           height="1080"
