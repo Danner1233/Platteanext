@@ -51,10 +51,10 @@ export function ProductosTienda() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold">Productos de la Tienda</h2>
         <div className="flex space-x-4">
-          <Link href="/editartienda" className="text-gray-600 hover:text-gray-900 transition-colors">
+          <Link href={`/editartienda/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
             <Settings className="w-6 h-6" />
           </Link>
-          <Link href="/administracioncubiculo" className="text-gray-600 hover:text-gray-900 transition-colors">
+          <Link href={`/administracioncubiculo/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
             <Edit className="w-6 h-6" />
           </Link>
         </div>

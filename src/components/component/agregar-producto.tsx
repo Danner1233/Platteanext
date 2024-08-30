@@ -1,12 +1,15 @@
-
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { useState, ChangeEvent, FormEvent } from 'react'
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useState, ChangeEvent, FormEvent } from 'react';
+import { useParams } from 'next/navigation';
 
 export function AgregarProducto() {
+  const params = useParams(); 
+  const idTienda = params.IdTienda;
+
   const [nombre, setNombre] = useState<string>('');
   const [descripcion, setDescripcion] = useState<string>('');
   const [precio, setPrecio] = useState<string>('');
@@ -27,6 +30,7 @@ export function AgregarProducto() {
     formData.append('PrecioProducto', precio);
     formData.append('StockProducto', stock);
     formData.append('FotoProducto', imagen);
+    formData.append('IdTiendaFK', idTienda);
     
     try {
       const response = await fetch('http://localhost:4000/api/producto', {
@@ -37,6 +41,7 @@ export function AgregarProducto() {
       const data = await response.json();
       if (response.ok) {
         alert('Producto creado correctamente');
+        window.location.reload(); // Refresca la página
       } else {
         alert('Error al crear el producto: ' + data.message);
       }
@@ -91,5 +96,5 @@ export function AgregarProducto() {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
