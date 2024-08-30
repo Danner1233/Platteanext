@@ -47,7 +47,6 @@ export function ProductosTienda() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-<<<<<<< HEAD
     <div className="px-4 md:px-6 py-12">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold">Productos de la Tienda</h2>
@@ -57,21 +56,13 @@ export function ProductosTienda() {
           </Link>
           <Link href="/administracioncubiculo" className="text-gray-600 hover:text-gray-900 transition-colors">
             <Edit className="w-6 h-6" />
-=======
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 md:px-6 py-12">
-      {productos.map((producto) => (
-        
-        <div key={producto.IdProducto} className="relative overflow-hidden rounded-lg group">
-          <Link href={`/product/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
-            <span className="sr-only">View</span>
->>>>>>> 5aa195ad11ea4ab6793c5e570bdcd7a0ce36b49a
           </Link>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {productos.map((producto) => (
           <div key={producto.IdProducto} className="relative overflow-hidden rounded-lg group">
-            <Link href={`/producto/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
+            <Link href={`/product/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
               <span className="sr-only">View</span>
             </Link>
             <img
