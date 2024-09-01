@@ -17,7 +17,7 @@ export function Carrusel() {
           className="w-full"
           autoplay={true}
           infinite={true}
-          autoplayInterval={3000}
+          autoplayInterval={5000}
         >
             <CarouselContent>
               <CarouselItem>
@@ -44,7 +44,7 @@ export function Carrusel() {
               <CarouselItem>
                 <div className="relative">
                   <img
-                    src="/flash.jpg"
+                    src="/offer1.png"
                     width={1200}
                     height={350} // Ajusta el height aquí
                     alt="Producto 2"

@@ -1,4 +1,4 @@
-
+"use client";
 import { Footer } from '@/components/component/footer'
 import { NavbarDefault } from '@/components/component/navbar-default'
 import { Navbar } from '@/components/component/navbar'

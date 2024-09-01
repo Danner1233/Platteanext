@@ -26,15 +26,10 @@ export function Producto() {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("No token found");
-        }
+        
 
         const response = await fetch(`http://localhost:4000/api/producto/${idProducto}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+
         });
 
         if (response.ok) {

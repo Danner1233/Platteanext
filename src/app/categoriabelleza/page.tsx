@@ -1,3 +1,5 @@
+"use client";
+
 import { CategoriaBelleza } from '@/components/component/categoria-belleza'
 import { Footer } from '@/components/component/footer'
 import React, { useState, useEffect } from 'react';
