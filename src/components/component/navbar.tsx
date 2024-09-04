@@ -38,11 +38,11 @@ export function Navbar() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response);
+
         if (response.ok) {
           const data: Profile = await response.json();
           setProfile(data);
-          console.log(data);
+
         } else {
           throw new Error("Error fetching profile");
         }

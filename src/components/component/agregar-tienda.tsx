@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { ImageIcon } from "lucide-react";
 import {
   Card,
@@ -98,7 +98,7 @@ export function AgregarTienda() {
 
       if (response.ok) {
         const responseData = await response.json();
-        const tiendaId = responseData.IdTienda; // Asegúrate de que el backend retorne el ID de la tienda creada
+        const tiendaId = responseData.idTienda; // Asegúrate de que el backend retorne el ID en `idTienda`
         alert("Tienda creada correctamente");
         router.push(`/administracioncubiculo/${tiendaId}`);
       } else {
@@ -223,26 +223,30 @@ export function AgregarTienda() {
                   </label>
                   {banner && (
                     <Button
-                      onClick={() =>
-                        setPreviewBanner(URL.createObjectURL(banner))
-                      }
+                      variant="outline"
+                      className="h-10 flex items-center justify-center"
+                      onClick={() => setBanner(null)}
                     >
-                      Confirmar banner
+                      Eliminar imagen
                     </Button>
                   )}
                 </div>
               </div>
             </div>
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 mt-12">
+          </div>
+        </div>
+        <div className="w-full bg-[#f5f5f5] py-12 md:py-24 lg:py-30">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="relative aspect-[3/1] overflow-hidden rounded-xl">
                 {previewMiniatura ? (
                   <img
                     src={previewMiniatura}
                     alt="Miniatura"
                     width={600}
-                    height={600}
+                    height={200}
                     className="h-full w-full object-cover"
-                    style={{ aspectRatio: "600/600", objectFit: "cover" }}
+                    style={{ aspectRatio: "600/200", objectFit: "cover" }}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
@@ -256,17 +260,17 @@ export function AgregarTienda() {
                     Sube tu Miniatura
                   </h2>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Sube una imagen para personalizar la miniatura de tu tienda.
+                    Sube una imagen para la miniatura de tu tienda.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[200px]:flex-row">
                   <label
-                    htmlFor="miniature-upload"
+                    htmlFor="miniatura-upload"
                     className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
                   >
                     Cargar imagen de miniatura
                     <input
-                      id="miniature-upload"
+                      id="miniatura-upload"
                       type="file"
                       accept="image/*"
                       className="sr-only"
@@ -275,11 +279,11 @@ export function AgregarTienda() {
                   </label>
                   {miniatura && (
                     <Button
-                      onClick={() =>
-                        setPreviewMiniatura(URL.createObjectURL(miniatura))
-                      }
+                      variant="outline"
+                      className="h-10 flex items-center justify-center"
+                      onClick={() => setMiniatura(null)}
                     >
-                      Confirmar miniatura
+                      Eliminar imagen
                     </Button>
                   )}
                 </div>
