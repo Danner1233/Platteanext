@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Edit, Settings } from 'lucide-react'; // Importa los íconos de lucide-react
 
 interface Producto {
@@ -15,8 +16,8 @@ interface Producto {
 }
 
 export function ProductosTienda() {
-  const params = useParams(); 
-  const idTienda = params.IdTienda; 
+  const params = useParams();
+  const idTienda = params.IdTienda;
 
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +51,7 @@ export function ProductosTienda() {
     <div className="px-4 md:px-6 py-12">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold">Productos de la Tienda</h2>
-        
+
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {productos.map((producto) => (
@@ -58,12 +59,13 @@ export function ProductosTienda() {
             <Link href={`/product/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
               <span className="sr-only">View</span>
             </Link>
-            <img
+            <Image
               src={producto.FotoProductoURL || "/placeholder.svg"}
               alt={producto.NombreProducto}
               width={400}
               height={400}
               className="object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
+              quality={100} // Ajusta la calidad entre 0 y 100
             />
             <div className="p-4 bg-background">
               <h3 className="text-lg font-semibold">{producto.NombreProducto}</h3>
@@ -73,7 +75,7 @@ export function ProductosTienda() {
           </div>
         ))}
       </div>
-      
+
     </div>
   );
 }
