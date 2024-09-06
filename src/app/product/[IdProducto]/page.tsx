@@ -1,17 +1,19 @@
+// pages/[IdProducto]/page.tsx
+
 "use client"
 
 import { Footer } from '@/components/component/footer'
 import { NavbarDefault } from '@/components/component/navbar-default'
 import { Producto } from '@/components/component/producto'
-import { Footprints } from 'lucide-react'
-import React from 'react'
-import { useEffect, useState } from 'react';
-import { Navbar } from '@/components/component/navbar';
 import { ProductosProducto } from '@/components/component/productos-producto'
 import { Comentarios } from '@/components/component/comentarios'
+import { useParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { Navbar } from '@/components/component/navbar';
 
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { IdProducto } = useParams(); // Obtiene el ID del producto de la URL
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -19,19 +21,19 @@ function Page() {
       setIsLoggedIn(true);
     }
   }, []);
+
+  // Convierte IdProducto a un string si es un array
+  const idProducto = Array.isArray(IdProducto) ? IdProducto[0] : IdProducto;
+
   return (
     <div>
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <Producto />
       <ProductosProducto />
-      <Comentarios />
+      {idProducto && <Comentarios idProducto={idProducto} />}
       <Footer />
     </div>
-  )
+  );
 }
 
-export default Page
-
-
-
-
+export default Page;
