@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -7,11 +6,12 @@ export function Footer() {
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [fullName, setFullName] = useState("")
   const [message, setMessage] = useState("")
+  
   return (
-    <div className="flex flex-col min-h-[100dvh]">
+    <div className="flex flex-col min-h-screen">
       {isPopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-4 w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 bg-plattea1">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium">Contáctanos</h3>
               <button onClick={() => setIsPopupOpen(false)} className="text-gray-900 hover:text-gray-700">
@@ -55,15 +55,13 @@ export function Footer() {
           </div>
         </div>
       )}
-      <footer className="bg-black text-white p-4 md:p-6 w-full mt-auto">
-        <div className="container max-w-7xl flex flex-col items-center justify-between">
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="flex flex-col items-center justify-center gap-2 mt-4 text-white">
-              <p className="text-sm">© 2024 Plattea. Todos los derechos reservados.</p>
-              <button onClick={() => setIsPopupOpen(true)} className="text-sm font-medium text-white">
-                Contáctanos
-              </button>
-            </div>
+      <footer className="bg-plattea1 text-white p-4 md:p-6 w-full mt-auto">
+        <div className="container mx-auto flex flex-col items-center">
+          <div className="flex flex-col items-center justify-center gap-4 text-center">
+            <p className="text-sm">© 2024 Plattea. Todos los derechos reservados.</p>
+            <button onClick={() => setIsPopupOpen(true)} className="text-sm font-medium text-white hover:underline">
+              Contáctanos
+            </button>
           </div>
         </div>
       </footer>
