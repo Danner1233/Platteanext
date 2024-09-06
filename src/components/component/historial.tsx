@@ -22,7 +22,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 
 export function Historial() {
   return (
-    <Card>
+    <Card className="m-12">
       <CardHeader>
         <CardTitle>Historial de compras</CardTitle>
         <CardDescription>Detalles de tus compras anteriores.</CardDescription>
