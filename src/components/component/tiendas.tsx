@@ -39,10 +39,10 @@ export function Tiendas() {
 
   return (
     <div>
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4 md:px-6 lg:px-7">
         <h2 className="text-2xl font-bold mb-5">Tiendas</h2>
       </div>
-      <section className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
+      <section className="container mx-auto px-4 md:px-6 lg:px-7 grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
         {tiendas.map((tienda) => (
           <Link key={tienda.IdTienda} href={`/tiendas/${tienda.IdTienda}`}>
             <div className="relative overflow-hidden rounded-lg group">
@@ -60,12 +60,13 @@ export function Tiendas() {
               <div className="p-4 bg-background">
                 <h3 className="text-lg font-semibold md:text-xl">{tienda.NombreTienda}</h3>
                 <p className="text-sm text-muted-foreground">Ciudad: {tienda.CiudadTienda}</p>
-                <p className="text-sm text-muted-foreground">Direccion: {tienda.DireccionTienda}</p>
+                <p className="text-sm text-muted-foreground">Dirección: {tienda.DireccionTienda}</p>
               </div>
             </div>
           </Link>
         ))}
       </section>
     </div>
+
   );
 }

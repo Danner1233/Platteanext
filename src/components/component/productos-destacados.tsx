@@ -5,9 +5,8 @@ import { useState, useEffect } from "react";
 interface Producto {
   IdProducto: string;
   NombreProducto: string;
-  CalificacionProducto: string;  // Asegúrate de que este campo existe si lo vas a usar
-  PrecioProducto: string;
-  StockProducto: number;         // Asegúrate de que este campo existe si lo vas a usar
+  PromedioCalificacion: string;  // Asegúrate de que este campo existe si lo vas a usar
+  PrecioProducto: string;       // Asegúrate de que este campo existe si lo vas a usar
   FotoProductoURL: string;
 }
 
@@ -42,9 +41,10 @@ export function ProductosDestacados() {
 
   return (
     <section className="mt-5 p-4 md:p-1">
-      <h2 className="text-3xl font-bold mb-6 text-center">Productos Destacados</h2>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {productos.map((producto) => (
+  <div className="container mx-auto px-4 md:px-6 lg:px-7">
+    <h2 className="text-3xl font-bold mb-6 text-center">Productos Destacados</h2>
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+    {productos.map((producto) => (
           <div key={producto.IdProducto} className="relative overflow-hidden rounded-lg group">
             <Link href={`/product/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
               <span className="sr-only">Ver producto</span>
@@ -59,8 +59,7 @@ export function ProductosDestacados() {
             />
             <div className="p-4 bg-background">
               <h3 className="text-lg font-semibold md:text-xl">{producto.NombreProducto}</h3>
-              <p className="text-sm text-muted-foreground">Calificación: {producto.CalificacionProducto}</p>
-              <p className="text-sm text-muted-foreground">Stock: {producto.StockProducto}</p>
+              <p className="text-sm text-muted-foreground">Calificación: {producto.PromedioCalificacion}</p>
               <div className="flex items-center justify-between">
                 <h4 className="text-base font-semibold md:text-lg">${producto.PrecioProducto}</h4>
                 <Button size="sm" className="bg-plattea1 text-plattea2">Comprar</Button>
@@ -68,7 +67,9 @@ export function ProductosDestacados() {
             </div>
           </div>
         ))}
-      </div>
-    </section>
+    </div>
+  </div>
+</section>
+
   );
 }

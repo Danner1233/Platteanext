@@ -40,11 +40,18 @@ export function AgregarTienda() {
                 <SelectValue placeholder="Selecciona una categoría" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="electronics">Electrónica</SelectItem>
-                <SelectItem value="clothing">Ropa</SelectItem>
-                <SelectItem value="home">Hogar</SelectItem>
-                <SelectItem value="beauty">Belleza</SelectItem>
-                <SelectItem value="sports">Deportes</SelectItem>
+                <SelectItem value="1">Moda</SelectItem>
+                <SelectItem value="2">Electrodometicos</SelectItem>
+                <SelectItem value="3">Hogar</SelectItem>
+                <SelectItem value="4">Deportes</SelectItem>
+                <SelectItem value="5">Juguetes</SelectItem>
+                <SelectItem value="6">Belleza</SelectItem>
+                <SelectItem value="7">Electrónica</SelectItem>
+                <SelectItem value="8">Libros</SelectItem>
+                <SelectItem value="9">Alimentos</SelectItem>
+                <SelectItem value="10">Salud</SelectItem>
+                <SelectItem value="11">Oficina</SelectItem>
+                <SelectItem value="12">Jardín</SelectItem>
               </SelectContent>
             </Select>
           </div>

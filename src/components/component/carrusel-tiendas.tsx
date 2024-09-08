@@ -5,7 +5,7 @@ import Link from "next/link"
 export function CarruselTiendas() {
   return (
     <section className="py-12 px-4 md:px-6">
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4 md:px-6 lg:px-7">
         <h2 className="text-2xl font-bold mb-6">Explora nuestras categorías</h2>
         <Carousel
           className="w-full"
@@ -126,5 +126,6 @@ export function CarruselTiendas() {
         </Carousel>
       </div>
     </section>
+
   )
 }

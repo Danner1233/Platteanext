@@ -21,8 +21,8 @@ import Link from "next/link"
 
 export function TiendasDestacadas() {
   return (
-    <section className="bg-background py-12 px-4 md:px-6">
-      <div className="container mx-auto max-w-6xl">
+    <section className="bg-background py-12">
+      <div className="container mx-auto px-4 md:px-6 lg:px-7 max-w-6xl">
         <div className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">Tiendas Destacadas</h2>
           <p className="text-muted-foreground">Descubre las mejores tiendas y boutiques locales.</p>
@@ -45,59 +45,10 @@ export function TiendasDestacadas() {
               <p className="text-sm text-muted-foreground">Productos artesanales y artículos de artesanos locales.</p>
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300">
-            <Link href="#" className="absolute inset-0 z-10" prefetch={false}>
-              <span className="sr-only">Ver Tienda</span>
-            </Link>
-            <img
-              src="/placeholder.svg"
-              alt="Tienda 2"
-              width={500}
-              height={400}
-              className="object-cover w-full h-56"
-              style={{ aspectRatio: "500/400", objectFit: "cover" }}
-            />
-            <div className="p-4 bg-background">
-              <h3 className="text-xl font-bold">Vintage Emporium</h3>
-              <p className="text-sm text-muted-foreground">Colección cuidada de artículos antiguos y vintage.</p>
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300">
-            <Link href="#" className="absolute inset-0 z-10" prefetch={false}>
-              <span className="sr-only">Ver Tienda</span>
-            </Link>
-            <img
-              src="/placeholder.svg"
-              alt="Tienda 3"
-              width={500}
-              height={400}
-              className="object-cover w-full h-56"
-              style={{ aspectRatio: "500/400", objectFit: "cover" }}
-            />
-            <div className="p-4 bg-background">
-              <h3 className="text-xl font-bold">Organic Grocer</h3>
-              <p className="text-sm text-muted-foreground">Productos orgánicos frescos y de origen local.</p>
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300">
-            <Link href="#" className="absolute inset-0 z-10" prefetch={false}>
-              <span className="sr-only">Ver Tienda</span>
-            </Link>
-            <img
-              src="/placeholder.svg"
-              alt="Tienda 4"
-              width={500}
-              height={400}
-              className="object-cover w-full h-56"
-              style={{ aspectRatio: "500/400", objectFit: "cover" }}
-            />
-            <div className="p-4 bg-background">
-              <h3 className="text-xl font-bold">Indie Bookshop</h3>
-              <p className="text-sm text-muted-foreground">Librería de barrio acogedora con una selección cuidada.</p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
+
+
   )
 }

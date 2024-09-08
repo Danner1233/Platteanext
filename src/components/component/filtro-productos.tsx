@@ -38,7 +38,7 @@ export function FiltroProductos() {
 
   if (!isClient || !isLoaded) return null;
 
-  const handleFilterChange = (type: "category" | "price" | "features", value: any) => {
+  const handleFilterChange = (type: "category" | "price" , value: any) => {
     setSelectedFilters((prevFilters) => {
       switch (type) {
         case "category":
@@ -53,13 +53,7 @@ export function FiltroProductos() {
             ...prevFilters,
             price: value, // Asegúrate de que `value` sea del tipo `{ min: number; max: number; }`
           };
-        case "features":
-          return {
-            ...prevFilters,
-            features: prevFilters.features.includes(value)
-              ? prevFilters.features.filter((item) => item !== value)
-              : [...prevFilters.features, value],
-          };
+
         default:
           console.warn(`Unhandled filter type: ${type}`);
           return prevFilters;
@@ -157,36 +151,7 @@ export function FiltroProductos() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Accordion type="single" collapsible>
-            <AccordionItem value="features">
-              <AccordionTrigger className="text-base font-semibold">Características</AccordionTrigger>
-              <AccordionContent>
-                <div className="grid gap-2">
-                  <Label className="flex items-center gap-2 font-normal">
-                    <Checkbox
-                      checked={selectedFilters.features.includes("Algodón")}
-                      onCheckedChange={() => handleFilterChange("features", "Algodón")}
-                    />
-                    Algodón
-                  </Label>
-                  <Label className="flex items-center gap-2 font-normal">
-                    <Checkbox
-                      checked={selectedFilters.features.includes("Impermeable")}
-                      onCheckedChange={() => handleFilterChange("features", "Impermeable")}
-                    />
-                    Impermeable
-                  </Label>
-                  <Label className="flex items-center gap-2 font-normal">
-                    <Checkbox
-                      checked={selectedFilters.features.includes("Cuero")}
-                      onCheckedChange={() => handleFilterChange("features", "Cuero")}
-                    />
-                    Cuero
-                  </Label>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+        
         </div>
       </div>
     </div>
