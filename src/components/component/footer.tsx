@@ -1,5 +1,5 @@
 import { useState, useEffect, SVGProps } from "react";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -54,6 +54,7 @@ export function Footer() {
     fetchProfile();
   }, []);
 
+
   if (error) {
     return (
       <footer className="bg-plattea1 py-8 md:py-5 text-white relative">
@@ -73,28 +74,6 @@ export function Footer() {
               <a href="#" className="text-sm hover:underline">
                 Términos y condiciones del sitio
               </a>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <span className="text-sm cursor-pointer hover:underline">
-                    Feedback y Sugerencias
-                  </span>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <div className="flex flex-col items-center justify-center gap-4 py-8">
-                    <h3 className="text-lg font-bold">Feedback y Sugerencias</h3>
-                    <form className="grid w-full gap-4">
-                      <Input
-                        type="email"
-                        value={email}
-                        placeholder="Email"
-                        readOnly
-                      />
-                      <Textarea placeholder="Feedback y Sugerencias" />
-                      <Button type="submit">Enviar</Button>
-                    </form>
-                  </div>
-                </DialogContent>
-              </Dialog>
             </div>
           </div>
           <div className="flex flex-col items-start gap-4">
@@ -151,27 +130,39 @@ export function Footer() {
               Términos y condiciones del sitio
             </a>
             <Dialog>
-              <DialogTrigger asChild>
-                <span className="text-sm cursor-pointer hover:underline">
-                  Feedback y Sugerencias
-                </span>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <div className="flex flex-col items-center justify-center gap-4 py-8">
-                  <h3 className="text-lg font-bold">Feedback y Sugerencias</h3>
-                  <form className="grid w-full gap-4">
-                    <Input
-                      type="email"
-                      value={email}
-                      placeholder="Email"
-                      readOnly
-                    />
-                    <Textarea placeholder="Feedback y Sugerencias" />
-                    <Button type="submit">Enviar</Button>
-                  </form>
-                </div>
-              </DialogContent>
-            </Dialog>
+                <DialogTrigger asChild>
+                  <span className="text-sm cursor-pointer hover:underline">
+                    Feedback y Sugerencias
+                  </span>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">           
+                  <div className="flex flex-col items-center justify-center gap-4 py-8">
+                  <DialogTitle>Feedback y Sugerencias</DialogTitle>
+                  <DialogDescription>
+                    Proporcione sus comentarios y sugerencias para ayudarnos a mejorar.
+                  </DialogDescription>
+                    <form action="https://formsubmit.co/aorostegui2@gmail.com" method="POST" className="grid w-full gap-4">
+                      <label htmlFor="email" className="text-sm font-medium">Email</label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        placeholder="Email"
+                        readOnly
+                        name="Email"
+                      />
+                      <label htmlFor="name" className="text-sm font-medium">Asunto</label>
+                      <Input id="name" type="text" placeholder="Asunto" name="Asunto" required />
+                      <label htmlFor="feedback" className="text-sm font-medium">Comentarios</label>
+                      <Textarea id="feedback" placeholder="Feedback y Sugerencias" name="comentario" required/>
+                      <input type="hidden" name="_captcha" value="false"/>
+                      <input type="hidden" name="_template" value="table"/>
+                      <input type="hidden" name="_next" value="http://localhost:3000/"></input>
+                      <Button type="submit">Enviar</Button>
+                    </form>
+                  </div>
+                </DialogContent>
+              </Dialog>
           </div>
         </div>
         <div className="flex flex-col items-start gap-4">

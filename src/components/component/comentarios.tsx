@@ -14,7 +14,6 @@ interface Comentario {
   FechaAprobacion: string;
   ComentarioAprobacion: string;
 }
-
 export function Comentarios({ idProducto }: ComentariosProps) {
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [comentario, setComentario] = useState('');
