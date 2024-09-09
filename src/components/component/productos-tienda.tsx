@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Edit, Settings } from 'lucide-react'; // Importa los íconos de lucide-react
+import { ArrowLeftIcon, Edit, Settings } from 'lucide-react'; // Importa los íconos de lucide-react
 
 interface Producto {
   IdProducto: string;

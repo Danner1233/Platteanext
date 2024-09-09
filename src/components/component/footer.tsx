@@ -141,7 +141,7 @@ export function Footer() {
                   <DialogDescription>
                     Proporcione sus comentarios y sugerencias para ayudarnos a mejorar.
                   </DialogDescription>
-                    <form action="https://formsubmit.co/aorostegui2@gmail.com" method="POST" className="grid w-full gap-4">
+                    <form action="https://formsubmit.co/platteaonline@gmail.com" method="POST" className="grid w-full gap-4">
                       <label htmlFor="email" className="text-sm font-medium">Email</label>
                       <Input
                         id="email"
