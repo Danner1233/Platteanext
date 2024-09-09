@@ -1,30 +1,62 @@
 "use client";
 
-import { JSX, SVGProps, useState } from "react";
+import { JSX, SVGProps, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import {jwtDecode} from 'jwt-decode';
+
+
+interface DecodedToken {
+  IdPersona: string;
+}
 
 export function Carrito() {
-  const [quantities, setQuantities] = useState([1, 1, 1]);
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCarrito() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found");
+        }
+
+        const decoded: DecodedToken = jwtDecode(token);
+        const userId = decoded.IdPersona;
+
+        const response = await fetch(`http://localhost:4000/api/carrito/${userId}`);
+        const data = await response.json();
+        setItems(Object.values(data));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching carrito:", error);
+        setLoading(false);
+      }
+    }
+
+    fetchCarrito();
+  }, []);
 
   const handleQuantityChange = (index: number, value: number) => {
     if (value > 0) {
-      const newQuantities = [...quantities];
-      newQuantities[index] = value;
-      setQuantities(newQuantities);
+      const newItems = [...items];
+      newItems[index].cantidad = value;
+      setItems(newItems);
     }
   };
 
-  // Función de eliminación comentada
-  // const handleRemoveItem = (index: number) => {
-  //   const newQuantities = quantities.filter((_, i) => i !== index);
-  //   setQuantities(newQuantities);
-  // };
-
-  const subtotal = 149.97 * quantities.reduce((acc, quantity) => acc + quantity, 0);
+  const subtotal = items.reduce(
+    (acc, item) => acc + parseFloat(item.PrecioProducto) * item.cantidad,
+    0
+  );
   const shipping = 5;
   const total = subtotal + shipping;
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 sm:px-2 lg:px-8">
@@ -33,40 +65,40 @@ export function Carrito() {
       </header>
       <div className="grid md:grid-cols-[1fr_300px] gap-8 sm:grid-cols-1 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
-          {quantities.map((quantity, index) => (
+          {items.map((item, index) => (
             <div
-              key={index}
+              key={item.IdProducto}
               className="grid grid-cols-[80px_1fr_80px] items-center gap-4 border-b pb-4 sm:grid-cols-[60px_1fr_60px] lg:grid-cols-[100px_1fr_100px]"
             >
               <img
-                src="/placeholder.svg"
-                alt="Producto"
+                src={item.FotoProductoURL}
+                alt={item.NombreProducto}
                 width={80}
                 height={80}
                 className="rounded-md object-cover sm:w-[60px] sm:h-[60px] lg:w-[100px] lg:h-[100px]"
                 style={{ aspectRatio: "80/80", objectFit: "cover" }}
               />
               <div>
-                <h3 className="font-medium">Producto {index + 1}</h3>
-                <p className="text-sm text-muted-foreground">Descripción</p>
+                <h3 className="font-medium">{item.NombreProducto}</h3>
+                <p className="text-sm text-muted-foreground">{item.NombreTienda}</p>
+                <p className="text-sm text-muted-foreground">$ {item.PrecioProducto}</p>
               </div>
               <div className="flex items-center gap-4">
                 <Button
                   size="icon"
                   variant="outline"
-                  onClick={() => handleQuantityChange(index, quantity - 1)}
+                  onClick={() => handleQuantityChange(index, item.cantidad - 1)}
                 >
                   <MinusIcon className="h-4 w-4" />
                 </Button>
-                <span>{quantity}</span>
+                <span>{item.cantidad}</span>
                 <Button
                   size="icon"
                   variant="outline"
-                  onClick={() => handleQuantityChange(index, quantity + 1)}
+                  onClick={() => handleQuantityChange(index, item.cantidad + 1)}
                 >
                   <PlusIcon className="h-4 w-4" />
                 </Button>
-                {/* Botón de eliminar comentado */}
                 <Button
                   size="icon"
                   variant="outline"
