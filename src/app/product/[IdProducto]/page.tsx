@@ -21,7 +21,6 @@ function Page() {
       setIsLoggedIn(true);
     }
   }, []);
-
   // Convierte IdProducto a un string si es un array
   const idProducto = Array.isArray(IdProducto) ? IdProducto[0] : IdProducto;
 

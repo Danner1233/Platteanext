@@ -10,6 +10,7 @@ import { Footer } from '@/components/component/footer';
 import { ProductosDestacados } from '@/components/component/productos-destacados';
 import { TiendasDestacadas } from '@/components/component/tiendas-destacadas';
 
+
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { NavbarDefault } from "@/components/component/navbar-default";
 import { Navbar } from "@/components/component/navbar";
 import Head from "next/head"; // Asegúrate de importar Head correctamente
+import { Busqueda } from "@/components/component/busqueda";
 
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +27,7 @@ function Page() {
 
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <CarruselTiendas />
+      <Busqueda />
       <Tiendas />
       <Footer />
     </div>

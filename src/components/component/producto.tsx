@@ -5,11 +5,13 @@ import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {jwtDecode} from 'jwt-decode';
-
+import { ArrowLeftIcon } from "lucide-react";
+import Link from "next/link";
 
 interface DecodedToken {
   IdPersona: string;
 }
+
 
 interface Producto {
   IdProducto: string;
@@ -92,6 +94,15 @@ export function Producto() {
 
   return (
     <div className="flex flex-col h-full">
+      <div className="left-4 pt-3">
+        <Link
+          href={`/shop`}
+          className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        >
+          <ArrowLeftIcon className="w-4 h-4 mr-2" />
+          Volver atrás
+        </Link>
+      </div>
       <header className="bg-background shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Detalles del Producto</h1>
