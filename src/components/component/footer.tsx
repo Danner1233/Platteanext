@@ -1,83 +1,212 @@
-import Link from "next/link"
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { SVGProps } from "react"
-import { TwitterIcon, XIcon } from "lucide-react"
+import { useState, useEffect, SVGProps } from "react";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+import { jwtDecode } from "jwt-decode"; // Usa la importación correcta para jwt-decode
+import { XIcon } from "lucide-react";
+
+interface DecodedToken {
+  IdPersona: string;
+}
+
+interface Profile {
+  CorreoPersona: string;
+}
 
 export function Footer() {
+  const [email, setEmail] = useState<string>("");
+  const [error, setError] = useState<string | null>(null); // Permite valores null
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found");
+        }
+
+        const decoded: DecodedToken = jwtDecode(token);
+        const userId = decoded.IdPersona;
+
+        const response = await fetch(
+          `http://localhost:4000/api/persona/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data: Profile = await response.json();
+          setEmail(data.CorreoPersona);
+        } else {
+          throw new Error("Error fetching profile");
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Error al cargar el perfil");
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (error) {
+    return (
+      <footer className="bg-plattea1 py-8 md:py-5 text-white relative">
+        <div className="container mx-auto grid grid-cols-1 gap-8 px-4 md:grid-cols-3 md:gap-12">
+          <div className="flex flex-col items-start gap-4">
+            <a href="#" className="flex items-center">
+              <PlatteaIcon className="h-9 w-8" />
+              <span className="ml-2 text-lg font-bold">Plattea</span>
+            </a>
+            <div className="grid gap-2">
+              <a href="#" className="text-sm hover:underline">
+                Sobre Nosotros
+              </a>
+              <a href="#" className="text-sm hover:underline">
+                Manual de Usuario
+              </a>
+              <a href="#" className="text-sm hover:underline">
+                Términos y condiciones del sitio
+              </a>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <span className="text-sm cursor-pointer hover:underline">
+                    Feedback y Sugerencias
+                  </span>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <div className="flex flex-col items-center justify-center gap-4 py-8">
+                    <h3 className="text-lg font-bold">Feedback y Sugerencias</h3>
+                    <form className="grid w-full gap-4">
+                      <Input
+                        type="email"
+                        value={email}
+                        placeholder="Email"
+                        readOnly
+                      />
+                      <Textarea placeholder="Feedback y Sugerencias" />
+                      <Button type="submit">Enviar</Button>
+                    </form>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+          <div className="flex flex-col items-start gap-4">
+            <h3 className="text-lg font-bold">Contáctanos</h3>
+            <div className="grid gap-2 text-sm">
+              <div className="flex items-center gap-2">
+                <PhoneIcon className="h-5 w-5" />
+                <span>+57 3103549968</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MailIcon className="h-5 w-5" />
+                <span>platteaonline@gmail.com</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-start gap-4">
+            <h3 className="text-lg font-bold">Síguenos</h3>
+            <div className="flex gap-4">
+              <a href="#" className="text-muted-foreground hover:text-primary">
+                <XIcon className="h-6 w-6" />
+              </a>
+              <a href="#" className="text-muted-foreground hover:text-primary">
+                <FacebookIcon className="h-6 w-6" />
+              </a>
+              <a href="https://www.instagram.com/platteaonline/" className="text-muted-foreground hover:text-primary">
+                <InstagramIcon className="h-6 w-6" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="absolute bottom-2 text-sm" style={{ right: '18px' }}>
+          Copyright © {new Date().getFullYear()} Plattea Todos los derechos reservados
+        </div>
+      </footer>
+    );
+  }
+
   return (
-    <footer className="bg-plattea1 py-8 md:py-5 text-white">
+    <footer className="bg-plattea1 py-8 md:py-5 text-white relative">
       <div className="container mx-auto grid grid-cols-1 gap-8 px-4 md:grid-cols-3 md:gap-12">
         <div className="flex flex-col items-start gap-4">
-          <Link href="#" className="flex items-center" prefetch={false}>
+          <a href="#" className="flex items-center">
             <PlatteaIcon className="h-9 w-8" />
             <span className="ml-2 text-lg font-bold">Plattea</span>
-          </Link>
+          </a>
           <div className="grid gap-2">
-            <Link href="#" className="text-sm hover:underline" prefetch={false}>
+            <a href="#" className="text-sm hover:underline">
               Sobre Nosotros
-            </Link>
-            <Link href="#" className="text-sm hover:underline" prefetch={false}>
+            </a>
+            <a href="#" className="text-sm hover:underline">
               Manual de Usuario
-            </Link>
-            <Link href="#" className="text-sm hover:underline" prefetch={false}>
-              Terminos y condiciones del sitio
-            </Link>
-            <Link href="#" className="text-sm hover:underline" prefetch={false}>
-              Feedback y Sugerencias
-            </Link>
+            </a>
+            <a href="#" className="text-sm hover:underline">
+              Términos y condiciones del sitio
+            </a>
+            <Dialog>
+              <DialogTrigger asChild>
+                <span className="text-sm cursor-pointer hover:underline">
+                  Feedback y Sugerencias
+                </span>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <div className="flex flex-col items-center justify-center gap-4 py-8">
+                  <h3 className="text-lg font-bold">Feedback y Sugerencias</h3>
+                  <form className="grid w-full gap-4">
+                    <Input
+                      type="email"
+                      value={email}
+                      placeholder="Email"
+                      readOnly
+                    />
+                    <Textarea placeholder="Feedback y Sugerencias" />
+                    <Button type="submit">Enviar</Button>
+                  </form>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
         <div className="flex flex-col items-start gap-4">
-          <h3 className="text-lg font-bold">Contact</h3>
+          <h3 className="text-lg font-bold">Contáctanos</h3>
           <div className="grid gap-2 text-sm">
             <div className="flex items-center gap-2">
               <PhoneIcon className="h-5 w-5" />
-              <span>3103549968</span>
+              <span>+57 3103549968</span>
             </div>
             <div className="flex items-center gap-2">
               <MailIcon className="h-5 w-5" />
-              <span>Plattea@gmail.com</span>
+              <span>platteaonline@gmail.com</span>
             </div>
           </div>
         </div>
         <div className="flex flex-col items-start gap-4">
-          <h3 className="text-lg font-bold">Follow Us</h3>
+          <h3 className="text-lg font-bold">Síguenos</h3>
           <div className="flex gap-4">
-            <Link href="#" className="text-muted-foreground hover:text-primary" prefetch={false}>
+            <a href="#" className="text-muted-foreground hover:text-primary">
               <XIcon className="h-6 w-6" />
-            </Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary" prefetch={false}>
+            </a>
+            <a href="#" className="text-muted-foreground hover:text-primary">
               <FacebookIcon className="h-6 w-6" />
-            </Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary" prefetch={false}>
+            </a>
+            <a href="https://www.instagram.com/platteaonline/" className="text-muted-foreground hover:text-primary">
               <InstagramIcon className="h-6 w-6" />
-            </Link>
+            </a>
           </div>
         </div>
       </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="link" className="mt-8 block w-full text-center md:hidden">
-            Contact Us
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <div className="flex flex-col items-center justify-center gap-4 py-8">
-            <h3 className="text-lg font-bold">Contact Us</h3>
-            <form className="grid w-full gap-4">
-              <Input type="text" placeholder="Name" />
-              <Input type="email" placeholder="Email" />
-              <Textarea placeholder="Message" />
-              <Button type="submit">Submit</Button>
-            </form>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <div className="absolute bottom-2 text-sm" style={{ right: '18px' }}>
+        Copyright © {new Date().getFullYear()} Plattea Todos los derechos reservados
+      </div>
     </footer>
-  )
+  );
 }
 
 function FacebookIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
@@ -94,9 +223,9 @@ function FacebookIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) 
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h2z" />
     </svg>
-  )
+  );
 }
 
 function InstagramIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
@@ -113,11 +242,11 @@ function InstagramIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>)
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="3" />
+      <line x1="17" y1="7" x2="17.01" y2="7" />
     </svg>
-  )
+  );
 }
 
 function MailIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
