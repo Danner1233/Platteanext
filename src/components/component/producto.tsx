@@ -103,11 +103,6 @@ export function Producto() {
           Volver atrás
         </Link>
       </div>
-      <header className="bg-background shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Detalles del Producto</h1>
-        </div>
-      </header>
       <div className="flex items-center justify-center px-4 md:px-6 py-8">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>

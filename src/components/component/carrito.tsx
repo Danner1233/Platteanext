@@ -4,7 +4,8 @@ import { JSX, SVGProps, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { LoadingAnimation } from '@/components/component/loading-animation';
 
 
 interface DecodedToken {
@@ -39,11 +40,53 @@ export function Carrito() {
     fetchCarrito();
   }, []);
 
-  const handleQuantityChange = (index: number, value: number) => {
+  const handleQuantityChange = async (index: number, value: number) => {
     if (value > 0) {
-      const newItems = [...items];
-      newItems[index].cantidad = value;
-      setItems(newItems);
+      const updatedItems = [...items];
+      updatedItems[index].cantidad = value;
+      setItems(updatedItems);
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded: DecodedToken = jwtDecode(token);
+        const userId = decoded.IdPersona;
+
+        try {
+          const response = await fetch(`http://localhost:4000/api/carrito/`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              IdPersonaFK: userId,
+              IdProductoFK: updatedItems[index].IdProducto,
+              Cantidad: value
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Error al actualizar la cantidad');
+          }
+        } catch (error) {
+          console.error('Error al actualizar la cantidad:', error);
+        }
+      }
+    }
+  };
+  const handleRemoveItem = async (itemId: number) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/carrito/${itemId}`, {
+        method: 'DELETE',
+      });
+      console.log(`http://localhost:4000/api/carrito/${itemId}`,typeof itemId)
+      if (response.ok) {
+        setItems(items.filter(item => item.IdDetalleCarrito !== itemId));
+      } else {
+        console.error('Error removing item:', await response.json());
+      }
+    } catch (error) {
+      console.error('Error removing item:', error);
     }
   };
 
@@ -55,7 +98,7 @@ export function Carrito() {
   const total = subtotal + shipping;
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <div><LoadingAnimation/></div>;
   }
 
   return (
@@ -102,8 +145,10 @@ export function Carrito() {
                 <Button
                   size="icon"
                   variant="outline"
+                  onClick={() => handleRemoveItem(item.IdDetalleCarrito)}
                 >
                   <RemoveIcon className="h-4 w-4 text-red-600" />
+                  
                 </Button>
               </div>
             </div>
