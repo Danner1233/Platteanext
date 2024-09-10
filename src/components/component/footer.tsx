@@ -1,3 +1,6 @@
+"use client";
+
+
 import { useState, useEffect, SVGProps } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -54,6 +57,7 @@ export function Footer() {
     fetchProfile();
   }, []);
 
+  
 
   if (error) {
     return (
