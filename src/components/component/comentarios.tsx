@@ -13,20 +13,42 @@ interface Comentario {
   NombrePersona: string;
   FechaAprobacion: string;
   ComentarioAprobacion: string;
+  FotoPersonaURL: string; // Agregado para la foto de perfil
 }
+
+interface DecodedToken {
+  IdPersona: string;
+}
+
 export function Comentarios({ idProducto }: ComentariosProps) {
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [comentario, setComentario] = useState('');
   const [calificacion, setCalificacion] = useState(0);
   const [idPersona, setIdPersona] = useState<number | null>(null);
+  const [nombrePersona, setNombrePersona] = useState<string>('');
+  const [fotoPersonaURL, setFotoPersonaURL] = useState<string>(''); // Agregado para la URL de la foto
 
-  // Obtener el id de la persona del token JWT
+  // Obtener el id de la persona del token JWT y luego obtener el nombre y la foto
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decodedToken: any = jwtDecode(token);
-        setIdPersona(decodedToken.IdPersona);
+        const decodedToken: DecodedToken = jwtDecode(token);
+        const userId = Number(decodedToken.IdPersona); // Convertir a número
+        setIdPersona(userId);
+
+        // Obtener el perfil de la persona para extraer el nombre y la foto
+        const fetchProfile = async () => {
+          try {
+            const response = await axios.get<{ NombrePersona: string, FotoPersonaURL: string }>(`http://localhost:4000/api/persona/${userId}`);
+            setNombrePersona(response.data.NombrePersona);
+            setFotoPersonaURL(response.data.FotoPersonaURL); // Guardar la URL de la foto
+          } catch (error) {
+            console.error('Error al obtener el perfil de la persona:', error);
+          }
+        };
+
+        fetchProfile();
       } catch (error) {
         console.error('Error al decodificar el token:', error);
       }
@@ -71,12 +93,13 @@ export function Comentarios({ idProducto }: ComentariosProps) {
         IdPersonaFK: idPersona,
         IdProductoFK: Number(idProducto)
       });
-      
+
       // Añadir el nuevo comentario al estado
       const nuevoComentario: Comentario = {
-        NombrePersona: response.data.NombrePersona, // Ajusta esto según la estructura de la respuesta
+        NombrePersona: nombrePersona, // Usa el nombre extraído del perfil
         FechaAprobacion: new Date().toISOString(),
         ComentarioAprobacion: comentario,
+        FotoPersonaURL: fotoPersonaURL // Usa la URL de la foto extraída del perfil
       };
       setComentarios([...comentarios, nuevoComentario]);
 
@@ -96,7 +119,7 @@ export function Comentarios({ idProducto }: ComentariosProps) {
         comentarios.map((comentario, index) => (
           <div key={index} className="flex gap-4">
             <Avatar className="w-10 h-10 border">
-              <AvatarImage src="/placeholder-user.jpg" alt="Avatar usuario" />
+              <AvatarImage src={comentario.FotoPersonaURL || "/placeholder-user.jpg"} alt="Avatar usuario" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="grid gap-4">
