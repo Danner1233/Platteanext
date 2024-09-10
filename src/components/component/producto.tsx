@@ -4,8 +4,14 @@ import { useState, useEffect, JSX, SVGProps, SetStateAction } from "react";
 import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import {jwtDecode} from 'jwt-decode';
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
+
+interface DecodedToken {
+  IdPersona: string;
+}
+
 
 interface Producto {
   IdProducto: string;
@@ -28,11 +34,7 @@ export function Producto() {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        
-
-        const response = await fetch(`http://localhost:4000/api/producto/${idProducto}`, {
-
-        });
+        const response = await fetch(`http://localhost:4000/api/producto/${idProducto}`);
 
         if (response.ok) {
           const data: Producto = await response.json();
@@ -55,6 +57,39 @@ export function Producto() {
 
   const handleRatingChange = (value: SetStateAction<number>) => {
     setRating(value);
+  };
+
+  // Función para manejar la solicitud POST para añadir al carrito
+  const handleAddToCart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const decoded: DecodedToken = jwtDecode(token);
+      const userId = decoded.IdPersona;
+      const response = await fetch("http://localhost:4000/api/carrito", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          IdPersonaFK:   userId,
+          IdProductoFK: producto?.IdProducto
+           // Puedes modificar la cantidad según tu necesidad
+        }),
+      });
+
+      if (response.ok) {
+        alert("Producto añadido al carrito exitosamente");
+      } else {
+        throw new Error("Error al añadir el producto al carrito");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un problema al añadir el producto al carrito");
+    }
   };
 
   return (
@@ -102,7 +137,8 @@ export function Producto() {
             <div className="flex flex-col md:flex-row items-center justify-between">
               <h3 className="text-3xl font-bold">${producto.PrecioProducto}</h3>
               <div className="flex gap-2 mt-4 md:mt-0">
-                <Button>Añadir al carrito</Button>
+                {/* Conectar la función al botón */}
+                <Button onClick={handleAddToCart}>Añadir al carrito</Button>
               </div>
             </div>
           </div>
