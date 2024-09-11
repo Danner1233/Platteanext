@@ -1,5 +1,5 @@
 "use client";
-
+import NextCrypto from 'next-crypto';
 import { useEffect, useState } from "react";
 import Link from "next/link";
 

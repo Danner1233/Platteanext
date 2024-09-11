@@ -23,7 +23,7 @@ interface Producto {
 
 export function Producto() {
   const params = useParams();
-  const idProducto = params.IdProducto;
+  const encryptedIdProducto = params.IdProducto as string; // Asegúrate de que sea una cadena
   const [producto, setProducto] = useState<Producto | null>(null);
   const [rating, setRating] = useState(3);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -33,11 +33,16 @@ export function Producto() {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        console.log("ID encriptado:", idProducto);
+        console.log("ID encriptado:", encryptedIdProducto);
         
-        const decrypted = await crypto.decrypt("yLAu+g7fNx4xx3btg3fxvJlc;KWEwcJEL2YkUy3bz");
+        // Decodificar el ID encriptado
+        const decodedId = decodeURIComponent(encryptedIdProducto);
+        
+        // Desencriptar el ID
+        const decrypted = await crypto.decrypt(decodedId);
         console.log("ID desencriptado:", decrypted);
         
+        // Fetch el producto con el ID desencriptado
         const response = await fetch(`http://localhost:4000/api/producto/${decrypted}`);
         
         if (response.ok) {
@@ -53,8 +58,10 @@ export function Producto() {
       }
     };
 
-    fetchProducto();
-  }, [idProducto]);
+    if (encryptedIdProducto) {
+      fetchProducto();
+    }
+  }, [encryptedIdProducto]);
 
   if (error) return <p>Error: {error}</p>;
   if (!isLoaded || !producto) return <p>Cargando...</p>;
