@@ -27,10 +27,12 @@
     "axios": "^1.7.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
     "embla-carousel-react": "^8.2.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.429.0",
     "next": "^14.2.8",
+    "next-crypto": "^1.0.8",
     "plattea": "file:",
     "punycode": "^2.3.1",
     "react": "^18.3.1",
@@ -41,6 +43,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18",
