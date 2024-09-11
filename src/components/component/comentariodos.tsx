@@ -1,11 +1,12 @@
-import { Card, CardTitle, CardDescription } from "@/components/ui/card"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { JSX, SVGProps, SetStateAction, useEffect, useState } from "react"
-import axios from "axios"
-import { jwtDecode } from "jwt-decode"
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { SVGProps, useEffect, useState } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import NextCrypto from 'next-crypto'; // Importar el módulo de encriptación
 
 interface ComentariosProps {
   idProducto: string;
@@ -16,7 +17,7 @@ interface Comentario {
   FechaAprobacion: string;
   ComentarioAprobacion: string;
   FotoPersonaURL: string;
-  CalificacionAprobacion: number; // Añadido para la calificación
+  CalificacionAprobacion: number;
 }
 
 interface DecodedToken {
@@ -30,6 +31,23 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
   const [idPersona, setIdPersona] = useState<number | null>(null);
   const [nombrePersona, setNombrePersona] = useState<string>('');
   const [fotoPersonaURL, setFotoPersonaURL] = useState<string>('');
+  const [decryptedIdProducto, setDecryptedIdProducto] = useState<string | null>(null); // Estado para el ID desencriptado
+  const crypto = new NextCrypto('secret key'); // Instancia de NextCrypto
+
+  useEffect(() => {
+    const fetchProductId = async () => {
+      try {
+        // Desencriptar el ID del producto
+        const decodedId = decodeURIComponent(idProducto);
+        const decrypted = await crypto.decrypt(decodedId);
+        setDecryptedIdProducto(decrypted);
+      } catch (error) {
+        console.error("Error al desencriptar el ID del producto:", error);
+      }
+    };
+
+    fetchProductId();
+  }, [idProducto]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -60,17 +78,19 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
 
   useEffect(() => {
     const fetchComentarios = async () => {
-      try {
-        const response = await axios.get<{ [key: string]: Comentario }>(`http://localhost:4000/api/aprobacion/${idProducto}`);
-        const comentariosArray = Object.values(response.data);
-        setComentarios(comentariosArray);
-      } catch (error) {
-        console.error('Error al obtener los comentarios:', error);
+      if (decryptedIdProducto) {
+        try {
+          const response = await axios.get<{ [key: string]: Comentario }>(`http://localhost:4000/api/aprobacion/${decryptedIdProducto}`);
+          const comentariosArray = Object.values(response.data);
+          setComentarios(comentariosArray);
+        } catch (error) {
+          console.error('Error al obtener los comentarios:', error);
+        }
       }
     };
   
     fetchComentarios();
-  }, [idProducto]);
+  }, [decryptedIdProducto]);
 
   const handleComentarioChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComentario(event.target.value);
@@ -79,7 +99,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!idPersona || !idProducto) {
+    if (!idPersona || !decryptedIdProducto) {
       console.warn('No se puede enviar el comentario, falta idPersona o idProducto');
       return;
     }
@@ -89,7 +109,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
         ComentarioAprobacion: comentario,
         CalificacionAprobacion: calificacion,
         IdPersonaFK: idPersona,
-        IdProductoFK: Number(idProducto)
+        IdProductoFK: Number(decryptedIdProducto)
       });
 
       const nuevoComentario: Comentario = {
@@ -97,7 +117,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
         FechaAprobacion: new Date().toISOString(),
         ComentarioAprobacion: comentario,
         FotoPersonaURL: fotoPersonaURL,
-        CalificacionAprobacion: calificacion // Incluye la calificación en el nuevo comentario
+        CalificacionAprobacion: calificacion
       };
       setComentarios([...comentarios, nuevoComentario]);
 
@@ -110,7 +130,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
 
   const handleRatingChange = (newRating: number) => {
     setCalificacion(newRating);
-  }
+  };
 
   return (
     <Card className="p-4 w-full mb-1.9">
@@ -127,13 +147,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
-                className={`
-                  p-2 rounded-full transition-colors
-                  ${star <= calificacion
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                  }
-                `}
+                className={`p-2 rounded-full transition-colors ${star <= calificacion ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                 onClick={() => handleRatingChange(star)}
               >
                 <StarIcon className="w-6 h-6" />
@@ -173,16 +187,13 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
                   <h4 className="text-sm font-medium">{comentario.NombrePersona}</h4>
                   <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                     {[...Array(5)].map((_, index) => (
-                      <StarIcon
-                        key={index}
-                        className={`w-4 h-4 ${index < comentario.CalificacionAprobacion ? 'text-black' : 'text-gray-300'} fill-current`}
-                      />
+                      <StarIcon key={index} className={`w-4 h-4 ${index < comentario.CalificacionAprobacion ? 'text-black' : 'text-gray-300'} fill-current`} />
                     ))}
                     <span><time>{new Date(comentario.FechaAprobacion).toLocaleDateString()}</time></span>
                   </div>
                 </div>
               </div>
-              <p className="mt-2 text-sm">{comentario.ComentarioAprobacion} </p>
+              <p className="mt-2 text-sm">{comentario.ComentarioAprobacion}</p>
             </div>
           </div>
         ))
@@ -190,7 +201,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
         <p>No hay comentarios disponibles.</p>
       )}
     </Card>
-  )
+  );
 }
 
 function StarIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
@@ -209,5 +220,5 @@ function StarIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     >
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
-  )
+  );
 }
