@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button"
 
 export function Busqueda() {
   return (
-    <div className="flex items-center w-full max-w-md mx-auto">
+    <div className="flex w-full max-w-md m-8">
       <Input
         type="search"
         placeholder="Buscar..."
