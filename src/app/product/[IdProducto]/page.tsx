@@ -31,8 +31,8 @@ function Page() {
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <Producto />
       <ProductosProducto />
-      {idProducto && <Comentariodos idProducto={idProducto} />}
-      <Comentarios idProducto={''} />
+      <Comentariodos idProducto={idProducto ||''}  />
+  
       <Footer />
     </div>
   );

@@ -84,6 +84,9 @@ export function Comentarios({ idProducto }: ComentariosProps) {
     event.preventDefault();
 
     if (!idPersona || !idProducto) {
+      console.warn('No se puede enviar el comentario, falta idPersona o idProducto');
+      console.log('idPersona:', idPersona); // Agregado
+      console.log('idProducto:', idProducto); // Agregado
       return;
     }
 
@@ -121,7 +124,6 @@ export function Comentarios({ idProducto }: ComentariosProps) {
           <div key={index} className="flex gap-4">
             <Avatar className="w-10 h-10 border">
               <AvatarImage src={comentario.FotoPersonaURL || "/placeholder-user.jpg"} alt="Avatar usuario" />
-              <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="grid gap-4">
               <div className="flex gap-4 items-start">
