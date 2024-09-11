@@ -16,8 +16,8 @@ export function Puntuacion() {
     setReview(event.target.value)
   }
   return (
-    <div className="w-full px-4sm:px-6 lg:px-9">
-      <Card className="w-full max-w-3xl mx-auto p-6">
+    <div className="w-full">
+      <Card className="w-full p-6">
         <div className="grid gap-4 sm:gap-6">
           <div className="grid gap-2">
             <CardTitle className="text-2xl font-bold">Reseña del producto</CardTitle>

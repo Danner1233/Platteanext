@@ -113,7 +113,6 @@ export function Comentarios({ idProducto }: ComentariosProps) {
 
   return (
     <div className="mx-auto px-4 md:px-9 max-w-2x2 grid gap-12">
-      <Puntuacion />
       <h2 className="text-2xl font-bold">Comentarios de los clientes</h2>
 
       {/* Comentarios traídos de la API */}

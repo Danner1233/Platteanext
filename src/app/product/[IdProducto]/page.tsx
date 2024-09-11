@@ -6,10 +6,11 @@ import { Footer } from '@/components/component/footer'
 import { NavbarDefault } from '@/components/component/navbar-default'
 import { Producto } from '@/components/component/producto'
 import { ProductosProducto } from '@/components/component/productos-producto'
-import { Comentarios } from '@/components/component/comentarios'
+import { Comentariodos } from '@/components/component/comentariodos'
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Navbar } from '@/components/component/navbar';
+import { Comentarios } from '@/components/component/comentarios'
 
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -30,7 +31,8 @@ function Page() {
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <Producto />
       <ProductosProducto />
-      {idProducto && <Comentarios idProducto={idProducto} />}
+      {idProducto && <Comentariodos idProducto={idProducto} />}
+      <Comentarios idProducto={''} />
       <Footer />
     </div>
   );
