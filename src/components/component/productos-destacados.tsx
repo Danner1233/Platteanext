@@ -73,7 +73,7 @@ export function ProductosDestacados() {
                   {producto.NombreProducto}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Calificación: {producto.PromedioCalificacion}
+                  Calificación: {parseFloat(producto.PromedioCalificacion).toFixed(1)}
                 </p>
                 <div className="flex items-center justify-between">
                   <h4 className="text-base font-semibold md:text-lg">
