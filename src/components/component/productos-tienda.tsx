@@ -16,6 +16,7 @@ interface Producto {
 export function ProductosTienda() {
   const params = useParams();
   const idTienda = params.IdTienda;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const crypto = new NextCrypto('secret key');
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ export function ProductosTienda() {
             encryptedId: await crypto.encrypt(producto.IdProducto)
           })));
 
-          setEncryptedIds(encrypted.reduce((acc, { id, encryptedId }) => {
+          setEncryptedIds(encrypted.reduce<{ [key: string]: string }>((acc, { id, encryptedId }) => {
             acc[id] = encryptedId;
             return acc;
           }, {}));
@@ -52,7 +53,7 @@ export function ProductosTienda() {
 
       fetchProductos();
     }
-  }, [idTienda]);
+  }, [crypto, idTienda]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
