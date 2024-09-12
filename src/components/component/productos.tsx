@@ -1,11 +1,8 @@
 "use client";
 
+import NextCrypto from 'next-crypto';
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-interface DecodedToken {
-  IdPersona: string;
-}
 
 interface Producto {
   IdProducto: string;
@@ -13,13 +10,13 @@ interface Producto {
   DescripcionProducto: string;
   PrecioProducto: string;
   FotoProductoURL: string;
-  NombreTienda: string;
-  PromedioCalificacion: number;
 }
 
 export function Productos() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [error, setError] = useState<string>("");
+  const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({});
+  const crypto = new NextCrypto('secret key'); // Llave de encriptación
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -31,6 +28,18 @@ export function Productos() {
           // Mezclar los productos antes de guardarlos en el estado
           data = mezclarArray(data);
           setProductos(data);
+
+          // Encriptar los IDs de los productos
+          const encrypted = await Promise.all(data.map(async (producto) => {
+            const encryptedId = await crypto.encrypt(producto.IdProducto);
+            const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+            return { id: producto.IdProducto, encryptedId: safeId };
+          }));
+
+          setEncryptedIds(encrypted.reduce<{ [key: string]: string }>((acc, { id, encryptedId }) => {
+            acc[id] = encryptedId;
+            return acc;
+          }, {}));
         } else {
           throw new Error("Error al obtener los productos");
         }
@@ -66,7 +75,7 @@ export function Productos() {
       <h1 className="text-2xl font-bold mb-5">Productos</h1>
       <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {productos.map((producto) => (
-          <Link key={producto.IdProducto} href={`/product/${producto.IdProducto}`} prefetch={false}>
+          <Link key={producto.IdProducto} href={`/product/${encryptedIds[producto.IdProducto] || ''}`} prefetch={false}>
             <div className="relative flex flex-col overflow-hidden transition-transform duration-300 ease-in-out rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2">
               <div className="w-full h-64 overflow-hidden">
                 <img
@@ -80,9 +89,7 @@ export function Productos() {
               </div>
               <div className="flex flex-col justify-between p-4 bg-background h-full">
                 <div className="flex-1">
-                  {/* Limitar la altura del contenedor del nombre para que sea uniforme */}
                   <h3 className="text-xl font-bold mb-2 truncate">{truncarTexto(producto.NombreProducto, 50)}</h3>
-                  {/* Limitar la altura del contenedor de la descripción para que sea uniforme */}
                   <p className="text-sm text-muted-foreground h-16 overflow-hidden overflow-ellipsis">
                     {truncarTexto(producto.DescripcionProducto, 100)}
                   </p>
