@@ -1,3 +1,4 @@
+import NextCrypto from 'next-crypto';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -14,16 +15,29 @@ export function ProductosDestacados() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string>("");
+  const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({});
+  const crypto = new NextCrypto('secret key'); // Llave de encriptación
 
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:4000/api/productosdestacados/`
-        );
+        const response = await fetch(`http://localhost:4000/api/productosdestacados/`);
 
         if (response.ok) {
           const data: Producto[] = await response.json();
+
+          // Encriptar los IDs de los productos
+          const encrypted = await Promise.all(data.map(async (producto) => {
+            const encryptedId = await crypto.encrypt(producto.IdProducto);
+            const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+            return { id: producto.IdProducto, encryptedId: safeId };
+          }));
+
+          setEncryptedIds(encrypted.reduce<{ [key: string]: string }>((acc, { id, encryptedId }) => {
+            acc[id] = encryptedId;
+            return acc;
+          }, {}));
+
           setProductos(data);
           setIsLoaded(true);
         } else {
@@ -54,7 +68,7 @@ export function ProductosDestacados() {
               className="relative overflow-hidden rounded-lg group"
             >
               <Link
-                href={`/product/${producto.IdProducto}`}
+                href={`/product/${encryptedIds[producto.IdProducto] || ''}`}
                 className="absolute inset-0 z-10"
                 prefetch={false}
               >
