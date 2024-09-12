@@ -3,12 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+interface DecodedToken {
+  IdPersona: string;
+}
+
 interface Producto {
   IdProducto: string;
   NombreProducto: string;
   DescripcionProducto: string;
-  PrecioProducto: number;
+  PrecioProducto: string;
   FotoProductoURL: string;
+  NombreTienda: string;
+  PromedioCalificacion: number;
 }
 
 export function Productos() {

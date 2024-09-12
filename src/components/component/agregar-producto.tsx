@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import NextCrypto from 'next-crypto';
 
 export function AgregarProducto() {
   const params = useParams(); 
-  const idTienda = params.IdTienda;
+  const encryptedIdTienda = params.IdTienda as string;
+  const crypto = new NextCrypto('secret key');
+  const [idTienda, setIdTienda] = useState<string | null>(null);
 
   const [nombre, setNombre] = useState<string>('');
   const [descripcion, setDescripcion] = useState<string>('');
@@ -16,14 +19,30 @@ export function AgregarProducto() {
   const [stock, setStock] = useState<string>('');
   const [imagen, setImagen] = useState<File | null>(null);
 
+  useEffect(() => {
+    const fetchDecryptedId = async () => {
+      try {
+        const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
+        const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
+        setIdTienda(decryptedId);
+      } catch (error) {
+        console.error('Error al desencriptar el ID de la tienda', error);
+      }
+    };
+
+    if (encryptedIdTienda) {
+      fetchDecryptedId();
+    }
+  }, [encryptedIdTienda]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!imagen) {
-      alert('Por favor, selecciona una imagen.');
+    if (!imagen || !idTienda) {
+      alert('Por favor, completa todos los campos y selecciona una imagen.');
       return;
     }
-    
+
     const formData = new FormData();
     formData.append('NombreProducto', nombre);
     formData.append('DescripcionProducto', descripcion);
@@ -31,9 +50,9 @@ export function AgregarProducto() {
     formData.append('StockProducto', stock);
     formData.append('FotoProducto', imagen);
     formData.append('IdTiendaFK', idTienda);
-    
+
     try {
-      const response = await fetch('http://localhost:4000/api/producto', {
+      const response = await fetch('http://localhost:4000/api/producto/', {
         method: 'POST',
         body: formData
       });

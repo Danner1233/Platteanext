@@ -1,5 +1,7 @@
+
+import NextCrypto from 'next-crypto';
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -22,17 +24,26 @@ interface Tienda {
 
 export function EditarTienda() {
   const params = useParams();
+  const router = useRouter(); 
+  const encryptedIdTienda = params.IdTienda as string; // Asegúrate de que sea una cadena
+  const crypto = new NextCrypto('secret key');
   const idTienda = params.IdTienda as string;
 
   const [tienda, setTienda] = useState<Tienda | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({})
 
   useEffect(() => {
-    if (idTienda) {
+    if (encryptedIdTienda) {
       const fetchTienda = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/api/tienda/${idTienda}`);
+          const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
+        // Desencriptar el ID de la tienda
+        const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
+
+
+          const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -47,14 +58,17 @@ export function EditarTienda() {
 
       fetchTienda();
     }
-  }, [idTienda]);
+  }, [encryptedIdTienda]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
+    const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
+        // Desencriptar el ID de la tienda
+        const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
     try {
-      const response = await fetch(`http://localhost:4000/api/tienda/${idTienda}`, {
+      const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`, {
         method: 'PUT',
         body: formData,
       });
@@ -75,13 +89,11 @@ export function EditarTienda() {
   return (
     <div className="flex justify-center">
       <div className="absolute left-4 pt-8">
-        <Link
-          href={`/shop/${idTienda}`}
-          className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-        >
+        
+      <Button onClick={() => router.back()} className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10">
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
-        </Link>
+        </Button>
       </div>
       <Card className="w-full max-w-xl mt-8 mb-8">
         <CardHeader>
