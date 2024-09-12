@@ -4,9 +4,8 @@ import { JSX, SVGProps, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { jwtDecode } from 'jwt-decode';
-import { LoadingAnimation } from '@/components/component/loading-animation';
-
+import { jwtDecode } from "jwt-decode";
+import { LoadingAnimation } from "@/components/component/loading-animation";
 
 interface DecodedToken {
   IdPersona: string;
@@ -27,7 +26,9 @@ export function Carrito() {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(`http://localhost:4000/api/carrito/${userId}`);
+        const response = await fetch(
+          `http://localhost:4000/api/carrito/${userId}`
+        );
         const data = await response.json();
         setItems(Object.values(data));
         setLoading(false);
@@ -53,40 +54,43 @@ export function Carrito() {
 
         try {
           const response = await fetch(`http://localhost:4000/api/carrito/`, {
-            method: 'PATCH',
+            method: "PATCH",
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               IdPersonaFK: userId,
               IdProductoFK: updatedItems[index].IdProducto,
-              Cantidad: value
-            })
+              Cantidad: value,
+            }),
           });
 
           if (!response.ok) {
-            throw new Error('Error al actualizar la cantidad');
+            throw new Error("Error al actualizar la cantidad");
           }
         } catch (error) {
-          console.error('Error al actualizar la cantidad:', error);
+          console.error("Error al actualizar la cantidad:", error);
         }
       }
     }
   };
   const handleRemoveItem = async (itemId: number) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/carrito/${itemId}`, {
-        method: 'DELETE',
-      });
-      console.log(`http://localhost:4000/api/carrito/${itemId}`,typeof itemId)
+      const response = await fetch(
+        `http://localhost:4000/api/carrito/${itemId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      console.log(`http://localhost:4000/api/carrito/${itemId}`, typeof itemId);
       if (response.ok) {
-        setItems(items.filter(item => item.IdDetalleCarrito !== itemId));
+        setItems(items.filter((item) => item.IdDetalleCarrito !== itemId));
       } else {
-        console.error('Error removing item:', await response.json());
+        console.error("Error removing item:", await response.json());
       }
     } catch (error) {
-      console.error('Error removing item:', error);
+      console.error("Error removing item:", error);
     }
   };
 
@@ -98,7 +102,11 @@ export function Carrito() {
   const total = subtotal + shipping;
 
   if (loading) {
-    return <div><LoadingAnimation/></div>;
+    return (
+      <div>
+        <LoadingAnimation />
+      </div>
+    );
   }
 
   return (
@@ -123,8 +131,12 @@ export function Carrito() {
               />
               <div>
                 <h3 className="font-medium">{item.NombreProducto}</h3>
-                <p className="text-sm text-muted-foreground">{item.NombreTienda}</p>
-                <p className="text-sm text-muted-foreground">$ {item.PrecioProducto}</p>
+                <p className="text-sm text-muted-foreground">
+                  {item.NombreTienda}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  $ {item.PrecioProducto}
+                </p>
               </div>
               <div className="flex items-center gap-4">
                 <Button
@@ -148,7 +160,6 @@ export function Carrito() {
                   onClick={() => handleRemoveItem(item.IdDetalleCarrito)}
                 >
                   <RemoveIcon className="h-4 w-4 text-red-600" />
-                  
                 </Button>
               </div>
             </div>
@@ -174,7 +185,10 @@ export function Carrito() {
                 Continuar comprando
               </Button>
             </Link>
-            <Button className="flex-1 bg-plattea1">Proceder al pago</Button>
+
+            <Link href="/agregartarjeta">
+              <Button className="flex-1 bg-plattea1">Proceder al pago</Button>
+            </Link>
           </div>
         </div>
       </div>
