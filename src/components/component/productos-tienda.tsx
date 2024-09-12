@@ -15,7 +15,7 @@ interface Producto {
 
 export function ProductosTienda() {
   const params = useParams();
-  const idTienda = params.IdTienda;
+  const encryptedIdTienda = params.IdTienda as string; // Asegúrate de que sea una cadena
   const crypto = new NextCrypto('secret key');
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,36 +23,44 @@ export function ProductosTienda() {
   const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    if (idTienda) {
-      const fetchProductos = async () => {
-        try {
-          const response = await fetch(`http://localhost:4000/api/tienda/producto/${idTienda}`);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data: Producto[] = await response.json();
-          setProductos(data);
+    const fetchProductos = async () => {
+      try {
+        // Reemplazar caracteres en el ID encriptado antes de decodificar
+        const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
+        // Desencriptar el ID de la tienda
+        const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
-          // Encriptar IDs
-          const encrypted = await Promise.all(data.map(async (producto) => ({
-            id: producto.IdProducto,
-            encryptedId: await crypto.encrypt(producto.IdProducto)
-          })));
-
-          setEncryptedIds(encrypted.reduce<{ [key: string]: string }>((acc, { id, encryptedId }) => {
-            acc[id] = encryptedId;
-            return acc;
-          }, {}));
-        } catch (error: any) {
-          setError(error.message || 'An unexpected error occurred');
-        } finally {
-          setLoading(false);
+        // Fetch productos usando el ID desencriptado
+        const response = await fetch(`http://localhost:4000/api/tienda/producto/${decryptedId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      };
+        const data: Producto[] = await response.json();
+        setProductos(data);
 
+        // Encriptar IDs de productos para usar en los enlaces
+        const encrypted = await Promise.all(data.map(async (producto) => {
+          const encryptedId = await crypto.encrypt(producto.IdProducto);
+          // Reemplazar caracteres problemáticos en el ID encriptado
+          const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+          return { id: producto.IdProducto, encryptedId: safeId };
+        }));
+
+        setEncryptedIds(encrypted.reduce<{ [key: string]: string }>((acc, { id, encryptedId }) => {
+          acc[id] = encryptedId;
+          return acc;
+        }, {}));
+      } catch (error: any) {
+        setError(error.message || 'An unexpected error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (encryptedIdTienda) {
       fetchProductos();
     }
-  }, [idTienda]);
+  }, [ encryptedIdTienda]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

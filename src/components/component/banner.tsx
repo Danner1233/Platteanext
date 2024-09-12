@@ -1,9 +1,11 @@
 "use client";
+import NextCrypto from 'next-crypto';
 import Image from "next/image";
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Edit, Settings } from 'lucide-react';
+
 interface Tienda {
   NombreTienda: string;
   BannerTiendaURL: string;
@@ -11,32 +13,36 @@ interface Tienda {
 
 export function Banner() {
   const params = useParams();
-  const idTienda = params.IdTienda;
-
+  const encryptedIdTienda = params.IdTienda as string; // Asegúrate de que sea una cadena
+  const crypto = new NextCrypto('secret key');
   const [tienda, setTienda] = useState<Tienda | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (idTienda) {
-      const fetchTienda = async () => {
-        try {
-          const response = await fetch(`http://localhost:4000/api/tienda/${idTienda}`);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data: Tienda = await response.json();
-          setTienda(data);
-        } catch (error: any) {
-          setError(error.message || 'An unexpected error occurred');
-        } finally {
-          setLoading(false);
-        }
-      };
+    const fetchTienda = async () => {
+      try {
+        // Desencriptar el ID de la tienda
+        const decryptedId = await crypto.decrypt(decodeURIComponent(encryptedIdTienda));
 
+        // Fetch tienda usando el ID desencriptado
+        const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: Tienda = await response.json();
+        setTienda(data);
+      } catch (error: any) {
+        setError(error.message || 'An unexpected error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (encryptedIdTienda) {
       fetchTienda();
     }
-  }, [idTienda]);
+  }, [encryptedIdTienda]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -57,13 +63,13 @@ export function Banner() {
         <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">{tienda?.NombreTienda || 'Nombre de Tienda'}</h1>
       </div>
       <div className="flex space-x-4">
-        <Link href={`/editartienda/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href={`/editartienda/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
           <Settings className="w-6 h-6" />
         </Link>
-        <Link href={`/administracioncubiculo/${idTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
           <Edit className="w-6 h-6" />
         </Link>
       </div>
-    </section >
+    </section>
   );
 }

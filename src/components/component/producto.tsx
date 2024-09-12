@@ -34,17 +34,19 @@ export function Producto() {
     const fetchProducto = async () => {
       try {
         console.log("ID encriptado:", encryptedIdProducto);
-        
+
+        // Reemplazar caracteres en el ID encriptado antes de decodificar
+        const safeIdProducto = encryptedIdProducto.replace(/_/g, '/').replace(/-/g, '+');
         // Decodificar el ID encriptado
-        const decodedId = decodeURIComponent(encryptedIdProducto);
-        
+        const decodedId = decodeURIComponent(safeIdProducto);
+
         // Desencriptar el ID
         const decrypted = await crypto.decrypt(decodedId);
         console.log("ID desencriptado:", decrypted);
-        
+
         // Fetch el producto con el ID desencriptado
         const response = await fetch(`http://localhost:4000/api/producto/${decrypted}`);
-        
+
         if (response.ok) {
           const data: Producto = await response.json();
           setProducto(data);

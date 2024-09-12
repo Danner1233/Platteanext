@@ -1,5 +1,6 @@
 "use client";
-import NextCrypto from 'next-crypto';
+
+import NextCrypto from 'next-crypto'; // Asegúrate de tener esta importación
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -14,7 +15,9 @@ interface Tienda {
 
 export function Tiendas() {
   const [tiendas, setTiendas] = useState<Tienda[]>([]);
+  const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState<string>("");
+  const crypto = new NextCrypto('secret key'); // Reemplaza 'secret key' con tu clave secreta
 
   useEffect(() => {
     const fetchTiendas = async () => {
@@ -23,6 +26,22 @@ export function Tiendas() {
         if (response.ok) {
           const data: Tienda[] = await response.json();
           setTiendas(data);
+
+          // Encriptar IDs
+          const encrypted = await Promise.all(data.map(async (tienda) => {
+            const encryptedId = await crypto.encrypt(tienda.IdTienda);
+            // Reemplazar caracteres en el ID encriptado
+            const safeEncryptedId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+            return {
+              id: tienda.IdTienda,
+              encryptedId: safeEncryptedId
+            };
+          }));
+
+          setEncryptedIds(encrypted.reduce<{ [key: string]: string }>((acc, { id, encryptedId }) => {
+            acc[id] = encryptedId;
+            return acc;
+          }, {}));
         } else {
           throw new Error("Error fetching tiendas");
         }
@@ -44,11 +63,11 @@ export function Tiendas() {
       </div>
       <section className="container mx-auto px-4 md:px-6 lg:px-7 grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
         {tiendas.map((tienda) => (
-          <Link key={tienda.IdTienda} href={`/tiendas/${tienda.IdTienda}`}>
+          <Link key={tienda.IdTienda} href={`/shop/${encryptedIds[tienda.IdTienda] || ''}`}>
             <div className="relative overflow-hidden rounded-lg group">
-              <Link href={`/shop/${tienda.IdTienda}`} className="absolute inset-0 z-10" prefetch={false}>
+              <div className="absolute inset-0 z-10">
                 <span className="sr-only">Ver tienda</span>
-              </Link>
+              </div>
               <img
                 src={tienda.MiniaturaTiendaURL}
                 alt={tienda.NombreTienda}
@@ -67,6 +86,5 @@ export function Tiendas() {
         ))}
       </section>
     </div>
-
   );
 }
