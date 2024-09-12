@@ -25,9 +25,7 @@ interface Profile {
   NombrePersona: string;
   ApellidoPersona: string;
   CorreoPersona: string;
-  CiudadPersona: string;
   DescripcionPersona: string;
-  DireccionPersona: string;
   TelefonoPersona?: string;
   bannerPersonaURL?: string;
 }
@@ -41,9 +39,7 @@ export function Configuracion() {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
-  const [ciudad, setCiudad] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [direccion, setDireccion] = useState("");
   const [telefono, setTelefono] = useState("");
 
   const [hasChanges, setHasChanges] = useState(false);
@@ -75,9 +71,7 @@ export function Configuracion() {
           setNombre(data.NombrePersona);
           setApellido(data.ApellidoPersona);
           setCorreo(data.CorreoPersona);
-          setCiudad(data.CiudadPersona);
           setDescripcion(data.DescripcionPersona);
-          setDireccion(data.DireccionPersona);
           setTelefono(data.TelefonoPersona || ""); // Asignar el número de celular
         } else {
           throw new Error("Error fetching profile");
@@ -97,15 +91,13 @@ export function Configuracion() {
         nombre !== profile.NombrePersona ||
           apellido !== profile.ApellidoPersona ||
           correo !== profile.CorreoPersona ||
-          ciudad !== profile.CiudadPersona ||
           descripcion !== profile.DescripcionPersona ||
-          direccion !== profile.DireccionPersona ||
           telefono !== profile.TelefonoPersona ||
           file !== null ||
           bannerFile !== null
       );
     }
-  }, [nombre, apellido, correo, ciudad, descripcion, direccion, telefono, file, bannerFile, profile]);
+  }, [nombre, apellido, correo, descripcion, telefono, file, bannerFile, profile]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -156,9 +148,7 @@ export function Configuracion() {
       formData.append("NombrePersona", nombre);
       formData.append("ApellidoPersona", apellido);
       formData.append("CorreoPersona", correo);
-      formData.append("CiudadPersona", ciudad);
       formData.append("DescripcionPersona", descripcion);
-      formData.append("DireccionPersona", direccion);
       formData.append("TelefonoPersona", telefono);
       if (file) {
         formData.append("FotoPersona", file);
@@ -217,26 +207,6 @@ export function Configuracion() {
               value={apellido}
               onChange={(e) => setApellido(e.target.value)}
               placeholder="Ingresa tus apellidos"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="address">Dirección</Label>
-            <Input
-              id="address"
-              value={direccion}
-              onChange={(e) => setDireccion(e.target.value)}
-              placeholder="Ingresa tu dirección"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="city">Ciudad</Label>
-            <Input
-              id="city"
-              value={ciudad}
-              onChange={(e) => setCiudad(e.target.value)}
-              placeholder="Ingresa tu ciudad"
             />
           </div>
         </div>
