@@ -1,12 +1,11 @@
 "use client";
 import NextCrypto from 'next-crypto';
 import { useState, useEffect, JSX, SVGProps, SetStateAction } from "react";
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { jwtDecode } from 'jwt-decode';
 import { ArrowLeftIcon } from "lucide-react";
-import Link from "next/link";
 
 interface DecodedToken {
   IdPersona: string;
@@ -19,10 +18,12 @@ interface Producto {
   PrecioProducto: string;
   FotoProductoURL: string;
   NombreTienda: string;
+  PromedioCalificacion: number;
 }
 
 export function Producto() {
   const params = useParams();
+  const router = useRouter(); // Hook para el enrutador de Next.js
   const encryptedIdProducto = params.IdProducto as string; // Asegúrate de que sea una cadena
   const [producto, setProducto] = useState<Producto | null>(null);
   const [rating, setRating] = useState(3);
@@ -46,10 +47,11 @@ export function Producto() {
 
         // Fetch el producto con el ID desencriptado
         const response = await fetch(`http://localhost:4000/api/producto/${decrypted}`);
-
+        console.log("Response status:", response.status);
         if (response.ok) {
-          const data: Producto = await response.json();
-          setProducto(data);
+          const data = await response.json();
+          const producto = data[0]; // Accede al primer elemento del array
+          setProducto(producto); // Asigna el primer objeto del array a producto
           setIsLoaded(true);
         } else {
           throw new Error("Error fetching product");
@@ -102,17 +104,14 @@ export function Producto() {
       alert("Hubo un problema al añadir el producto al carrito");
     }
   };
-
+  console.log(producto.NombreProducto)
   return (
     <div className="flex flex-col h-full">
       <div className="left-4 pt-3">
-        <Link
-          href={`/shop`}
-          className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-        >
+        <Button onClick={() => router.back()} className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10">
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
-        </Link>
+        </Button>
       </div>
       <div className="flex items-center justify-center px-4 md:px-6 py-8">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -129,14 +128,15 @@ export function Producto() {
           <div className="flex flex-col gap-4">
             <h2 className="text-3xl font-bold">{producto.NombreProducto}</h2>
             <p className="text-muted-foreground">{producto.NombreTienda}</p>
-
             <div className="flex items-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
-                <StarIcon
+                <button
                   key={star}
-                  className={`w-5 h-5 cursor-pointer ${star <= rating ? "fill-primary" : "fill-muted stroke-muted-foreground"}`}
+                  className={`w-5 h-5 cursor-pointer ${star <= producto.PromedioCalificacion ? 'text-black' : 'text-gray-300'} fill-current`}
                   onClick={() => handleRatingChange(star)}
-                />
+                >
+                  <StarIcon className={`w-6 h-6 ${star <= producto.PromedioCalificacion ? 'fill-black' : 'fill-gray-300'}`} />
+                </button>
               ))}
             </div>
             <p className="text-muted-foreground">{producto.DescripcionProducto}</p>
