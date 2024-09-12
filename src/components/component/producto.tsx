@@ -3,7 +3,6 @@ import NextCrypto from 'next-crypto';
 import { useState, useEffect, JSX, SVGProps, SetStateAction } from "react";
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { jwtDecode } from 'jwt-decode';
 import { ArrowLeftIcon } from "lucide-react";
 
@@ -50,7 +49,8 @@ export function Producto() {
         console.log("Response status:", response.status);
         if (response.ok) {
           const data = await response.json();
-          const producto = data[0]; // Accede al primer elemento del array
+          const producto = data[0];
+          console.log("Response status:", producto ); // Accede al primer elemento del array
           setProducto(producto); // Asigna el primer objeto del array a producto
           setIsLoaded(true);
         } else {
@@ -116,7 +116,7 @@ export function Producto() {
       <div className="flex items-center justify-center px-4 md:px-6 py-8">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <Image
+            <img
               src={producto.FotoProductoURL}
               alt="Product Image"
               width={600}

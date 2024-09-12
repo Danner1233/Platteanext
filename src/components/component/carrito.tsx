@@ -75,6 +75,7 @@ export function Carrito() {
       }
     }
   };
+
   const handleRemoveItem = async (itemId: number) => {
     try {
       const response = await fetch(
@@ -83,7 +84,6 @@ export function Carrito() {
           method: "DELETE",
         }
       );
-      console.log(`http://localhost:4000/api/carrito/${itemId}`, typeof itemId);
       if (response.ok) {
         setItems(items.filter((item) => item.IdDetalleCarrito !== itemId));
       } else {
@@ -186,9 +186,10 @@ export function Carrito() {
               </Button>
             </Link>
 
+
             <Link href="/agregartarjeta">
               <Button className="flex-1 bg-plattea1">Proceder al pago</Button>
-            </Link>
+            </Link>
           </div>
         </div>
       </div>
