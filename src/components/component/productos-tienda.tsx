@@ -60,19 +60,25 @@ export function ProductosTienda() {
     if (encryptedIdTienda) {
       fetchProductos();
     }
-  }, [ encryptedIdTienda]);
+  }, [encryptedIdTienda]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  const truncarTexto = (texto: string, maxLength: number) => {
+    return texto.length > maxLength
+      ? texto.substring(0, maxLength) + "..."
+      : texto;
+  };
+
+  if (loading) return <p className="text-center">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
     <div className="px-4 md:px-6 py-12">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold">Productos de la Tienda</h2>
+        <h2 className="text-3xl font-bold text-center">Productos de la Tienda</h2>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {productos.map((producto) => (
-          <div key={producto.IdProducto} className="relative overflow-hidden rounded-lg group">
+          <div key={producto.IdProducto} className="relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out group">
             <Link
               href={`/product/${encryptedIds[producto.IdProducto] || ''}`}
               className="absolute inset-0 z-10"
@@ -85,13 +91,15 @@ export function ProductosTienda() {
               alt={producto.NombreProducto}
               width={400}
               height={400}
-              className="object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
+              className="object-cover w-full h-64 group-hover:opacity-75 transition-opacity"
               quality={100}
             />
-            <div className="p-4 bg-background">
-              <h3 className="text-lg font-semibold">{producto.NombreProducto}</h3>
-              <p className="text-sm text-muted-foreground">{producto.DescripcionProducto}</p>
-              <h4 className="text-base font-semibold">${producto.PrecioProducto}</h4>
+            <div className="p-4 flex flex-col justify-between h-full">
+              <div className="flex-1">
+                <h3 className="text-xl font-bold mb-2 truncate">{truncarTexto(producto.NombreProducto, 50)}</h3>
+                <p className="text-sm text-gray-600 h-20 overflow-hidden overflow-ellipsis">{truncarTexto(producto.DescripcionProducto, 100)}</p>
+              </div>
+              <h4 className="text-lg font-semibold mt-2">${producto.PrecioProducto}</h4>
             </div>
           </div>
         ))}
