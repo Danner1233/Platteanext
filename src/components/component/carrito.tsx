@@ -74,12 +74,15 @@ export function Carrito() {
       }
     }
   };
+
   const handleRemoveItem = async (itemId: number) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/carrito/${itemId}`, {
-        method: 'DELETE',
-      });
-      console.log(`http://localhost:4000/api/carrito/${itemId}`,typeof itemId)
+      const response = await fetch(
+        `http://localhost:4000/api/carrito/${itemId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
         setItems(items.filter(item => item.IdDetalleCarrito !== itemId));
       } else {
@@ -174,7 +177,11 @@ export function Carrito() {
                 Continuar comprando
               </Button>
             </Link>
-            <Button className="flex-1 bg-plattea1">Proceder al pago</Button>
+
+
+            <Link href="/agregartarjeta">
+              <Button className="flex-1 bg-plattea1">Proceder al pago</Button>
+            </Link>
           </div>
         </div>
       </div>
