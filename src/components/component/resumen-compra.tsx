@@ -29,7 +29,7 @@ export function ResumenCompra() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="hidden w-[100px] sm:table-cell">Imagen</TableHead>
+              <TableHead className="hidden w-[100px] sm:table-cell"></TableHead>
               <TableHead>Producto</TableHead>
               <TableHead>Cantidad</TableHead>
               <TableHead className="hidden md:table-cell">Precio unitario</TableHead>
@@ -86,27 +86,16 @@ export function ResumenCompra() {
         </Table>
       </div>
       <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Subtotal</CardTitle>
-          </CardHeader>
-          <CardContent className="text-2xl font-bold">$99.94</CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Impuestos</CardTitle>
-          </CardHeader>
-          <CardContent className="text-2xl font-bold">$7.99</CardContent>
-        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Total a pagar</CardTitle>
           </CardHeader>
-          <CardContent className="text-2xl font-bold">$107.93</CardContent>
+          <CardContent className="text-2xl font-bold">$99.94</CardContent>
         </Card>
       </div>
       <div className="mt-6 flex justify-end">
-        <Button size="lg">Completar compra</Button>
+        <Button size="lg">Confirmar compra</Button>
       </div>
     </div>
   )
