@@ -31,7 +31,7 @@
     "embla-carousel-react": "^8.2.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.429.0",
-    "next": "^14.2.8",
+    "next": "^14.2.10",
     "next-crypto": "^1.0.8",
     "plattea": "file:",
     "punycode": "^2.3.1",
