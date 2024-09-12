@@ -18,7 +18,9 @@ function Page() {
   return (
     <div>
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+      <main className='flex-grow'>
       <Carrito />
+      </main>
       <Footer />
     </div>
   )
