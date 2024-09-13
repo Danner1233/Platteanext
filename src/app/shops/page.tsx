@@ -20,15 +20,13 @@ function Page() {
   }, []);
 
   return (
-    <div>
-      <Head>
-        <title>Tu Título Aquí</title> {/* Título de la pestaña */}
-      </Head>
-
+    <div className="flex flex-col min-h-screen">
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <CarruselTiendas />
       <Busqueda />
+      <main className="flex-grow">
       <Tiendas />
+      </main>
       <Footer />
     </div>
   );

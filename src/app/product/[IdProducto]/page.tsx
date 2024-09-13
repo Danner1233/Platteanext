@@ -23,11 +23,13 @@ function Page() {
   const idProducto = Array.isArray(IdProducto) ? IdProducto[0] : IdProducto;
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <Producto />
       <ProductosProducto encryptedIdProducto={idProducto || ''} />
+      <main className="flex-grow">
       <Comentariodos idProducto={idProducto || ''} />
+      </main>
       <Footer />
     </div>
   );

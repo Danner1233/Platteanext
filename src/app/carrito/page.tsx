@@ -16,10 +16,10 @@ function Page() {
     }
   }, []);
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
-      <main className='flex-grow'>
-      <Carrito />
+      <main className="flex-grow">
+        <Carrito />
       </main>
       <Footer />
     </div>
@@ -27,10 +27,3 @@ function Page() {
 }
 
 export default Page
-
-
-
-
-
-
-
