@@ -1,3 +1,6 @@
+"use client";
+
+// Importa el hook useRouter
 import {
   Card,
   CardHeader,
@@ -12,7 +15,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode"; // Asegúrate de usar la función jwtDecode correctamente
+import { jwtDecode } from "jwt-decode"; // Asegúrate de usar la función jwtDecode correctamente
+import { useRouter } from "next/navigation";
 
 interface JWTDecoded {
   IdPersona: number; // campo del JWT que contiene el ID de la persona
@@ -21,6 +25,7 @@ interface JWTDecoded {
 export function Tarjeta() {
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+  const router = useRouter(); // Usa el hook useRouter
 
   // Manejar el envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,6 +60,9 @@ export function Tarjeta() {
       // Manejar la respuesta
       console.log("Pedido creado:", response.data);
       alert("Pedido creado exitosamente.");
+
+      // Redirigir a /resumencompra después de un envío exitoso
+      router.push("/resumendecompra");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error("Error al crear el pedido:", error.response.data);
@@ -134,7 +142,7 @@ export function Tarjeta() {
           </CardContent>
           <CardFooter className="flex justify-between">
             <Link
-              href="/"
+              href="/carrito"
               className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
               prefetch={false}
             >
