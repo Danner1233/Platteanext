@@ -51,6 +51,11 @@ export function ProductosDestacados() {
 
     fetchProductos();
   }, []);
+  const truncarTexto = (texto: string, maxLength: number) => {
+    return texto.length > maxLength
+      ? texto.substring(0, maxLength) + "..."
+      : texto;
+  };
 
   if (error) return <p>Error: {error}</p>;
   if (!isLoaded) return <p>Cargando...</p>;
@@ -84,7 +89,7 @@ export function ProductosDestacados() {
               />
               <div className="p-4 bg-background">
                 <h3 className="text-lg font-semibold md:text-xl">
-                  {producto.NombreProducto}
+                {truncarTexto(producto.NombreProducto, 18)}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   Calificación: {parseFloat(producto.PromedioCalificacion).toFixed(1)}
