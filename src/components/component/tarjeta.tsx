@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import axios from 'axios';
 
 interface JWTDecoded {
-  idPersona: number;
-  // otros campos del JWT si es necesario
+  IdPersona: number; // campo del JWT que contiene el ID de la persona
 }
 
 export function Tarjeta() {
@@ -31,18 +30,18 @@ export function Tarjeta() {
       return;
     }
 
-    // Decodificar el JWT para obtener idPersona
-    const decodedToken: JWTDecoded = jwtDecode(token);
-    const idPersona = decodedToken.idPersona;
 
+    const decodedToken: JWTDecoded = jwtDecode(token);
+    const idPersona = decodedToken.IdPersona;
+    console.log("ïd ",idPersona)
     try {
-      await axios.post('http://localhost:4000/api/pedido', {
-        idPersonaFK: idPersona,
+      const response = await axios.post(`http://localhost:4000/api/pedido/`, { 
+        IdPersonaFK:  idPersona,
         Direccion: address,
         Ciudad: city
       });
-      console.log(idPersona)
-      // Redirigir o manejar la respuesta según sea necesario
+      
+      console.log('Compra realizada con éxito:', response.data);
     } catch (error) {
       console.error('Error al realizar la compra:', error);
     }
