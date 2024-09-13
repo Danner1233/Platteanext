@@ -19,10 +19,12 @@ useEffect(() => {
 }, []);
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
         {isLoggedIn ? <Navbar /> : <NavbarDefault />}
         <BannerPerfil />
+        <main className="flex-grow">
         <ProductosPerfil />
+        </main>
         <Footer />
     </div>
   )

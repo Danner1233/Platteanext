@@ -51,11 +51,20 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
         console.error('Error al obtener productos similares:', error);
       }
     };
+    
+
+  
 
     if (encryptedIdProducto) {
       fetchProductosSimilares();
     }
   }, [encryptedIdProducto]);
+
+  const truncarTexto = (texto: string, maxLength: number) => {
+    return texto.length > maxLength
+      ? texto.substring(0, maxLength) + "..."
+      : texto;
+  };
 
   return (
     <section className="w-full py-12">
@@ -79,8 +88,8 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
                         className="rounded-lg object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
                       />
                       <div className="p-2">
-                        <h3 className="font-semibold text-sm">{producto.NombreProducto}</h3>
-                        <p className="text-xs leading-none">{producto.DescripcionProducto}</p>
+                        <h3 className="font-semibold text-bold">{producto.NombreProducto}</h3>
+                        <p className="text-sm leading-none"> {truncarTexto(producto.DescripcionProducto, 121)}</p>
                         <div className="text-xl font-bold">${producto.PrecioProducto}</div>
                       </div>
                     </div>

@@ -17,10 +17,12 @@ function Page() {
     }
   }, []);
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
 
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+      <main className="flex-grow">
       <EditarTienda />
+      </main>
       <Footer />
     </div>
   )

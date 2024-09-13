@@ -23,7 +23,6 @@ function Page() {
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <main className="flex-grow">
         <EditarProductos />
-       
       </main>
       <Footer />
     </div>
