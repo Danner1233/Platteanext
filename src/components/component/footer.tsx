@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { jwtDecode } from "jwt-decode"; // Usa la importación correcta para jwt-decode
 import { XIcon } from "lucide-react";
+import Link from "next/link";
+
 
 interface DecodedToken {
   IdPersona: string;
@@ -69,15 +71,15 @@ export function Footer() {
               <span className="ml-2 text-lg font-bold">Plattea</span>
             </a>
             <div className="grid gap-2">
-              <a href="#" className="text-sm hover:underline">
+              <Link href="/nosotros" className="text-sm hover:underline">
                 Sobre Nosotros
-              </a>
-              <a href="#" className="text-sm hover:underline">
+              </Link>
+              <Link href="/Plattea.pdf" target="_blank" className="text-sm hover:underline">
                 Manual de Usuario
-              </a>
-              <a href="#" className="text-sm hover:underline">
+              </Link>
+              <Link href="/terminosycondiciones" className="text-sm hover:underline">
                 Términos y condiciones del sitio
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex flex-col items-start gap-4">
@@ -124,15 +126,15 @@ export function Footer() {
             <span className="ml-2 text-lg font-bold">Plattea</span>
           </a>
           <div className="grid gap-2">
-            <a href="#" className="text-sm hover:underline">
+            <Link href="/nosotros" className="text-sm hover:underline">
               Sobre Nosotros
-            </a>
-            <a href="#" className="text-sm hover:underline">
+            </Link>
+            <Link href="/Plattea.pdf" target="_blank" className="text-sm hover:underline">
               Manual de Usuario
-            </a>
-            <a href="#" className="text-sm hover:underline">
+            </Link>
+            <Link href="/terminosycondiciones" className="text-sm hover:underline">
               Términos y condiciones del sitio
-            </a>
+            </Link>
             <Dialog>
                 <DialogTrigger asChild>
                   <span className="text-sm cursor-pointer hover:underline">
