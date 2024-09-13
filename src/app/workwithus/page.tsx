@@ -22,7 +22,7 @@ function Page() {
 
   return (
     <div className="flex flex-col min-h-screen">
-        {isLoggedIn ? <Navbar /> : <NavbarDefault />}0
+        {isLoggedIn ? <Navbar /> : <NavbarDefault />}
         <BannerWork />
         <main className="flex-grow">
         <ComprarTienda />
