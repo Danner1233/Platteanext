@@ -1,7 +1,9 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import NextCrypto from 'next-crypto'; // Asegúrate de tener esta importación
-import { useEffect, useState } from "react";
+import { useEffect, useState, JSX, SVGProps } from "react";
 import Link from "next/link";
 
 interface Tienda {
@@ -15,9 +17,11 @@ interface Tienda {
 
 export function Tiendas() {
   const [tiendas, setTiendas] = useState<Tienda[]>([]);
+  const [filteredTiendas, setFilteredTiendas] = useState<Tienda[]>([]);
+  const [search, setSearch] = useState('');
   const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState<string>("");
-  const crypto = new NextCrypto('secret key'); // Reemplaza 'secret key' con tu clave secreta
+  const crypto = new NextCrypto('your-secret-key'); // Reemplaza 'your-secret-key' con tu clave secreta
 
   useEffect(() => {
     const fetchTiendas = async () => {
@@ -26,11 +30,11 @@ export function Tiendas() {
         if (response.ok) {
           const data: Tienda[] = await response.json();
           setTiendas(data);
+          setFilteredTiendas(data);
 
           // Encriptar IDs
           const encrypted = await Promise.all(data.map(async (tienda) => {
             const encryptedId = await crypto.encrypt(tienda.IdTienda);
-            // Reemplazar caracteres en el ID encriptado
             const safeEncryptedId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
             return {
               id: tienda.IdTienda,
@@ -54,15 +58,21 @@ export function Tiendas() {
     fetchTiendas();
   }, []);
 
+  useEffect(() => {
+    const filtered = tiendas.filter((tienda) =>
+      tienda.NombreTienda.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredTiendas(filtered);
+  }, [search, tiendas]);
+
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <div className="container mx-auto px-4 md:px-6 lg:px-7">
-        <h2 className="text-2xl font-bold mb-5">Tiendas</h2>
-      </div>
-      <section className="container mx-auto px-4 md:px-6 lg:px-7 grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
-        {tiendas.map((tienda) => (
+    <div className="container mx-auto px-4 md:px-6 lg:px-7">
+      <h2 className="text-2xl font-bold mb-5">Tiendas</h2>
+      <Busqueda search={search} setSearch={setSearch} />
+      <section className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
+        {filteredTiendas.map((tienda) => (
           <Link key={tienda.IdTienda} href={`/shop/${encryptedIds[tienda.IdTienda] || ''}`}>
             <div className="relative overflow-hidden rounded-lg group">
               <div className="absolute inset-0 z-10">
@@ -86,5 +96,47 @@ export function Tiendas() {
         ))}
       </section>
     </div>
+  );
+}
+
+function Busqueda({ search, setSearch }: { search: string; setSearch: (value: string) => void }) {
+  return (
+    <div className="flex w-full max-w-md m-8">
+      <Input
+        type="search"
+        placeholder="Buscar..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="flex-1 h-10 px-4 py-2 text-sm rounded-l-md border border-r-0 border-input focus:outline-none focus:ring-1 focus:ring-primary"
+      />
+      <Button
+        type="submit"
+        variant="ghost"
+        size="icon"
+        className="h-10 px-3 rounded-r-md border border-input focus:outline-none focus:ring-1 focus:ring-primary"
+      >
+        <SearchIcon className="w-5 h-5 text-muted-foreground" />
+      </Button>
+    </div>
+  );
+}
+
+function SearchIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
   );
 }

@@ -23,7 +23,6 @@ function Page() {
     <div className="flex flex-col min-h-screen">
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <CarruselTiendas />
-      <Busqueda />
       <main className="flex-grow">
       <Tiendas />
       </main>
