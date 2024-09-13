@@ -112,7 +112,7 @@ export function Nosotros() {
                 </div>
               </div>
               <p className="text-muted-foreground">
-                Alexix es el fundador y CEO de nuestra empresa. Tiene más de 10 años de experiencia en el sector.
+                
               </p>
             </div>
             <div className="bg-card p-6 rounded-lg shadow-md">
@@ -130,7 +130,7 @@ export function Nosotros() {
                 </div>
               </div>
               <p className="text-muted-foreground">
-                Andres es el CTO de nuestra empresa. Tiene una amplia experiencia en desarrollo de software.
+                
               </p>
             </div>
             <div className="bg-card p-6 rounded-lg shadow-md">
@@ -148,7 +148,7 @@ export function Nosotros() {
                 </div>
               </div>
               <p className="text-muted-foreground">
-                Carlos es el CMO de nuestra empresa. Tiene una trayectoria exitosa en marketing digital.
+                
               </p>
             </div>
             <div className="bg-card p-6 rounded-lg shadow-md">
@@ -166,7 +166,7 @@ export function Nosotros() {
                 </div>
               </div>
               <p className="text-muted-foreground">
-                Danner es la COO de nuestra empresa. Tiene una amplia experiencia en operaciones y gestión.
+                
               </p>
             </div>
           </div>
