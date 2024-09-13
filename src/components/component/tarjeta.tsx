@@ -1,18 +1,53 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { useState } from 'react';
+import {jwtDecode} from 'jwt-decode';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { JSX, SVGProps } from "react";
+import axios from 'axios';
+
+interface JWTDecoded {
+  idPersona: number;
+  // otros campos del JWT si es necesario
+}
 
 export function Tarjeta() {
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvc, setCvc] = useState('');
+  const [cardholderName, setCardholderName] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+
+    // Obtener el JWT del local storage
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    // Decodificar el JWT para obtener idPersona
+    const decodedToken: JWTDecoded = jwtDecode(token);
+    const idPersona = decodedToken.idPersona;
+
+    try {
+      await axios.post('http://localhost:4000/api/pedido', {
+        idPersonaFK: idPersona,
+        Direccion: address,
+        Ciudad: city
+      });
+      console.log(idPersona)
+      // Redirigir o manejar la respuesta según sea necesario
+    } catch (error) {
+      console.error('Error al realizar la compra:', error);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-9">
       <div className="flex justify-center">
@@ -32,6 +67,8 @@ export function Tarjeta() {
                 maxLength={16}
                 className="pr-12"
                 required
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -44,6 +81,8 @@ export function Tarjeta() {
                   pattern="[0-9]{2}/[0-9]{2}"
                   maxLength={5}
                   required
+                  value={expiryDate}
+                  onChange={(e) => setExpiryDate(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -55,6 +94,8 @@ export function Tarjeta() {
                   pattern="[0-9]{3,4}"
                   maxLength={4}
                   required
+                  value={cvc}
+                  onChange={(e) => setCvc(e.target.value)}
                 />
               </div>
             </div>
@@ -64,6 +105,8 @@ export function Tarjeta() {
                 id="cardholder-name"
                 placeholder="Ingresa tu nombre"
                 required
+                value={cardholderName}
+                onChange={(e) => setCardholderName(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -72,6 +115,8 @@ export function Tarjeta() {
                 id="city"
                 placeholder="Ingresa tu ciudad"
                 required
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -80,6 +125,8 @@ export function Tarjeta() {
                 id="address"
                 placeholder="Ingresa tu dirección"
                 required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
             </div>
           </CardContent>
@@ -91,56 +138,10 @@ export function Tarjeta() {
             >
               Volver
             </Link>
-            <Link href="/resumendecompra">
-              <Button className="ml-auto">Agregar Tarjeta</Button>
-            </Link>
+            <Button className="ml-auto" onClick={handleSubmit}>Agregar Tarjeta</Button>
           </CardFooter>
         </Card>
       </div>
     </div>
-  );
-}
-
-function CreditCardIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="20" height="14" x="2" y="5" rx="2" />
-      <line x1="2" x2="22" y1="10" y2="10" />
-    </svg>
-  );
-}
-
-function ViewIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z" />
-      <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-      <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2" />
-      <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2" />
-    </svg>
   );
 }
