@@ -58,7 +58,6 @@ export function TiendasDestacadas() {
       : texto;
   };
 
-
   if (error) return <p>Error: {error}</p>;
   if (!isLoaded) return <p>Cargando...</p>;
 
@@ -75,7 +74,7 @@ export function TiendasDestacadas() {
               className="relative overflow-hidden rounded-lg group"
             >
               <Link
-                href={`/tienda/${encryptedIds[tienda.IdTienda] || ''}`}
+                href={`/shop/${encryptedIds[tienda.IdTienda] || ''}`}
                 className="absolute inset-0 z-10"
                 prefetch={false}
               >
@@ -91,13 +90,13 @@ export function TiendasDestacadas() {
               />
               <div className="p-4 bg-background">
                 <h3 className="text-lg font-semibold md:text-xl">
-                {truncarTexto(tienda.NombreTienda, 20)}
+                  {truncarTexto(tienda.NombreTienda, 20)}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   Calificación: {parseFloat(tienda.PromedioCalificacion).toFixed(1)}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                {truncarTexto(tienda.DescripcionTienda, 105)}
+                  {truncarTexto(tienda.DescripcionTienda, 105)}
                 </p>
                 <Button size="sm" className="bg-plattea1 text-plattea2">
                   Ver Más
