@@ -122,9 +122,9 @@ export function Nosotros() {
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-3xl font-bold text-foreground mb-8">Que es Plattea?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            <div className="bg-card p-9 rounded-lg shadow-md">
+            <div className="bg-card p-1  weithrounded-lg shadow-md">
 
-              <p className="text-black">Fuimos galardonados como la mejor empresa del año en 2022.</p>
+              <p className="text-black">En Plattea, transformamos la compra y venta en una experiencia sencilla y dinámica. Nuestra plataforma permite a los usuarios no solo encontrar productos increíbles, sino también convertirse en vendedores y compartir sus artículos con una comunidad en crecimiento. En Plattea, todos tienen la oportunidad de participar y prosperar en el mercado.</p>
             </div>
             
           </div>
