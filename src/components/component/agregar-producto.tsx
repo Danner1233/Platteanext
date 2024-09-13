@@ -93,6 +93,7 @@ export function AgregarProducto() {
               <Label htmlFor="description">Descripción</Label>
               <Textarea id="description" placeholder="Ingresa la descripción del producto" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
             </div>
+            
             <div className="grid gap-2">
               <Label htmlFor="price">Precio</Label>
               <Input id="price" type="number" placeholder="Ingresa el precio del producto" value={precio} onChange={(e) => setPrecio(e.target.value)} />
