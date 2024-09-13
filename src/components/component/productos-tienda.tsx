@@ -69,7 +69,7 @@ export function ProductosTienda() {
   };
 
   if (loading) return <p className="text-center">Loading...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (error) return <p className="text-center text-red-500">agrega un producto pulsando en el boton de la caja :)</p>;
 
   return (
     <div className="px-4 md:px-6 py-12">

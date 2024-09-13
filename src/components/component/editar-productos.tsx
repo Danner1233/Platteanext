@@ -24,21 +24,39 @@ export function EditarProductos() {
   const [productoSeleccionado, setProductoSeleccionado] = useState<Producto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [encryptedProductLinks, setEncryptedProductLinks] = useState<Map<string, string>>(new Map());
 
   useEffect(() => {
     if (encryptedIdTienda) {
       const fetchProductos = async () => {
         try {
+          console.log('Encrypted Id Tienda:', encryptedIdTienda);
           const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
           const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
+          console.log('Decrypted Id:', decryptedId);
 
           const response = await fetch(`http://localhost:4000/api/tienda/producto/${decryptedId}`);
+          if (response.status === 404) {
+            setProductos([]);
+            return;
+          }
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
           const data: Producto[] = await response.json();
+          console.log('Fetched Products:', data);
           setProductos(data);
+
+          // Encriptar IDs de productos para los enlaces
+          const productLinks = new Map<string, string>();
+          for (const producto of data) {
+            const encryptedId = await crypto.encrypt(producto.IdProducto);
+            const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+            productLinks.set(producto.IdProducto, safeId);
+          }
+          setEncryptedProductLinks(productLinks);
         } catch (error: any) {
+          console.error('Error fetching products:', error);
           setError(error.message || 'An unexpected error occurred');
         } finally {
           setLoading(false);
@@ -51,17 +69,15 @@ export function EditarProductos() {
 
   useEffect(() => {
     if (productoSeleccionado) {
-      // Logic to handle selected product in a form (e.g., pre-filling form fields)
+      console.log('Selected Product:', productoSeleccionado);
     }
   }, [productoSeleccionado]);
 
-  // Función para truncar el texto con puntos suspensivos
   const truncarTexto = (texto: string, maxLength: number) => {
     return texto.length > maxLength
       ? texto.substring(0, maxLength) + "..."
       : texto;
   };
-
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -74,7 +90,7 @@ export function EditarProductos() {
       const encryptedId = await crypto.encrypt(idProducto);
       const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
 
-      const response = await fetch(`http://localhost:4000/api/producto/${idProducto}`, {
+      const response = await fetch(`http://localhost:4000/api/producto/${safeId}`, {
         method: 'DELETE',
       });
 
@@ -95,52 +111,58 @@ export function EditarProductos() {
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
         </Button>
-        <div className="relative">
-          <div className="absolute right-10">
-            <AgregarProducto />
-          </div>
-        </div>
       </div>
       <h1 className="text-2xl font-bold mb-6">Administración de Productos</h1>
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-        {productos.length > 0 ? (
-          productos.map((producto) => (
-            <div key={producto.IdProducto} className="bg-card rounded-lg overflow-hidden shadow-sm">
-              <div className="relative group">
-                <img
-                  src={producto.FotoProductoURL || "/placeholder.svg"}
-                  alt={`Imagen de ${producto.NombreProducto}`}
-                  width={600}
-                  height={400}
-                  className="w-full h-[200px] object-cover"
-                  style={{ aspectRatio: "600/400", objectFit: "cover" }}
-                />
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <Link href={`/editarproducto/${producto.IdProducto}`}>
-                    <Button size="icon" variant="ghost" onClick={() => setProductoSeleccionado(producto)}>
-                      <FilePenIcon className="w-5 h-5" />
-                      <span className="sr-only">Editar</span>
-                    </Button>
-                  </Link>
-                  <Button size="icon" variant="ghost" onClick={() => handleDelete(producto.IdProducto)}>
-                    <TrashIcon className="w-5 h-5" />
-                    <span className="sr-only">Eliminar</span>
-                  </Button>
-                </div>
-              </div>
-              <div className="p-4 grid gap-2">
-                <h3 className="font-semibold text-lg">{truncarTexto(producto.NombreProducto, 25)}</h3>
-                <p className="text-sm text-muted-foreground"> {truncarTexto(producto.DescripcionProducto, 100)}</p>
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-lg">${producto.PrecioProducto}</span>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No hay productos disponibles. Puedes agregar uno nuevo a continuación.</p>
-        )}
+      <div className="relative mb-6">
+        <div className="absolute right-10">
+          <AgregarProducto />
+        </div>
       </div>
+      {productos.length > 0 ? (
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+          {productos.map((producto) => {
+            const encryptedIdProducto = encryptedProductLinks.get(producto.IdProducto) || '';
+
+            return (
+              <div key={producto.IdProducto} className="bg-card rounded-lg overflow-hidden shadow-sm">
+                <div className="relative group">
+                  <img
+                    src={producto.FotoProductoURL || "/placeholder.svg"}
+                    alt={`Imagen de ${producto.NombreProducto}`}
+                    width={600}
+                    height={400}
+                    className="w-full h-[200px] object-cover"
+                    style={{ aspectRatio: "600/400", objectFit: "cover" }}
+                  />
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <Link href={`/editarproducto/${encryptedIdProducto}`}>
+                      <Button size="icon" variant="ghost" onClick={() => setProductoSeleccionado(producto)}>
+                        <FilePenIcon className="w-5 h-5" />
+                        <span className="sr-only">Editar</span>
+                      </Button>
+                    </Link>
+                    <Button size="icon" variant="ghost" onClick={() => handleDelete(producto.IdProducto)}>
+                      <TrashIcon className="w-5 h-5" />
+                      <span className="sr-only">Eliminar</span>
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-4 grid gap-2">
+                  <h3 className="font-semibold text-lg">{truncarTexto(producto.NombreProducto, 25)}</h3>
+                  <p className="text-sm text-muted-foreground">{truncarTexto(producto.DescripcionProducto, 100)}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-lg">${producto.PrecioProducto}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center">
+          No hay productos disponibles
+        </div>
+      )}
     </div>
   );
 }

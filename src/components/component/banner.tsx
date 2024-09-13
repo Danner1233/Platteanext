@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Edit, Settings } from 'lucide-react';
+import { Edit, Package, Package2, Settings } from 'lucide-react';
 
 interface Tienda {
   NombreTienda: string;
@@ -67,8 +67,9 @@ export function Banner() {
           <Settings className="w-6 h-6" />
         </Link>
         <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-          <Edit className="w-6 h-6" />
-        </Link>
+  <Package className="w-6 h-6" />
+</Link>
+
       </div>
     </section>
   );

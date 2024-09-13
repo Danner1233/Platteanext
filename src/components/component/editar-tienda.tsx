@@ -1,4 +1,3 @@
-
 import NextCrypto from 'next-crypto';
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from 'next/navigation';
@@ -8,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeftIcon } from "lucide-react";
-import Link from "next/link";
 
 interface Tienda {
   IdTienda: string;
@@ -20,52 +18,46 @@ interface Tienda {
   MiniaturaTiendaURL: string;
   BannerTiendaURL: string;
   IdCategoriaFK: string;
+  EstadoTienda: boolean; // Asegúrate de incluir el estado
 }
 
 export function EditarTienda() {
   const params = useParams();
   const router = useRouter(); 
-  const encryptedIdTienda = params.IdTienda as string; // Asegúrate de que sea una cadena
+  const encryptedIdTienda = params.IdTienda as string; 
   const crypto = new NextCrypto('secret key');
-  const idTienda = params.IdTienda as string;
 
   const [tienda, setTienda] = useState<Tienda | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({})
 
   useEffect(() => {
-    if (encryptedIdTienda) {
-      const fetchTienda = async () => {
-        try {
-          const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
-        // Desencriptar el ID de la tienda
+    const fetchTienda = async () => {
+      try {
+        const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
         const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
-
-          const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data: Tienda = await response.json();
-          setTienda(data);
-        } catch (error: any) {
-          setError(error.message || 'An unexpected error occurred');
-        } finally {
-          setLoading(false);
+        const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      };
+        const data: Tienda = await response.json();
+        setTienda(data);
+      } catch (error: any) {
+        setError(error.message || 'An unexpected error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchTienda();
-    }
+    fetchTienda();
   }, [encryptedIdTienda]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
-        // Desencriptar el ID de la tienda
-        const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
+    const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
     try {
       const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`, {
@@ -83,14 +75,39 @@ export function EditarTienda() {
     }
   };
 
+  const handleToggleState = async () => {
+    const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
+    const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
+
+    try {
+      const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`, {
+        method: 'PATCH',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al cambiar el estado de la tienda');
+      }
+
+      const updatedTienda = await response.json();
+      setTienda(updatedTienda);
+      alert(`Tienda ${updatedTienda.EstadoTienda ? 'activada' : 'desactivada'} correctamente.`);
+
+      // Redirigir al perfil si la tienda se desactiva
+      if (!updatedTienda.EstadoTienda) {
+        router.push('/perfil'); // Cambia '/perfil' a la ruta real de tu perfil
+      }
+    } catch (error: any) {
+      setError(error.message || 'An unexpected error occurred');
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="flex justify-center">
       <div className="absolute left-4 pt-8">
-        
-      <Button onClick={() => router.back()} className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10">
+        <Button onClick={() => router.back()} className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10">
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
         </Button>
@@ -188,7 +205,9 @@ export function EditarTienda() {
           </form>
         </CardContent>
         <CardFooter>
-          <Button type="button" className="ml-4 bg-red-500 text-white" onClick={() => console.log('Eliminar Tienda')}>Eliminar Tienda</Button>
+          <Button type="button" onClick={handleToggleState} className={`bg-${tienda?.EstadoTienda ? 'red-500' : 'green-500'} text-white`}>
+            {tienda?.EstadoTienda ? 'Desactivar Tienda' : 'Activar Tienda'}
+          </Button>
         </CardFooter>
       </Card>
     </div>

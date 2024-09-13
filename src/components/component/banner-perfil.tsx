@@ -90,10 +90,6 @@
               </div>
               <div className="mt-4 space-y-2">
                 <div className="flex items-center gap-2">
-                  <MapPinIcon className="w-4 h-4 text-gray-500" />
-                  <span className="text-gray-500">{profile?.CiudadPersona || "Ciudad"}</span>
-                </div>
-                <div className="flex items-center gap-2">
                   <InfoIcon className="w-4 h-4 text-gray-500" />
                   <span> {profile?.DescripcionPersona || "Descripción no disponible"}</span>
                 </div>
