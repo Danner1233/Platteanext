@@ -1,40 +1,84 @@
 "use client";
-
-
-import { useState } from 'react';
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import NextCrypto from 'next-crypto';
+import { useParams, useRouter } from 'next/navigation';
+import axios from 'axios';
 
-const productos = [
-  { id: 1, nombre: 'Producto 1', cantidad: 2, precioUnitario: 19.99, imagen: '/placeholder.svg' },
-  { id: 2, nombre: 'Producto 2', cantidad: 1, precioUnitario: 29.99, imagen: '/placeholder.svg' },
-  { id: 3, nombre: 'Producto 3', cantidad: 3, precioUnitario: 9.99, imagen: '/placeholder.svg' },
-];
+interface Producto {
+  IdProducto: string;
+  NombreProducto: string;
+  DescripcionProducto: string;
+  PrecioProducto: string;
+  FotoProductoURL: string;
+  NombreTienda: string;
+  PromedioCalificacion: number;
+  cantidad: number; // Incluye este campo según el JSON original
+}
+
+interface JWTDecoded {
+  IdPersona: number;
+}
 
 export function ResumenCompra() {
-  const [total, setTotal] = useState(
-    productos.reduce((acc, producto) => acc + (producto.cantidad * producto.precioUnitario), 0)
-  );
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [total, setTotal] = useState(0);
+  const params = useParams();
+  const encryptedIdPedido = params.IdPedido as string;
+  const crypto = new NextCrypto('secret key'); // Usa una clave secreta segura
+  const router = useRouter(); // Para redirección después de la compra
+
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        // Reemplazar caracteres en el ID encriptado antes de decodificar
+        const safeIdPedido = encryptedIdPedido.replace(/_/g, '/').replace(/-/g, '+');
+        // Decodificar el ID encriptado
+        const decodedId = decodeURIComponent(safeIdPedido);
+        // Desencriptar el ID del pedido
+        const decryptedId = await crypto.decrypt(decodedId);
+        const response = await fetch(`http://localhost:4000/api/pedido/${decryptedId}`);
+        const data: Producto[] = await response.json();
+        setProductos(data);
+
+        // Calcular el total de la compra
+        const totalCompra = data.reduce(
+          (acc, producto) => acc + producto.cantidad * parseFloat(producto.PrecioProducto),
+          0
+        );
+        setTotal(totalCompra);
+      } catch (error) {
+        console.error('Error al obtener productos:', error);
+      }
+    };
+
+    if (encryptedIdPedido) {
+      fetchProductos();
+    }
+  }, [encryptedIdPedido]);
 
   const handleConfirmarCompra = async () => {
     try {
-      // Aquí realizarás una solicitud POST al backend para confirmar la compra.
-      // Reemplaza la URL con la ruta adecuada de tu backend.
-      const response = await fetch('/api/confirmar-compra', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productos, total }),
+      const token = localStorage.getItem("token");
+      const decodedToken: JWTDecoded = jwtDecode(token);
+      const IdPersona = decodedToken.IdPersona;
+      const safeIdPedido = encryptedIdPedido.replace(/_/g, '/').replace(/-/g, '+');
+      const decodedId = decodeURIComponent(safeIdPedido);
+      const decryptedId = await crypto.decrypt(decodedId);
+
+      const response = await axios.post("http://localhost:4000/api/confirmarpedido", {
+        IdPedido: decryptedId,
+        Total: total.toFixed(2),
+        IdPersona: IdPersona,
       });
 
-      if (response.ok) {
-        // Manejo de éxito
+      if (response.status === 200) {
         alert('Compra confirmada con éxito');
-        // Redirigir o realizar alguna acción adicional
+        router.push("/"); // Redirige a la página principal
       } else {
-        // Manejo de error
         alert('Hubo un problema al confirmar la compra');
       }
     } catch (error) {
@@ -59,35 +103,33 @@ export function ResumenCompra() {
           </TableHeader>
           <TableBody>
             {productos.map((producto) => (
-              <TableRow key={producto.id}>
-                <TableCell className="hidden sm:table-cell">
-                  <img
-                    src={producto.imagen}
-                    alt={producto.nombre}
-                    width={80}
-                    height={80}
-                    className="aspect-square rounded-md object-cover"
-                  />
+              <TableRow key={producto.IdProducto}>
+                <TableCell className="hidden w-[100px] sm:table-cell">
+                  <img src={producto.FotoProductoURL} alt={producto.NombreProducto} className="w-[100px] h-[100px] object-cover rounded" />
                 </TableCell>
-                <TableCell className="font-medium">{producto.nombre}</TableCell>
+                <TableCell>{producto.NombreProducto}</TableCell>
                 <TableCell>{producto.cantidad}</TableCell>
-                <TableCell className="hidden md:table-cell">${producto.precioUnitario.toFixed(2)}</TableCell>
-                <TableCell className="hidden md:table-cell">${(producto.cantidad * producto.precioUnitario).toFixed(2)}</TableCell>
+                <TableCell className="hidden md:table-cell">${producto.PrecioProducto}</TableCell>
+                <TableCell className="hidden md:table-cell">
+                  ${producto.cantidad * parseFloat(producto.PrecioProducto)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-      <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
+      <div className="flex justify-between mt-6">
+        <Card className="w-full md:w-1/3">
           <CardHeader>
-            <CardTitle>Total a pagar</CardTitle>
+            <CardTitle>Total</CardTitle>
           </CardHeader>
-          <CardContent className="text-2xl font-bold">${total.toFixed(2)}</CardContent>
+          <CardContent>
+            <p className="text-xl font-semibold">${total.toFixed(2)}</p>
+          </CardContent>
         </Card>
-      </div>
-      <div className="mt-6 flex justify-end">
-        <Button size="lg" onClick={handleConfirmarCompra}>Confirmar compra</Button>
+        <Button onClick={handleConfirmarCompra} className="self-center">
+          Confirmar compra
+        </Button>
       </div>
     </div>
   );
