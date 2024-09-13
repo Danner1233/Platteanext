@@ -3,11 +3,10 @@
 * @see https://v0.dev/t/gGgx2vmbQND
 * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
 */
-
+"use client";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import router from "next/router";
-
+import { useParams, useRouter } from 'next/navigation';
 /** Add fonts into your Next.js project:
 
 import { Inter } from 'next/font/google'
@@ -22,8 +21,19 @@ To read more about using these font, please visit the Next.js documentation:
 - Pages Directory: https://nextjs.org/docs/pages/building-your-application/optimizing/fonts
 **/
 export function Politicas() {
+  const router = useRouter(); 
   return (
+    <div style={{ position: 'relative' }}>
+    <Button
+        onClick={() => router.back()}
+        className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10"
+        style={{ position: 'absolute', top: '45px', left: '20px' }}
+    >
+        <ArrowLeftIcon className="w-4 h-4 mr-2" />
+        Volver atrás
+    </Button>
     <div className="w-full max-w-4xl mx-auto p-6 md:p-8 lg:p-10">
+     
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Términos y Condiciones</h1>
@@ -73,6 +83,7 @@ export function Politicas() {
           </p>
         </div>
       </div>
+    </div>
     </div>
   )
 }
