@@ -7,7 +7,6 @@ import Link from "next/link";
 import { jwtDecode } from 'jwt-decode';
 import { LoadingAnimation } from '@/components/component/loading-animation';
 
-
 interface DecodedToken {
   IdPersona: string;
 }
@@ -100,9 +99,18 @@ export function Carrito() {
   const shipping = 5;
   const total = subtotal + shipping;
 
+  const isEmpty = items.length === 0;
+
   if (loading) {
     return <div><LoadingAnimation/></div>;
   }
+
+  const handleProceedToPayment = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isEmpty) {
+      e.preventDefault();
+      alert("Tu carrito está vacío. Añade productos antes de proceder al pago.");
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 sm:px-2 lg:px-8">
@@ -151,7 +159,6 @@ export function Carrito() {
                   onClick={() => handleRemoveItem(item.IdDetalleCarrito)}
                 >
                   <RemoveIcon className="h-4 w-4 text-red-600" />
-                  
                 </Button>
               </div>
             </div>
@@ -177,11 +184,17 @@ export function Carrito() {
                 Continuar comprando
               </Button>
             </Link>
-
-
-            <Link href="/agregartarjeta">
-              <Button className="flex-1 bg-plattea1">Proceder al pago</Button>
-            </Link>
+            <div className="flex-1">
+              <Link href={isEmpty ? "#" : "/agregartarjeta"} passHref>
+                <Button
+                  className={`flex-1 ${isEmpty ? "bg-gray-300 cursor-not-allowed" : "bg-plattea1"}`}
+                  disabled={isEmpty}
+                  onClick={handleProceedToPayment}
+                >
+                  Proceder al pago
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
