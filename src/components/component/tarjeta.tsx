@@ -1,50 +1,67 @@
-import { useState } from 'react';
-import {jwtDecode} from 'jwt-decode';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
+import {jwtDecode} from "jwt-decode"; // Asegúrate de usar la función jwtDecode correctamente
 
 interface JWTDecoded {
-  idPersona: number;
-  // otros campos del JWT si es necesario
+  IdPersona: number; // campo del JWT que contiene el ID de la persona
 }
 
 export function Tarjeta() {
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvc, setCvc] = useState('');
-  const [cardholderName, setCardholderName] = useState('');
-  const [city, setCity] = useState('');
-  const [address, setAddress] = useState('');
+  const [city, setCity] = useState("");
+  const [address, setAddress] = useState("");
 
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-
-    // Obtener el JWT del local storage
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
-
-    // Decodificar el JWT para obtener idPersona
-    const decodedToken: JWTDecoded = jwtDecode(token);
-    const idPersona = decodedToken.idPersona;
+  // Manejar el envío del formulario
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
     try {
-      await axios.post('http://localhost:4000/api/pedido', {
-        idPersonaFK: idPersona,
+      // Obtener el token del localStorage
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No se encontró el token");
+      }
+
+      // Decodificar el JWT para obtener el idPersona
+      const decodedToken: JWTDecoded = jwtDecode(token);
+      const IdPersona = decodedToken.IdPersona;
+
+      // Verifica el contenido del token decodificado
+      console.log("Token decodificado:", decodedToken);
+
+      // Asegúrate de que idPersona esté definido
+      if (IdPersona === undefined) {
+        throw new Error("El campo idPersona no se encuentra en el token");
+      }
+
+      // Enviar la solicitud al backend con axios
+      const response = await axios.post("http://localhost:4000/api/pedido", {
+        idPersonaFK: IdPersona, // Usa el nombre correcto del campo
         Direccion: address,
-        Ciudad: city
+        Ciudad: city,
       });
-      console.log(idPersona)
-      // Redirigir o manejar la respuesta según sea necesario
+
+      // Manejar la respuesta
+      console.log("Pedido creado:", response.data);
+      alert("Pedido creado exitosamente.");
     } catch (error) {
-      console.error('Error al realizar la compra:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Error al crear el pedido:", error.response.data);
+      } else {
+        console.error("Error al crear el pedido:", error);
+      }
+      alert("Ocurrió un error al crear el pedido.");
     }
   };
 
@@ -57,6 +74,7 @@ export function Tarjeta() {
             <CardDescription>Ingresa tu información de pago.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Los demás campos los dejamos igual */}
             <div className="space-y-2">
               <Label htmlFor="card-number">Número de Tarjeta</Label>
               <Input
@@ -67,8 +85,6 @@ export function Tarjeta() {
                 maxLength={16}
                 className="pr-12"
                 required
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -81,8 +97,6 @@ export function Tarjeta() {
                   pattern="[0-9]{2}/[0-9]{2}"
                   maxLength={5}
                   required
-                  value={expiryDate}
-                  onChange={(e) => setExpiryDate(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -94,29 +108,17 @@ export function Tarjeta() {
                   pattern="[0-9]{3,4}"
                   maxLength={4}
                   required
-                  value={cvc}
-                  onChange={(e) => setCvc(e.target.value)}
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="cardholder-name">Nombre del Titular</Label>
-              <Input
-                id="cardholder-name"
-                placeholder="Ingresa tu nombre"
-                required
-                value={cardholderName}
-                onChange={(e) => setCardholderName(e.target.value)}
-              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="city">Ciudad</Label>
               <Input
                 id="city"
                 placeholder="Ingresa tu ciudad"
-                required
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
+                required
               />
             </div>
             <div className="space-y-2">
@@ -124,9 +126,9 @@ export function Tarjeta() {
               <Input
                 id="address"
                 placeholder="Ingresa tu dirección"
-                required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                required
               />
             </div>
           </CardContent>
@@ -138,7 +140,9 @@ export function Tarjeta() {
             >
               Volver
             </Link>
-            <Button className="ml-auto" onClick={handleSubmit}>Agregar Tarjeta</Button>
+            <Button className="ml-auto" onClick={handleSubmit}>
+              Agregar Tarjeta
+            </Button>
           </CardFooter>
         </Card>
       </div>
