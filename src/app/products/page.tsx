@@ -1,12 +1,9 @@
 "use client"
-import { FiltroProductos } from '@/components/component/filtro-productos'
 import { Footer } from '@/components/component/footer'
 import { NavbarDefault } from '@/components/component/navbar-default'
+import { Navbar } from '@/components/component/navbar'
 import { Productos } from '@/components/component/productos'
-import React from 'react'
-import { useEffect, useState } from 'react';
-import { Navbar } from '@/components/component/navbar';
-
+import React, { useEffect, useState } from 'react'
 
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,12 +14,12 @@ function Page() {
       setIsLoggedIn(true);
     }
   }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
-      < FiltroProductos />
       <main className="flex-grow">
-      <Productos />
+        <Productos />
       </main>
       <Footer />
     </div>
@@ -30,7 +27,3 @@ function Page() {
 }
 
 export default Page
-
-
-
-
