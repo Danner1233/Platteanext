@@ -1,6 +1,6 @@
 "use client"
 
-import { AgregarTienda } from '@/components/component/agregar-tienda'
+import {AgregarTienda} from '@/components/component/agregar-tienda';
 import { Footer } from '@/components/component/footer'
 import React from 'react'
 import { useEffect, useState } from 'react';
