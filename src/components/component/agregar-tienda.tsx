@@ -116,9 +116,9 @@ export function AgregarTienda() {
   };
 
   return (
-    <Card className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10">
+    <Card className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10 mb-20 mt-20">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold">Agregar Tienda</CardTitle>
+        <CardTitle className="text-3xl font-bold">Crea tu tienda</CardTitle>
         <CardDescription>Ingresa los detalles de tu tienda.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -180,7 +180,7 @@ export function AgregarTienda() {
                 </Label>
                 <Input
                   id="address"
-                  placeholder="Av. Principal 123"
+                  placeholder="Añade la direccion.."
                   value={direccion}
                   onChange={(e) => setDireccion(e.target.value)}
                 />
@@ -189,7 +189,7 @@ export function AgregarTienda() {
                 <Label htmlFor="city" className="text-sm font-medium">
                   Ciudad
                 </Label>
-                <Input id="city" placeholder="Bogotá" value={ciudad} onChange={(e) => setCiudad(e.target.value)} />
+                <Input id="city" placeholder="Añade la ciudad.." value={ciudad} onChange={(e) => setCiudad(e.target.value)} />
               </div>
             </div>
             <div className="grid gap-2">
@@ -199,7 +199,7 @@ export function AgregarTienda() {
               <Input
                 id="phone"
                 type="tel"
-                placeholder="(+57) 456-7890"
+                placeholder="(+57) 300-789-0123"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
               />
