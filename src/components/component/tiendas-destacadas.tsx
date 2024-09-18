@@ -96,7 +96,7 @@ export function TiendasDestacadas() {
                   Calificación: {parseFloat(tienda.PromedioCalificacion).toFixed(1)}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {truncarTexto(tienda.DescripcionTienda, 105)}
+                  {truncarTexto(tienda.DescripcionTienda, 100)}
                 </p>
                 <Button size="sm" className="bg-plattea1 text-plattea2">
                   Ver Más

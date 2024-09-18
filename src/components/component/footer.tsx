@@ -59,7 +59,7 @@ export function Footer() {
     fetchProfile();
   }, []);
 
-  
+  //usuario no logueado 
 
   if (error) {
     return (
@@ -84,16 +84,40 @@ export function Footer() {
           </div>
           <div className="flex flex-col items-start gap-4">
             <h3 className="text-lg font-bold">Contáctanos</h3>
-            <div className="grid gap-2 text-sm">
-              <div className="flex items-center gap-2">
-                <PhoneIcon className="h-5 w-5" />
-                <span>+57 3103549968</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MailIcon className="h-5 w-5" />
-                <span>platteaonline@gmail.com</span>
-              </div>
-            </div>
+            <Dialog>
+                <DialogTrigger asChild>
+                  <span className="text-sm cursor-pointer hover:underline">
+                    Feedback y Sugerencias
+                  </span>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">           
+                  <div className="flex flex-col items-center justify-center gap-4 py-8">
+                  <DialogTitle>Feedback y Sugerencias</DialogTitle>
+                  <DialogDescription>
+                    Proporcione sus comentarios y sugerencias para ayudarnos a mejorar.
+                  </DialogDescription>
+                    <form action="https://formsubmit.co/platteaonline@gmail.com" method="POST" className="grid w-full gap-4">
+                      <label htmlFor="email" className="text-sm font-medium">Email</label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        placeholder="Email"
+                        readOnly
+                        name="Email"
+                      />
+                      <label htmlFor="name" className="text-sm font-medium">Asunto</label>
+                      <Input id="name" type="text" placeholder="Asunto" name="Asunto" required />
+                      <label htmlFor="feedback" className="text-sm font-medium">Comentarios</label>
+                      <Textarea id="feedback" placeholder="Feedback y Sugerencias" name="comentario" required/>
+                      <input type="hidden" name="_captcha" value="false"/>
+                      <input type="hidden" name="_template" value="table"/>
+                      <input type="hidden" name="_next" value="http://localhost:3000/"></input>
+                      <Button type="submit">Enviar</Button>
+                    </form>
+                  </div>
+                </DialogContent>
+              </Dialog>
           </div>
           <div className="flex flex-col items-start gap-4">
             <h3 className="text-lg font-bold">Síguenos</h3>
@@ -135,7 +159,12 @@ export function Footer() {
             <Link href="/terminosycondiciones" className="text-sm hover:underline">
               Términos y condiciones del sitio
             </Link>
-            <Dialog>
+
+          </div>
+        </div>
+        <div className="flex flex-col items-start gap-4">
+          <h3 className="text-lg font-bold">Contáctanos</h3>
+          <Dialog>
                 <DialogTrigger asChild>
                   <span className="text-sm cursor-pointer hover:underline">
                     Feedback y Sugerencias
@@ -169,20 +198,6 @@ export function Footer() {
                   </div>
                 </DialogContent>
               </Dialog>
-          </div>
-        </div>
-        <div className="flex flex-col items-start gap-4">
-          <h3 className="text-lg font-bold">Contáctanos</h3>
-          <div className="grid gap-2 text-sm">
-            <div className="flex items-center gap-2">
-              <PhoneIcon className="h-5 w-5" />
-              <span>+57 3103549968</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MailIcon className="h-5 w-5" />
-              <span>platteaonline@gmail.com</span>
-            </div>
-          </div>
         </div>
         <div className="flex flex-col items-start gap-4">
           <h3 className="text-lg font-bold">Síguenos</h3>
