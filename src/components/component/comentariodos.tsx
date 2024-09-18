@@ -72,7 +72,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
         console.error('Error al decodificar el token:', error);
       }
     } else {
-      console.error('Token no encontrado en el localStorage');
+      setIdPersona(null); // Asegurarse de que el estado esté actualizado si no hay token
     }
   }, []);
 
@@ -129,7 +129,9 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
   };
 
   const handleRatingChange = (newRating: number) => {
-    setCalificacion(newRating);
+    if (idPersona) {
+      setCalificacion(newRating);
+    }
   };
 
   return (
@@ -147,8 +149,9 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
-                className={`p-2 rounded-full transition-colors ${star <= calificacion ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                className={`p-2 rounded-full transition-colors ${star <= calificacion ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"} ${!idPersona ? "cursor-not-allowed opacity-50" : ""}`}
                 onClick={() => handleRatingChange(star)}
+                disabled={!idPersona}
               >
                 <StarIcon className="w-6 h-6" />
               </button>
@@ -160,14 +163,15 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
             <form onSubmit={handleSubmit}>
               <Textarea
                 id="review"
-                placeholder="Describe tu experiencia con el producto..."
+                placeholder={idPersona ? "Describe tu experiencia con el producto..." : "Inicia sesión para agregar un comentario..."}
                 rows={3}
                 value={comentario}
                 onChange={handleComentarioChange}
                 className="min-h-[100px] resize-none"
+                disabled={!idPersona}
               />
-              <div className="flex justify-end">
-                <Button type="submit">Enviar</Button>
+              <div className="flex justify-end mt-4">
+                <Button type="submit" disabled={!idPersona}>Enviar</Button>
               </div>
             </form>
           </div>
@@ -177,7 +181,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
       {/* Comentarios Section */}
       {comentarios.length > 0 ? (
         comentarios.map((comentario, index) => (
-          <div key={index} className="flex items-start space-x-4 mt-0">
+          <div key={index} className="flex items-start space-x-4 mt-4 ml-4 ">
             <Avatar>
               <AvatarImage src={comentario.FotoPersonaURL || "/placeholder-user.jpg"} alt="Avatar usuario" />
             </Avatar>
