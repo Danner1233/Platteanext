@@ -133,11 +133,18 @@ export function Navbar() {
         </SheetTrigger>
         <SheetContent side="left" className="bg-plattea2">
           <Link href="/" prefetch={false}>
-            <CustomLogo className="h-12 w-12 text-[#1C2833]" />{" "}
+            <CustomLogo className="h-12 w-12 bg-plattea1" />{" "}
             {/* Logo para vista responsiva */}
             <span className="sr-only">Plattea</span>
           </Link>
           <div className="grid gap-2 py-6">
+          <Link
+              href="/"
+              className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"
+              prefetch={false}
+            >
+              Inicio
+            </Link>
             <Link
               href="/shops"
               className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"

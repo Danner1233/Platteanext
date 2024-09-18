@@ -58,6 +58,7 @@ export function NavbarDefault() {
       <Sheet>
         <SheetTrigger asChild>
           <Button
+            variant="outline"
             size="icon"
             className="lg:hidden bg-plattea1 text-plattea2"
           >
@@ -67,7 +68,7 @@ export function NavbarDefault() {
         </SheetTrigger>
         <SheetContent side="left" className="bg-plattea2">
           <Link href="/" prefetch={false}>
-            <CustomLogo className="h-12 w-12 text-[#1C2833]" /> {/* Color responsivo */}
+            <CustomLogo className="h-12 w-12 bg-plattea1" /> {/* Color responsivo */}
             <span className="sr-only">Plattea</span>
           </Link>
           <div className="grid gap-2 py-6">
