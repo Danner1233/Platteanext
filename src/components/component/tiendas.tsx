@@ -21,7 +21,7 @@ export function Tiendas() {
   const [search, setSearch] = useState('');
   const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState<string>("");
-  const crypto = new NextCrypto('your-secret-key'); // Reemplaza 'your-secret-key' con tu clave secreta
+  const crypto = new NextCrypto('secret key');
 
   useEffect(() => {
     const fetchTiendas = async () => {
@@ -36,6 +36,7 @@ export function Tiendas() {
           const encrypted = await Promise.all(data.map(async (tienda) => {
             const encryptedId = await crypto.encrypt(tienda.IdTienda);
             const safeEncryptedId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+            console.log(`Original ID: ${tienda.IdTienda}, Encrypted ID: ${safeEncryptedId}`); // Console log para verificar
             return {
               id: tienda.IdTienda,
               encryptedId: safeEncryptedId
