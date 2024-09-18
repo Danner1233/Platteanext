@@ -108,10 +108,14 @@ export function Producto() {
   return (
     <div className="flex flex-col h-full">
       <div className="left-4 pt-3">
-        <Button onClick={() => router.back()} className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10">
-          <ArrowLeftIcon className="w-4 h-4 mr-2" />
-          Volver atrás
-        </Button>
+      <Button 
+  onClick={() => router.back()} 
+  className="inline-flex h-10 ml-8 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10 hover:bg-gray-200"
+>
+  <ArrowLeftIcon className="w-4 h-4 mr-2" />
+  Volver atrás
+</Button>
+
       </div>
       <div className="flex items-center justify-center px-4 md:px-6 py-8">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
