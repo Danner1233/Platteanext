@@ -89,7 +89,7 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
                       />
                       <div className="p-2">
                         <h3 className="font-semibold text-bold">{producto.NombreProducto}</h3>
-                        <p className="text-sm leading-none"> {truncarTexto(producto.DescripcionProducto, 121)}</p>
+                        <p className="text-muted-foreground leading-none"> {truncarTexto(producto.DescripcionProducto, 121)}</p>
                         <div className="text-xl font-bold">${producto.PrecioProducto}</div>
                       </div>
                     </div>
