@@ -13,11 +13,55 @@ export function Register() {
   const [clave, setClave] = useState('');
   const [telefono, setTelefono] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+  const [passwordError, setPasswordError] = useState<string | null>(null); // Error específico para la contraseña
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  const validarFormulario = () => {
+    let valid = true;
+
+      if (nombre.length < 4) {
+        setError('El nombre debe tener al menos 4 caracteres.');
+        valid = false;
+    } else if (apellido.length < 4) {
+      setError('El apellido debe tener al menos 4 caracteres.');
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      setError('Correo electrónico inválido.');
+      valid = false;
+    } else if (!/^[0-9]+$/.test(telefono)) {
+      setError('El teléfono debe contener solo números.');
+      valid = false;
+    } else if (telefono.length < 10) {
+      setError('El teléfono debe tener 10 dígitos.');
+      valid = false;
+    } else if (!validarContraseña(clave)) {
+      valid = false;
+    } else {
+      setError(null);
+      setPasswordError(null);
+    }
+
+    return valid;
+  };
+
+  const validarContraseña = (clave: string) => {
+    const hasUpperCase = /[A-Z]/.test(clave);
+    const hasNumber = /[0-9]/.test(clave);
+    if (clave.length < 8 || !hasUpperCase || !hasNumber) {
+      setPasswordError('La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.');
+      return false;
+    }
+    setPasswordError(null);
+    return true;
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!validarFormulario()) {
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:4000/api/register', {
@@ -73,6 +117,7 @@ export function Register() {
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 required
+                onFocus={() => setError(null)} // Limpia el error al enfocar
               />
             </div>
             <div className="space-y-2">
@@ -83,6 +128,7 @@ export function Register() {
                 value={apellido}
                 onChange={(e) => setApellido(e.target.value)}
                 required
+                onFocus={() => setError(null)}
               />
             </div>
             <div className="space-y-2">
@@ -94,6 +140,7 @@ export function Register() {
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
                 required
+                onFocus={() => setError(null)}
               />
             </div>
             <div className="space-y-2">
@@ -105,6 +152,7 @@ export function Register() {
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
                 required
+                onFocus={() => setError(null)}
               />
             </div>
             <div className="space-y-2">
@@ -112,10 +160,13 @@ export function Register() {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? 'text' : 'password'} // Tipo de campo basado en el estado
-                  placeholder="••••••••"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Ingresa tu contraseña"
                   value={clave}
-                  onChange={(e) => setClave(e.target.value)}
+                  onChange={(e) => {
+                    setClave(e.target.value);
+                    validarContraseña(e.target.value); // Validar contraseña en tiempo real
+                  }}
                   required
                 />
                 <button
@@ -130,8 +181,13 @@ export function Register() {
                   )}
                 </button>
               </div>
+              {passwordError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                  {passwordError}
+                </div>
+              )}
             </div>
-            {error && (
+            {error && !passwordError && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
                 {error}
               </div>
