@@ -16,7 +16,7 @@ export function TiendasDestacadas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string>("");
   const [encryptedIds, setEncryptedIds] = useState<{ [key: number]: string }>({});
-  const crypto = new NextCrypto('secret key'); // Llave de encriptación
+  const crypto = new NextCrypto('secret key');
 
   useEffect(() => {
     const fetchTiendas = async () => {
@@ -62,7 +62,7 @@ export function TiendasDestacadas() {
   if (!isLoaded) return <p>Cargando...</p>;
 
   return (
-    <section className="mt-5 p-4 md:p-1">
+    <section className="mt-5 p-4 md:p-1 mb-6">
       <div className="container mx-auto px-4 md:px-6 lg:px-7">
         <h2 className="text-3xl font-bold mb-6 text-center">
           Tiendas Destacadas

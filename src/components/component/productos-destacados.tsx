@@ -61,7 +61,7 @@ export function ProductosDestacados() {
   if (!isLoaded) return <p>Cargando...</p>;
 
   return (
-    <section className="mt-5 p-4 md:p-1">
+    <section className="mt-5 p-4 md:p-1 mb-6">
       <div className="container mx-auto px-4 md:px-6 lg:px-7">
         <h2 className="text-3xl font-bold mb-6 text-center">
           Productos Destacados
