@@ -69,7 +69,23 @@ export function ProductosTienda() {
   };
 
   if (loading) return <p className="text-center">Loading...</p>;
-  if (error) return <p className="text-center text-red-500">agrega un producto pulsando en el boton de la caja :)</p>;
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-6 bg-red-50 border border-red-400 text-red-700 rounded-lg shadow-lg ml-4 mr-4 mt-4 mb-4">
+        <div className="flex items-center justify-center w-16 h-16 bg-red-200 rounded-full mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9 15c1.5-2 4.5-2 6 0" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="9" cy="9" r="1" />
+            <circle cx="15" cy="9" r="1" />
+          </svg>
+        </div>
+        <p className="text-lg font-bold text-center mb-2">¡Ups! No has agregado ningún producto</p>
+        <p className="text-sm text-center text-gray-600">Agrega un producto pulsando en el botón de la caja 😊</p>
+      </div>
+    );
+}
+
 
   return (
     <div className="px-4 md:px-6 py-12">
@@ -106,4 +122,5 @@ export function ProductosTienda() {
       </div>
     </div>
   );
+  
 }

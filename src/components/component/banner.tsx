@@ -62,13 +62,13 @@ export function Banner() {
       <div className="flex flex-col items-center justify-center py-6 md:py-8 lg:py-10">
         <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">{tienda?.NombreTienda || 'Nombre de Tienda'}</h1>
       </div>
-      <div className="flex space-x-4">
+      <div className="flex space-x-4 ml-4">
         <Link href={`/editartienda/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
           <Settings className="w-6 h-6" />
         </Link>
         <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-  <Package className="w-6 h-6" />
-</Link>
+          <Package className="w-6 h-6" />
+        </Link>
 
       </div>
     </section>
