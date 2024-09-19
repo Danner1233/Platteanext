@@ -82,6 +82,7 @@ export function Login() {
                   name="password"
                   type={showPassword ? "text" : "password"} // Tipo de campo basado en el estado
                   value={password}
+                  placeholder="Ingresa tu contraseña"
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
