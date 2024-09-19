@@ -23,8 +23,8 @@ interface Tienda {
 
 export function EditarTienda() {
   const params = useParams();
-  const router = useRouter(); 
-  const encryptedIdTienda = params.IdTienda as string; 
+  const router = useRouter();
+  const encryptedIdTienda = params.IdTienda as string;
   const crypto = new NextCrypto('secret key');
 
   const [tienda, setTienda] = useState<Tienda | null>(null);
@@ -107,10 +107,14 @@ export function EditarTienda() {
   return (
     <div className="flex justify-center">
       <div className="absolute left-4 pt-8">
-        <Button onClick={() => router.back()} className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10">
+        <Button
+          onClick={() => router.back()}
+          className="inline-flex h-10 ml-8 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10 hover:bg-gray-200"
+        >
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
         </Button>
+
       </div>
       <Card className="w-full max-w-xl mt-8 mb-8">
         <CardHeader>

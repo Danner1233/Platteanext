@@ -107,19 +107,23 @@ export function EditarProductos() {
   return (
     <div>
       <div className="left-4 pt-8 pb-8">
-        <Button onClick={() => router.back()} className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10">
+        <Button
+          onClick={() => router.back()}
+          className="inline-flex h-10 ml-4 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10 hover:bg-gray-200"
+        >
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
         </Button>
+
       </div>
-      <h1 className="text-2xl font-bold mb-6">Administración de Productos</h1>
+      <h1 className="text-2xl font-bold mb-6 ml-4">Administración de Productos</h1>
       <div className="relative mb-6">
         <div className="absolute right-10">
           <AgregarProducto />
         </div>
       </div>
       {productos.length > 0 ? (
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 ml-4 mr-4">
           {productos.map((producto) => {
             const encryptedIdProducto = encryptedProductLinks.get(producto.IdProducto) || '';
 
