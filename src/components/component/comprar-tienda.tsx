@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function ComprarTienda() {
   return (
-    <section className="w-full py-12 bg-background">
+    <section id="CrearTienda" className="w-full py-12 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -19,16 +20,18 @@ export function ComprarTienda() {
           {/* Basic Plan */}
           <div className="bg-card rounded-lg overflow-hidden shadow-lg flex flex-col">
             <div className="bg-primary text-primary-foreground py-4 px-6 text-center">
-              <h3 className="text-2xl font-bold">Básico</h3>
-              <p className="text-4xl font-bold">10 Productos</p>
+              <h3 className="text-2xl font-bold">Premium</h3>
+              <p className="text-4xl font-bold">50 Productos</p>
             </div>
             <div className="p-6 flex-1 flex flex-col justify-between">
               <p className="text-lg mb-4">
-                El plan básico incluye 10 productos seleccionados cuidadosamente para satisfacer tus necesidades.
+                En el plan premium puedes agregar una cantidad de 50 productos en tu tienda virtual.
               </p>
-              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                Suscribirse
-              </Button>
+              <Link href="/agregartienda">
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                  Comprar
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -40,33 +43,31 @@ export function ComprarTienda() {
             </div>
             <div className="p-6 flex-1 flex flex-col justify-between">
               <p className="text-lg mb-4">
-                El plan intermedio incluye 30 productos seleccionados cuidadosamente para satisfacer tus necesidades.
+                En el plan premium puedes agregar una cantidad de 30 productos en tu tienda virtual.
               </p>
-              <Button
-                variant="secondary"
-                className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-              >
-                Suscribirse
-              </Button>
+              <Link href="/agregartienda">
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                  Comprar
+                </Button>
+              </Link>
             </div>
           </div>
 
           {/* Premium Plan */}
           <div className="bg-card rounded-lg overflow-hidden shadow-lg flex flex-col">
             <div className="bg-muted text-muted-foreground py-4 px-6 text-center">
-              <h3 className="text-2xl font-bold">Premium</h3>
-              <p className="text-4xl font-bold">50 Productos</p>
+              <h3 className="text-2xl font-bold">Basico</h3>
+              <p className="text-4xl font-bold">10 Productos</p>
             </div>
             <div className="p-6 flex-1 flex flex-col justify-between">
               <p className="text-lg mb-4">
-                El plan premium incluye 50 productos seleccionados cuidadosamente para satisfacer tus necesidades.
+                En el plan premium puedes agregar una cantidad de 10 productos en tu tienda virtual.
               </p>
-              <Button
-                variant="default"
-                className="w-full bg-muted hover:bg-muted/90 text-muted-foreground"
-              >
-                Suscribirse
-              </Button>
+              <Link href="/agregartienda">
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                  Comprar
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

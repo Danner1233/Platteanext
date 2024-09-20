@@ -93,13 +93,6 @@ export function NavbarDefault() {
             >
               Productos
             </Link>
-            <Link
-              href="/workwithus"
-              className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"
-              prefetch={false}
-            >
-              Trabaja con nosotros
-            </Link>
           </div>
         </SheetContent>
       </Sheet>
