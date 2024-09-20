@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import axios from "axios"; // Asegúrate de tener axios instalado
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, TrashIcon } from "lucide-react";
 
 // Interfaces
 interface Profile {
@@ -55,30 +55,19 @@ export function Administrador() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCategoria, setSelectedCategoria] = useState<Categoria | null>(
-    null
-  );
-  const [newCategoria, setNewCategoria] = useState<{
-    Nombre: string;
-    Foto: File | null;
-  }>({ Nombre: "", Foto: null });
+  const [selectedCategoria, setSelectedCategoria] = useState<Categoria | null>(null);
+  const [newCategoria, setNewCategoria] = useState<{ Nombre: string; Foto: File | null }>({ Nombre: "", Foto: null });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const personasResponse = await axios.get(
-          "http://localhost:4000/api/persona/"
-        );
+        const personasResponse = await axios.get("http://localhost:4000/api/persona/");
         setPersonas(personasResponse.data);
 
-        const tiendasResponse = await axios.get(
-          "http://localhost:4000/api/tienda/"
-        );
+        const tiendasResponse = await axios.get("http://localhost:4000/api/tienda/");
         setTiendas(tiendasResponse.data);
 
-        const categoriasResponse = await axios.get(
-          "http://localhost:4000/api/categoria/"
-        );
+        const categoriasResponse = await axios.get("http://localhost:4000/api/categoria/");
         setCategorias(categoriasResponse.data);
       } catch (error) {
         console.error("Error al cargar los datos:", error);
@@ -89,15 +78,11 @@ export function Administrador() {
   }, []);
 
   const handleDeleteUser = async (correo: string) => {
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar este usuario?"
-    );
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este usuario?");
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:4000/api/persona/${correo}`);
-        setPersonas((prev) =>
-          prev.filter((persona) => persona.CorreoPersona !== correo)
-        );
+        setPersonas((prev) => prev.filter((persona) => persona.CorreoPersona !== correo));
       } catch (error) {
         console.error("Error al eliminar el usuario:", error);
       }
@@ -105,15 +90,11 @@ export function Administrador() {
   };
 
   const handleDeleteCategoria = async (id: number) => {
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar esta categoría?"
-    );
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta categoría?");
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:4000/api/categoria/${id}`);
-        setCategorias((prev) =>
-          prev.filter((categoria) => categoria.IdCategoria !== id)
-        );
+        setCategorias((prev) => prev.filter((categoria) => categoria.IdCategoria !== id));
       } catch (error) {
         console.error("Error al eliminar la categoría:", error);
       }
@@ -145,14 +126,49 @@ export function Administrador() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí puedes agregar la lógica para agregar/editar la categoría
-    handleModalClose();
+    
+    const formData = new FormData();
+    formData.append("NombreCategoria", newCategoria.Nombre);
+    if (newCategoria.Foto) {
+      formData.append("FotoCategoria", newCategoria.Foto);
+    }
+
+    try {
+      if (selectedCategoria) {
+        // Editar categoría existente
+        await axios.put(`http://localhost:4000/api/categoria/${selectedCategoria.IdCategoria}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        // Actualizar la lista de categorías
+        setCategorias((prev) =>
+          prev.map((categoria) =>
+            categoria.IdCategoria === selectedCategoria.IdCategoria
+              ? { ...categoria, NombreCategoria: newCategoria.Nombre, FotoCategoria: newCategoria.Foto ? URL.createObjectURL(newCategoria.Foto) : categoria.FotoCategoria }
+              : categoria
+          )
+        );
+      } else {
+        // Crear nueva categoría
+        await axios.post("http://localhost:4000/api/categoria/", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        // Refrescar la lista de categorías
+        const categoriasResponse = await axios.get("http://localhost:4000/api/categoria/");
+        setCategorias(categoriasResponse.data);
+      }
+    } catch (error) {
+      console.error("Error al guardar la categoría:", error);
+    } finally {
+      handleModalClose();
+    }
   };
 
   const truncarTexto = (texto: string, maxLength: number) => {
-    return texto.length > maxLength
-      ? texto.substring(0, maxLength) + "..."
-      : texto;
+    return texto.length > maxLength ? texto.substring(0, maxLength) + "..." : texto;
   };
 
   return (
@@ -209,8 +225,7 @@ export function Administrador() {
                           .map((persona) => (
                             <TableRow key={persona.CorreoPersona}>
                               <TableCell className="font-medium">
-                                {persona.NombrePersona}{" "}
-                                {persona.ApellidoPersona}
+                                {persona.NombrePersona} {persona.ApellidoPersona}
                               </TableCell>
                               <TableCell>{persona.CorreoPersona}</TableCell>
                               <TableCell>
@@ -218,21 +233,14 @@ export function Administrador() {
                               </TableCell>
                               <TableCell>{persona.TelefonoPersona}</TableCell>
                               <TableCell>
-                                {persona.idRolFK === 1
-                                  ? "Administrador"
-                                  : "Cliente"}
+                                {persona.idRolFK === 1 ? "Administrador" : "Cliente"}
                               </TableCell>
                               <TableCell>
                                 <Button
                                   variant="ghost"
-                                  onClick={() =>
-                                    handleDeleteUser(persona.CorreoPersona)
-                                  }
+                                  onClick={() => handleDeleteUser(persona.CorreoPersona)}
                                 >
-                                  <TrashIcon
-                                    className="w-4 h-4"
-                                    aria-hidden="true"
-                                  />
+                                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
                                 </Button>
                               </TableCell>
                             </TableRow>
@@ -267,9 +275,7 @@ export function Administrador() {
                       <TableBody>
                         {tiendas
                           .filter((tienda) =>
-                            tienda.NombreTienda.toLowerCase().includes(
-                              searchTerm.toLowerCase()
-                            )
+                            tienda.NombreTienda.toLowerCase().includes(searchTerm.toLowerCase())
                           )
                           .map((tienda) => (
                             <TableRow key={tienda.IdTienda}>
@@ -283,10 +289,7 @@ export function Administrador() {
                               <TableCell>{tienda.CiudadTienda}</TableCell>
                               <TableCell>
                                 <Button variant="ghost">
-                                  <TrashIcon
-                                    className="w-4 h-4"
-                                    aria-hidden="true"
-                                  />
+                                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
                                 </Button>
                               </TableCell>
                             </TableRow>
@@ -316,8 +319,7 @@ export function Administrador() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>ID</TableHead>{" "}
-                          {/* Agrega esta línea para el encabezado ID */}
+                          <TableHead>ID</TableHead>
                           <TableHead>Nombre</TableHead>
                           <TableHead>Foto</TableHead>
                           <TableHead>Editar</TableHead>
@@ -327,8 +329,7 @@ export function Administrador() {
                       <TableBody>
                         {categorias.map((categoria) => (
                           <TableRow key={categoria.IdCategoria}>
-                            <TableCell>{categoria.IdCategoria}</TableCell>{" "}
-                            {/* Agrega esta línea para mostrar el ID */}
+                            <TableCell>{categoria.IdCategoria}</TableCell>
                             <TableCell className="font-medium">
                               {categoria.NombreCategoria}
                             </TableCell>
@@ -344,23 +345,15 @@ export function Administrador() {
                                 variant="ghost"
                                 onClick={() => handleOpenModal(categoria)}
                               >
-                                <PencilIcon
-                                  className="w-4 h-4"
-                                  aria-hidden="true"
-                                />
+                                <PencilIcon className="w-4 h-4" aria-hidden="true" />
                               </Button>
                             </TableCell>
                             <TableCell>
                               <Button
                                 variant="ghost"
-                                onClick={() =>
-                                  handleDeleteCategoria(categoria.IdCategoria)
-                                }
+                                onClick={() => handleDeleteCategoria(categoria.IdCategoria)}
                               >
-                                <TrashIcon
-                                  className="w-4 h-4"
-                                  aria-hidden="true"
-                                />
+                                <TrashIcon className="w-4 h-4" aria-hidden="true" />
                               </Button>
                             </TableCell>
                           </TableRow>
@@ -425,6 +418,3 @@ export function Administrador() {
     </div>
   );
 }
-
-// Asegúrate de importar los iconos que necesitas
-import { TrashIcon } from "lucide-react";
