@@ -67,14 +67,13 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
   };
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-0 py-12"> {/* Cambiado a max-w-full */}
+    <div className="w-full mx-auto px-4 py-12">
       <h2 className="text-2xl font-bold mb-6">Productos Similares</h2>
       <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
+        autoplay={true}
         className="w-full"
+        infinite={true}
+        autoplayInterval={3000}
       >
         <CarouselContent className="-ml-4">
           {productosSimilares.length > 0 ? (

@@ -40,15 +40,28 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
 
   return (
     <div
-    className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
-      isVisible ? 'animate-fade-in' : 'animate-fade-out'
-    }`}
-  >
-      {message}
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
+        isVisible ? 'animate-fade-in' : 'animate-fade-out'
+      }`}
+    >
+      <div className="flex justify-between items-center">
+        <span>{message}</span>
+        <button
+          onClick={() => {
+            setIsExiting(true);
+            setTimeout(() => {
+              setIsVisible(false);
+              onClose();
+            }, 300);
+          }}
+          className="text-white ml-2"
+        >
+          &times; {/* Este es el carácter para la X */}
+        </button>
+      </div>
     </div>
   );
 };
-
 
 export function Producto() {
   const params = useParams();

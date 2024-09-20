@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import NextCrypto from "next-crypto";
 
@@ -29,8 +29,8 @@ const Alert = ({
       setIsExiting(true);
       setTimeout(() => {
         setIsVisible(false);
-        onClose(); // Llamar a la función onClose después de que la alerta se oculte
-      }, 300); // Esperar que termine la animación antes de remover el alert
+        onClose();
+      }, 300);
     }, 10000);
 
     return () => clearTimeout(timer);
@@ -44,7 +44,21 @@ const Alert = ({
         isExiting ? "animate-fade-out" : "animate-fade-in"
       }`}
     >
-      {message}
+      <div className="flex justify-between items-center">
+        {message}
+        <button
+          onClick={() => {
+            setIsExiting(true);
+            setTimeout(() => {
+              setIsVisible(false);
+              onClose();
+            }, 300);
+          }}
+          className="text-white ml-2"
+        >
+          &times; {/* Carácter para la X */}
+        </button>
+      </div>
     </div>
   );
 };
@@ -61,6 +75,13 @@ export function AgregarProducto() {
   const [precio, setPrecio] = useState<string>("");
   const [stock, setStock] = useState<string>("");
   const [imagen, setImagen] = useState<File | null>(null);
+
+  // Referencias para enfoque automático
+  const nombreRef = useRef<HTMLInputElement>(null);
+  const descripcionRef = useRef<HTMLTextAreaElement>(null);
+  const precioRef = useRef<HTMLInputElement>(null);
+  const stockRef = useRef<HTMLInputElement>(null);
+  const imagenRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchDecryptedId = async () => {
@@ -107,7 +128,7 @@ export function AgregarProducto() {
       const data = await response.json();
       if (response.ok) {
         setAlert("Producto creado correctamente");
-        window.location.reload(); // Refresca la página
+        window.location.reload();
       } else {
         setAlert("Error al crear el producto: " + data.message);
       }
@@ -119,6 +140,13 @@ export function AgregarProducto() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setImagen(file);
+  };
+
+  // Manejo de la tecla Enter para cambiar enfoque
+  const handleKeyDown = (e: React.KeyboardEvent, nextRef: React.RefObject<any>) => {
+    if (e.key === "Enter" && nextRef.current) {
+      nextRef.current.focus();
+    }
   };
 
   return (
@@ -143,6 +171,8 @@ export function AgregarProducto() {
                 id="name"
                 placeholder="Ingresa el nombre del producto"
                 value={nombre}
+                ref={nombreRef}
+                onKeyDown={(e) => handleKeyDown(e, descripcionRef)}
                 onChange={(e) => setNombre(e.target.value)}
               />
             </div>
@@ -152,6 +182,8 @@ export function AgregarProducto() {
                 id="description"
                 placeholder="Ingresa la descripción del producto"
                 value={descripcion}
+                ref={descripcionRef}
+                onKeyDown={(e) => handleKeyDown(e, precioRef)}
                 onChange={(e) => setDescripcion(e.target.value)}
               />
             </div>
@@ -162,6 +194,8 @@ export function AgregarProducto() {
                 type="number"
                 placeholder="Ingresa el precio del producto"
                 value={precio}
+                ref={precioRef}
+                onKeyDown={(e) => handleKeyDown(e, stockRef)}
                 onChange={(e) => setPrecio(e.target.value)}
               />
             </div>
@@ -172,12 +206,19 @@ export function AgregarProducto() {
                 type="number"
                 placeholder="Ingresa el stock del producto"
                 value={stock}
+                ref={stockRef}
+                onKeyDown={(e) => handleKeyDown(e, imagenRef)}
                 onChange={(e) => setStock(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="image">Imagen</Label>
-              <Input id="image" type="file" onChange={handleImageChange} />
+              <Input
+                id="image"
+                type="file"
+                ref={imagenRef}
+                onChange={handleImageChange}
+              />
             </div>
             <DialogFooter>
               <Button

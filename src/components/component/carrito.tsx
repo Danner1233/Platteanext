@@ -4,8 +4,8 @@ import { JSX, SVGProps, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { jwtDecode } from 'jwt-decode';
-import { LoadingAnimation } from '@/components/component/loading-animation';
+import { jwtDecode } from "jwt-decode";
+import { LoadingAnimation } from "@/components/component/loading-animation";
 
 interface DecodedToken {
   IdPersona: string;
@@ -26,7 +26,9 @@ export function Carrito() {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(`http://localhost:4000/api/carrito/${userId}`);
+        const response = await fetch(
+          `http://localhost:4000/api/carrito/${userId}`
+        );
         const data = await response.json();
         setItems(Object.values(data));
         setLoading(false);
@@ -52,23 +54,23 @@ export function Carrito() {
 
         try {
           const response = await fetch(`http://localhost:4000/api/carrito/`, {
-            method: 'PATCH',
+            method: "PATCH",
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               IdPersonaFK: userId,
               IdProductoFK: updatedItems[index].IdProducto,
-              Cantidad: value
-            })
+              Cantidad: value,
+            }),
           });
 
           if (!response.ok) {
-            throw new Error('Error al actualizar la cantidad');
+            throw new Error("Error al actualizar la cantidad");
           }
         } catch (error) {
-          console.error('Error al actualizar la cantidad:', error);
+          console.error("Error al actualizar la cantidad:", error);
         }
       }
     }
@@ -83,12 +85,12 @@ export function Carrito() {
         }
       );
       if (response.ok) {
-        setItems(items.filter(item => item.IdDetalleCarrito !== itemId));
+        setItems(items.filter((item) => item.IdDetalleCarrito !== itemId));
       } else {
-        console.error('Error removing item:', await response.json());
+        console.error("Error removing item:", await response.json());
       }
     } catch (error) {
-      console.error('Error removing item:', error);
+      console.error("Error removing item:", error);
     }
   };
 
@@ -102,13 +104,19 @@ export function Carrito() {
   const isEmpty = items.length === 0;
 
   if (loading) {
-    return <div><LoadingAnimation/></div>;
+    return (
+      <div>
+        <LoadingAnimation />
+      </div>
+    );
   }
 
   const handleProceedToPayment = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isEmpty) {
       e.preventDefault();
-      alert("Tu carrito está vacío. Añade productos antes de proceder al pago.");
+      alert(
+        "Tu carrito está vacío. Añade productos antes de proceder al pago."
+      );
     }
   };
 
@@ -123,9 +131,7 @@ export function Carrito() {
             <div className="text-center">
               <p className="text-lg font-medium">No hay nada aquí</p>
               <Link href="/products">
-                <Button className="mt-4 bg-plattea1">
-                  Comprar
-                </Button>
+                <Button className="mt-4 bg-plattea1">Comprar</Button>
               </Link>
             </div>
           ) : (
@@ -144,22 +150,49 @@ export function Carrito() {
                 />
                 <div>
                   <h3 className="font-medium">{item.NombreProducto}</h3>
-                  <p className="text-sm text-muted-foreground">{item.NombreTienda}</p>
-                  <p className="text-sm text-muted-foreground">$ {item.PrecioProducto}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {item.NombreTienda}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    $ {item.PrecioProducto}
+                  </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() => handleQuantityChange(index, item.cantidad - 1)}
+                    onClick={() =>
+                      handleQuantityChange(index, item.cantidad - 1)
+                    }
                   >
                     <MinusIcon className="h-4 w-4" />
                   </Button>
-                  <span>{item.cantidad}</span>
+                  <input
+                    type="number"
+                    value={item.cantidad}
+                    min="1"
+                    className="w-12 text-center border rounded appearance-none -moz-appearance-textfield"
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value);
+                      if (!isNaN(value) && value > 0) {
+                        handleQuantityChange(index, value);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const value = parseInt(e.target.value);
+                      if (!isNaN(value) && value > 0) {
+                        handleQuantityChange(index, value);
+                      } else {
+                        handleQuantityChange(index, 1); // Reset to 1 if invalid
+                      }
+                    }}
+                  />
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() => handleQuantityChange(index, item.cantidad + 1)}
+                    onClick={() =>
+                      handleQuantityChange(index, item.cantidad + 1)
+                    }
                   >
                     <PlusIcon className="h-4 w-4" />
                   </Button>
@@ -199,7 +232,9 @@ export function Carrito() {
               <div className="flex-1">
                 <Link href={isEmpty ? "#" : "/agregartarjeta"} passHref>
                   <Button
-                    className={`flex-1 ${isEmpty ? "bg-gray-300 cursor-not-allowed" : "bg-plattea1"}`}
+                    className={`flex-1 ${
+                      isEmpty ? "bg-gray-300 cursor-not-allowed" : "bg-plattea1"
+                    }`}
                     disabled={isEmpty}
                     onClick={handleProceedToPayment}
                   >
@@ -248,8 +283,7 @@ function PlusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
+      <path d="M12 5v14m7-7H5" />
     </svg>
   );
 }
@@ -268,8 +302,7 @@ function RemoveIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M18 6L6 18" />
-      <path d="M6 6l12 12" />
+      <path d="M21 4H8l-1 1H3v2h2l1 13h12l1-13h2V5h-2l-1-1zM8 2h8v2H8z" />
     </svg>
   );
 }

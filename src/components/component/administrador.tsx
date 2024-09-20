@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import axios from "axios"; // Asegúrate de tener axios instalado
+import { PencilIcon } from "lucide-react";
 
 // Interfaces
 interface Profile {
@@ -30,7 +31,7 @@ interface Profile {
   DescripcionPersona: string;
   TelefonoPersona?: string;
   bannerPersonaURL?: string;
-  idRolFK: number; // Asegúrate de incluir el rol
+  idRolFK: number;
 }
 
 interface Tienda {
@@ -42,9 +43,16 @@ interface Tienda {
   CiudadTienda: string;
 }
 
+interface Categoria {
+  IdCategoria: number;
+  NombreCategoria: string;
+  FotoCategoria: string;
+}
+
 export function Administrador() {
   const [personas, setPersonas] = useState<Profile[]>([]);
   const [tiendas, setTiendas] = useState<Tienda[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -55,6 +63,9 @@ export function Administrador() {
 
         const tiendasResponse = await axios.get('http://localhost:4000/api/tienda/');
         setTiendas(tiendasResponse.data);
+
+        const categoriasResponse = await axios.get('http://localhost:4000/api/categoria/');
+        setCategorias(categoriasResponse.data);
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
@@ -68,7 +79,6 @@ export function Administrador() {
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:4000/api/persona/${correo}`);
-        // Actualiza el estado local para eliminar al usuario de la lista
         setPersonas((prev) => prev.filter((persona) => persona.CorreoPersona !== correo));
       } catch (error) {
         console.error("Error al eliminar el usuario:", error);
@@ -82,7 +92,6 @@ export function Administrador() {
       : texto;
   };
 
-  // Filtrar usuarios y tiendas basados en el término de búsqueda
   const filteredPersonas = personas.filter((persona) =>
     `${persona.NombrePersona} ${persona.ApellidoPersona}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -90,6 +99,18 @@ export function Administrador() {
   const filteredTiendas = tiendas.filter((tienda) =>
     tienda.NombreTienda.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleDeleteCategoria = async (id: number) => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta categoría?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:4000/api/categoria/${id}`);
+        setCategorias((prev) => prev.filter((categoria) => categoria.IdCategoria !== id));
+      } catch (error) {
+        console.error("Error al eliminar la categoría:", error);
+      }
+    }
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40 items-center justify-center">
@@ -112,6 +133,7 @@ export function Administrador() {
               <TabsList>
                 <TabsTrigger value="users">Usuarios</TabsTrigger>
                 <TabsTrigger value="stores">Tiendas</TabsTrigger>
+                <TabsTrigger value="category">Categorias</TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="users">
@@ -194,6 +216,55 @@ export function Administrador() {
                                 <TrashIcon className="w-4 h-4" aria-hidden="true" />
                               </Button>
                             </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/*Categorias */}
+
+            <TabsContent value="category">
+              <Card x-chunk="dashboard-06-chunk-0">
+                <CardHeader>
+                  <CardTitle>Categorias</CardTitle>
+                  <CardDescription>
+                    Administra todas las categorias y su información.
+                  </CardDescription>
+                  <CardDescription className="ml-auto font-medium">
+                    Agregar
+                  </CardDescription>
+                  <Button className="w-9 ml-auto">+</Button>
+
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-y-auto max-h-60"> {/* Contenedor con scroll */}
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Id</TableHead>
+                          <TableHead>Categoria</TableHead>
+                          <TableHead>Editar</TableHead>
+                          <TableHead>Eliminar</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {categorias.map((categoria) => (
+                          <TableRow key={categoria.IdCategoria}>
+                            <TableCell className="font-medium">{categoria.IdCategoria}</TableCell>
+                            <TableCell className="font-medium">{categoria.NombreCategoria}</TableCell>
+                            <TableCell><Button variant="ghost">
+                              <PencilIcon className="w-4 h-4" aria-hidden="true" />
+                            </Button></TableCell>
+                            <TableCell>
+                              <Button variant="ghost" onClick={() => handleDeleteCategoria(categoria.IdCategoria)}>
+                                <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                              </Button>
+                            </TableCell>
+
                           </TableRow>
                         ))}
                       </TableBody>
