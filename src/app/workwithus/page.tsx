@@ -25,7 +25,6 @@ function Page() {
         {isLoggedIn ? <Navbar /> : <NavbarDefault />}
         <BannerWork />
         <main className="flex-grow">
-        <ComprarTienda />
         </main>
         <Footer />
     </div>

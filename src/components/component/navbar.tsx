@@ -24,12 +24,15 @@ interface DecodedToken {
   IdPersona: string;
 }
 
-interface Profile {
+interface Navbar {
   FotoPersonaURL: string;
+  idRolFK: number;
+  num: number;
+
 }
 
 export function Navbar() {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [navbar, setNavbar] = useState<Navbar | null>(null);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
@@ -43,23 +46,20 @@ export function Navbar() {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(
-          `http://localhost:4000/api/persona/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await fetch(`http://localhost:4000/api/navbar/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
-          const data: Profile = await response.json();
-          setProfile(data);
+          const data: Navbar = await response.json();
+          setNavbar(data);
+          console.log("FotoPersonaURL: ", data.FotoPersonaURL, "idRolFK", data.idRolFK); // Imprime data directamente
         } else {
           throw new Error("Error fetching profile");
         }
       } catch (error) {
-        console.error(error);
+        setError(error instanceof Error ? error.message : "Unknown error");
       }
     };
 
@@ -72,7 +72,8 @@ export function Navbar() {
     localStorage.removeItem("token");
     window.location.href = "/";
   };
-
+  console.log("navbar?.FotoPersonaURL ", navbar?.FotoPersonaURL)
+  console.log("navbar?.idRolFK ", navbar?.idRolFK)
   return (
     <header className="bg-plattea1 flex h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
@@ -110,6 +111,18 @@ export function Navbar() {
             </Link>
           </NavigationMenuLink>
           <NavigationMenuLink asChild>
+            {navbar?.idRolFK === 2 && (
+              <Link
+                href="/administrar"
+                className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-plattea1 px-4 py-2 text-sm font-medium text-plattea2 transition-colors hover:bg-plattea2 hover:text-plattea1 focus:bg-plattea2 focus:text-plattea1 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-plattea2/50 data-[state=open]:bg-plattea2/50"
+                prefetch={false}
+              >
+                Administrador
+              </Link>
+            )}
+          </NavigationMenuLink>
+
+          <NavigationMenuLink asChild>
           </NavigationMenuLink>
         </NavigationMenuList>
       </NavigationMenu>
@@ -131,7 +144,7 @@ export function Navbar() {
             <span className="sr-only">Plattea</span>
           </Link>
           <div className="grid gap-2 py-6">
-          <Link
+            <Link
               href="/"
               className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"
               prefetch={false}
@@ -157,12 +170,21 @@ export function Navbar() {
       </Sheet>
       <div className="ml-auto flex gap-2 items-center">
         {/* Ícono de carrito */}
-        <Link href="/carrito">
-          <Button size="icon" className="bg-plattea1 text-plattea2">
-            <CartIcon className="h-6 w-6" />
-            <span className="sr-only">Carrito</span>
-          </Button>
-        </Link>
+        <div className="relative">
+          <Link href="/carrito">
+            <Button size="icon" className="bg-plattea1 text-plattea2">
+              <CartIcon className="h-6 w-6" />
+              <span className="sr-only">Carrito</span>
+            </Button>
+          </Link>
+          {navbar?.num > 0 && (
+            <div className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              {navbar.num} {/* Cambié navbar?.num a navbar.num */}
+            </div>
+          )}
+        </div>
+
+
 
         {/* Menú de usuario */}
         <DropdownMenu>
@@ -171,8 +193,9 @@ export function Navbar() {
               size="icon"
               className="overflow-hidden rounded-full bg-plattea1 text-plattea2"
             >
+
               <img
-                src={profile?.FotoPersonaURL || "/placeholder-user.jpg"}
+                src={navbar?.FotoPersonaURL || "/placeholder-user.jpg"}
                 width={36}
                 height={36}
                 alt="Avatar"

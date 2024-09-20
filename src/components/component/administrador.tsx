@@ -1,3 +1,6 @@
+"use client";
+
+import { SVGProps, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -15,16 +18,79 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { JSX, SVGProps } from "react";
+import axios from "axios"; // Asegúrate de tener axios instalado
+
+// Interfaces
+interface Profile {
+  FotoPersonaURL: string;
+  NombrePersona: string;
+  ApellidoPersona: string;
+  CorreoPersona: string;
+  DescripcionPersona: string;
+  TelefonoPersona?: string;
+  bannerPersonaURL?: string;
+  idRolFK: number; // Asegúrate de incluir el rol
+}
+
+interface Tienda {
+  IdTienda: string;
+  NombreTienda: string;
+  DescripcionTienda: string;
+  DireccionTienda: string;
+  MiniaturaTiendaURL: string;
+  CiudadTienda: string;
+}
 
 export function Administrador() {
+  const [personas, setPersonas] = useState<Profile[]>([]);
+  const [tiendas, setTiendas] = useState<Tienda[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const personasResponse = await axios.get('http://localhost:4000/api/persona/');
+        setPersonas(personasResponse.data);
+
+        const tiendasResponse = await axios.get('http://localhost:4000/api/tienda/');
+        setTiendas(tiendasResponse.data);
+      } catch (error) {
+        console.error("Error al cargar los datos:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleDeleteUser = async (correo: string) => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este usuario?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:4000/api/persona/${correo}`);
+        // Actualiza el estado local para eliminar al usuario de la lista
+        setPersonas((prev) => prev.filter((persona) => persona.CorreoPersona !== correo));
+      } catch (error) {
+        console.error("Error al eliminar el usuario:", error);
+      }
+    }
+  };
+
+  const truncarTexto = (texto: string, maxLength: number) => {
+    return texto.length > maxLength
+      ? texto.substring(0, maxLength) + "..."
+      : texto;
+  };
+
+  // Filtrar usuarios y tiendas basados en el término de búsqueda
+  const filteredPersonas = personas.filter((persona) =>
+    `${persona.NombrePersona} ${persona.ApellidoPersona}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredTiendas = tiendas.filter((tienda) =>
+    tienda.NombreTienda.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40 items-center justify-center">
       <div className="flex flex-col sm:gap-4 sm:py-4 w-full max-w-6xl">
@@ -35,6 +101,8 @@ export function Administrador() {
               type="search"
               placeholder="Buscar usuarios o tiendas..."
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el estado del término de búsqueda
             />
           </div>
         </header>
@@ -51,242 +119,86 @@ export function Administrador() {
                 <CardHeader>
                   <CardTitle>Usuarios</CardTitle>
                   <CardDescription>
-                    Administra tus usuarios y su información.
+                    Administra todos los usuarios y su informacion.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Nombre</TableHead>
-                        <TableHead>Correo</TableHead>
-                        <TableHead>Dirección</TableHead>
-                        <TableHead>Teléfono</TableHead>
-                        <TableHead>Rol</TableHead>
-                        <TableHead>Acciones</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">John Doe</TableCell>
-                        <TableCell>john@example.com</TableCell>
-                        <TableCell>123 Main St, Anytown USA</TableCell>
-                        <TableCell>+1 (555) 555-5555</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="gap-2">
-                                Admin
-                                <ChevronDownIcon className="w-4 h-4" />
+                  <div className="overflow-y-auto max-h-60"> {/* Contenedor con scroll */}
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Nombre</TableHead>
+                          <TableHead>Correo</TableHead>
+                          <TableHead>Descripción</TableHead>
+                          <TableHead>Teléfono</TableHead>
+                          <TableHead>Rol</TableHead>
+                          <TableHead>Eliminar</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredPersonas.map((persona) => (
+                          <TableRow key={persona.CorreoPersona}>
+                            <TableCell className="font-medium">
+                              {persona.NombrePersona} {persona.ApellidoPersona}
+                            </TableCell>
+                            <TableCell>{persona.CorreoPersona}</TableCell>
+                            <TableCell>{persona.DescripcionPersona ? persona.DescripcionPersona : " NULL"}</TableCell>
+                            <TableCell>{persona.TelefonoPersona}</TableCell>
+                            <TableCell>
+                              {persona.idRolFK === 1 ? "Administrador" : "Cliente"}
+                            </TableCell>
+                            <TableCell>
+                              <Button variant="ghost" onClick={() => handleDeleteUser(persona.CorreoPersona)}>
+                                <TrashIcon className="w-4 h-4" aria-hidden="true" />
                               </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Admin</DropdownMenuItem>
-                              <DropdownMenuItem>Usuario</DropdownMenuItem>
-                              <DropdownMenuItem>Arrendatario</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoveVerticalIcon className="h-4 w-4" />
-                                <span className="sr-only">Alternar menú</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Desactivar</DropdownMenuItem>
-                              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Jane Smith
-                        </TableCell>
-                        <TableCell>jane@example.com</TableCell>
-                        <TableCell>456 Oak Rd, Somewhere CA</TableCell>
-                        <TableCell>+1 (555) 555-5556</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="gap-2">
-                                Usuario
-                                <ChevronDownIcon className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Admin</DropdownMenuItem>
-                              <DropdownMenuItem>Usuario</DropdownMenuItem>
-                              <DropdownMenuItem>Arrendatario</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoveVerticalIcon className="h-4 w-4" />
-                                <span className="sr-only">Alternar menú</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Desactivar</DropdownMenuItem>
-                              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Bob Johnson
-                        </TableCell>
-                        <TableCell>bob@example.com</TableCell>
-                        <TableCell>789 Elm St, Somewhere Else NY</TableCell>
-                        <TableCell>+1 (555) 555-5557</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="gap-2">
-                                Usuario
-                                <ChevronDownIcon className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Admin</DropdownMenuItem>
-                              <DropdownMenuItem>Usuario</DropdownMenuItem>
-                              <DropdownMenuItem>Arrendatario</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoveVerticalIcon className="h-4 w-4" />
-                                <span className="sr-only">Alternar menú</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Desactivar</DropdownMenuItem>
-                              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* TIENDA */}
             <TabsContent value="stores">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
                   <CardTitle>Tiendas</CardTitle>
                   <CardDescription>
-                    Administra tus tiendas y su información.
+                    Administra todas las tiendas y su información.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Nombre</TableHead>
-                        <TableHead>Dirección</TableHead>
-                        <TableHead>Teléfono</TableHead>
-                        <TableHead>Acciones</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Acme Store
-                        </TableCell>
-                        <TableCell>123 Main St, Anytown USA</TableCell>
-                        <TableCell>+1 (555) 555-5555</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoveVerticalIcon className="h-4 w-4" />
-                                <span className="sr-only">Alternar menú</span>
+                  <div className="overflow-y-auto max-h-60"> {/* Contenedor con scroll */}
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Nombre</TableHead>
+                          <TableHead>Descripción</TableHead>
+                          <TableHead>Dirección</TableHead>
+                          <TableHead>Ciudad</TableHead>
+                          <TableHead>Eliminar</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredTiendas.map((tienda) => (
+                          <TableRow key={tienda.IdTienda}>
+                            <TableCell className="font-medium">{tienda.NombreTienda}</TableCell>
+                            <TableCell>{truncarTexto(tienda.DescripcionTienda, 150)}</TableCell>
+                            <TableCell>{tienda.DireccionTienda}</TableCell>
+                            <TableCell>{tienda.CiudadTienda}</TableCell>
+                            <TableCell>
+                              <Button variant="ghost">
+                                <TrashIcon className="w-4 h-4" aria-hidden="true" />
                               </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Desactivar</DropdownMenuItem>
-                              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Mega Mart</TableCell>
-                        <TableCell>456 Oak Rd, Somewhere CA</TableCell>
-                        <TableCell>+1 (555) 555-5556</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoveVerticalIcon className="h-4 w-4" />
-                                <span className="sr-only">Alternar menú</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Desactivar</DropdownMenuItem>
-                              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Retail Outlet
-                        </TableCell>
-                        <TableCell>789 Elm St, Somewhere Else NY</TableCell>
-                        <TableCell>+1 (555) 555-5557</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoveVerticalIcon className="h-4 w-4" />
-                                <span className="sr-only">Alternar menú</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Desactivar</DropdownMenuItem>
-                              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -297,7 +209,7 @@ export function Administrador() {
   );
 }
 
-function ChevronDownIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function TrashIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -311,28 +223,7 @@ function ChevronDownIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-}
-
-function MoveVerticalIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="8 18 12 22 16 18" />
-      <polyline points="8 6 12 2 16 6" />
-      <line x1="12" x2="12" y1="2" y2="22" />
+      <path d="M3 6h18M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M10 11v6M14 11v6M5 6v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6" />
     </svg>
   );
 }
