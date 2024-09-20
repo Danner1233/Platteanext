@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 "use client";
->>>>>>> 8be809b7f5ac08b62270c4ad7e6531421a98fe16
 import { Administrador } from '@/components/component/administrador';
 import { Footer } from '@/components/component/footer';
 import { Navbar } from '@/components/component/navbar-admin';
@@ -23,10 +20,7 @@ function Page() {
   if (loading) {
     return <div><LoadingAnimation /></div>; // Mostrar animación de carga
   }
-<<<<<<< HEAD
 
-=======
->>>>>>> 8be809b7f5ac08b62270c4ad7e6531421a98fe16
 
   return (
     <div className="flex flex-col min-h-screen">

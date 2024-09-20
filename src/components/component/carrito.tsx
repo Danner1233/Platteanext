@@ -128,12 +128,23 @@ export function Carrito() {
       <div className="grid md:grid-cols-[1fr_300px] gap-8 sm:grid-cols-1 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
           {isEmpty ? (
-            <div className="text-center">
-              <p className="text-lg font-medium">No hay nada aquí</p>
-              <Link href="/products">
-                <Button className="mt-4 bg-plattea1">Comprar</Button>
-              </Link>
-            </div>
+           <div className="flex flex-col items-center justify-center p-6 bg-white border border-gray-200 rounded-lg shadow-lg transition-shadow hover:shadow-xl">
+           <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+             <path d="M3 3h18v18H3z" className="opacity-0" /> {/* Área invisible para centrar el ícono */}
+             <path d="M5 8h14l-1.5 8H6.5L5 8z" strokeLinecap="round" strokeLinejoin="round" />
+             <circle cx="8" cy="20" r="2" />
+             <circle cx="16" cy="20" r="2" />
+           </svg>
+           <p className="text-xl font-semibold text-gray-800 mb-2">¡Oh no! No hay productos en el carrito</p>
+           <p className="text-sm text-gray-600 mb-4">Explora nuestra tienda y agrega algunos productos.</p>
+           <Link href="/products">
+             <Button className="mt-4 bg-plattea1 text-white rounded-lg shadow transition-transform transform hover:scale-105 hover:bg-plattea1">
+               Ir a Comprar
+             </Button>
+           </Link>
+         </div>
+         
+         
           ) : (
             items.map((item, index) => (
               <div

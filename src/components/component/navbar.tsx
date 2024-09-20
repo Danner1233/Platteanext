@@ -214,11 +214,11 @@ export function Navbar() {
                 Perfil
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            {/* <DropdownMenuItem>
               <Link href="/historial" className="text-plattea1">
                 Historial
               </Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem>
               <Link href="/configuracion" className="text-plattea1">
                 Configuración
