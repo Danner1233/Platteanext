@@ -21,6 +21,7 @@ function Page() {
     return <div><LoadingAnimation /></div>; // Mostrar animación de carga
   }
 
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />

@@ -72,9 +72,7 @@ export function Navbar() {
     localStorage.removeItem("token");
     window.location.href = "/";
   };
-
-  const numero = navbar?.num || 0;
-
+  const numero  = navbar?.num || 0;
 
   return (
     <header className="bg-plattea1 flex h-20 w-full shrink-0 items-center px-4 md:px-6">

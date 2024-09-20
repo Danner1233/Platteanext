@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import NextCrypto from 'next-crypto';
 
 interface DecodedToken {
   IdPersona: string;
@@ -15,12 +16,13 @@ interface Tienda {
   DescripcionTienda: string;
   DireccionTienda: string;
   MiniaturaTiendaURL: string;
-  CiudadTienda: string;
 }
 
 export function ProductosPerfil() {
   const [tiendas, setTiendas] = useState<Tienda[]>([]);
+  const [encryptedTiendas, setEncryptedTiendas] = useState<string[]>([]);
   const [error, setError] = useState<string>("");
+  const crypto = new NextCrypto('secret key'); // Instancia de NextCrypto
 
   useEffect(() => {
     const fetchTiendas = async () => {
@@ -42,6 +44,7 @@ export function ProductosPerfil() {
         if (response.ok) {
           const data: Tienda[] = await response.json();
           setTiendas(data);
+          await encryptTiendas(data); // Encriptar IDs después de obtener las tiendas
         } else {
           throw new Error("Error fetching tiendas");
         }
@@ -54,6 +57,19 @@ export function ProductosPerfil() {
     fetchTiendas();
   }, []);
 
+  const encryptTiendas = async (tiendas: Tienda[]) => {
+    const encryptedIds = await Promise.all(tiendas.map(async (tienda) => {
+      const encryptedId = await crypto.encrypt(tienda.IdTienda);
+      return encryptedId.replace(/\//g, '_').replace(/\+/g, '-'); // Reemplazar caracteres problemáticos
+    }));
+    setEncryptedTiendas(encryptedIds);
+  };
+
+  const truncarTexto = (texto: string, maxLength: number) => {
+    return texto.length > maxLength
+      ? texto.substring(0, maxLength) + "..."
+      : texto;
+  };
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -65,24 +81,23 @@ export function ProductosPerfil() {
           </div>
         </div>
         <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-          {tiendas.map((tienda) => (
-            <Link key={tienda.IdTienda} href={`/shop/${tienda.IdTienda}`}>
-            <div key={tienda.IdTienda} className="relative group overflow-hidden rounded-lg">
-              <Image
-                src={tienda.MiniaturaTiendaURL || "/placeholder.svg"}
-                width={400}
-                height={400}
-                alt={tienda.NombreTienda}
-                className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
-                style={{ aspectRatio: "400/400", objectFit: "cover" }}
-              />
-              <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <h3 className="text-lg font-semibold mb-2">{tienda.NombreTienda}</h3>
-                <p className="text-sm">{tienda.DescripcionTienda}</p>
+          {tiendas.map((tienda, index) => (
+            <Link key={tienda.IdTienda} href={`/shop/${encryptedTiendas[index]}`}>
+              <div className="relative group overflow-hidden rounded-lg">
+                <Image
+                  src={tienda.MiniaturaTiendaURL || "/placeholder.svg"}
+                  width={400}
+                  height={400}
+                  alt={tienda.NombreTienda}
+                  className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                  style={{ aspectRatio: "400/400", objectFit: "cover" }}
+                />
+                <div className="absolute pw-12 inset-0 bg-black/70 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <h3 className="text-lg font-semibold mb-2">{tienda.NombreTienda}</h3>
+                  <p className="text-sm ">{truncarTexto(tienda.DescripcionTienda, 300)}</p>
+                </div>
               </div>
-            </div>
             </Link>
-            
           ))}
           <div className="relative group overflow-hidden rounded-lg">
             <Image

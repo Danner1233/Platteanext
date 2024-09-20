@@ -279,6 +279,10 @@ export function Configuracion() {
                 className="hidden"
               />
             </div>
+<<<<<<< HEAD
+      
+=======
+>>>>>>> 8be809b7f5ac08b62270c4ad7e6531421a98fe16
           </div>
         </div>
         <div className="space-y-2">

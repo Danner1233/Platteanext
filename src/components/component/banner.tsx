@@ -4,25 +4,40 @@ import Image from "next/image";
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Edit, Package, Package2, Settings } from 'lucide-react';
+import { Settings, Package } from 'lucide-react';
+import {jwtDecode} from 'jwt-decode';
 
 interface Tienda {
+  IdPersona: number;
   NombreTienda: string;
   BannerTiendaURL: string;
 }
 
+interface DecodedToken {
+  IdPersona: string;
+}
+
 export function Banner() {
   const params = useParams();
-  const encryptedIdTienda = params.IdTienda as string; // Asegúrate de que sea una cadena
+  const encryptedIdTienda = params.IdTienda as string;
   const crypto = new NextCrypto('secret key');
   const [tienda, setTienda] = useState<Tienda | null>(null);
+  const [userId, setUserId] = useState<string | null>(null); // Estado para almacenar el userId
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTienda = async () => {
       try {
-        // Desencriptar el ID de la tienda
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found");
+        }
+
+        // Decodificar el token y obtener el userId
+        const decoded: DecodedToken = jwtDecode(token);
+        setUserId(decoded.IdPersona); // Almacena el userId en el estado
+
         const decryptedId = await crypto.decrypt(decodeURIComponent(encryptedIdTienda));
 
         // Fetch tienda usando el ID desencriptado
@@ -32,6 +47,7 @@ export function Banner() {
         }
         const data: Tienda = await response.json();
         setTienda(data);
+        console.log("data",data);
       } catch (error: any) {
         setError(error.message || 'An unexpected error occurred');
       } finally {
@@ -43,9 +59,6 @@ export function Banner() {
       fetchTienda();
     }
   }, [encryptedIdTienda]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <section className="w-full">
@@ -60,17 +73,22 @@ export function Banner() {
         />
       </div>
       <div className="flex flex-col items-center justify-center py-6 md:py-8 lg:py-10">
-        <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">{tienda?.NombreTienda || 'Nombre de Tienda'}</h1>
+        <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">
+          {tienda?.NombreTienda || 'Nombre de Tienda'}
+        </h1>
       </div>
-      <div className="flex space-x-4 ml-4">
-        <Link href={`/editartienda/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-          <Settings className="w-6 h-6" />
-        </Link>
-        <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-          <Package className="w-6 h-6" />
-        </Link>
 
-      </div>
+      {/* Mostrar los enlaces solo si el IdPersona de la tienda coincide con el userId */}
+      {tienda?.IdPersona === Number(userId) && (
+        <div className="flex space-x-4 ml-4">
+          <Link href={`/editartienda/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
+            <Settings className="w-6 h-6" />
+          </Link>
+          <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
+            <Package className="w-6 h-6" />
+          </Link>
+        </div>
+      )}
     </section>
   );
 }
