@@ -114,14 +114,14 @@ export function EditarProductos() {
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
         </Button>
-
-      </div>
-      <h1 className="text-2xl font-bold mb-6 ml-4">Administración de Productos</h1>
-      <div className="relative mb-6">
-        <div className="absolute right-10">
-          <AgregarProducto />
+        <div className="relative mb-6">
+          <div className="absolute right-10">
+            <AgregarProducto />
+          </div>
         </div>
       </div>
+      <h1 className="text-2xl font-bold mb-6 ml-4">Administración de Productos</h1>
+
       {productos.length > 0 ? (
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 ml-4 mr-4">
           {productos.map((producto) => {

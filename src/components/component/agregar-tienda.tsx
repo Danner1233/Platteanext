@@ -53,9 +53,8 @@ const Alert = ({
 
   return (
     <div
-      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-100 transition-all duration-300 ease-in-out ${
-        isExiting ? "animate-fade-out" : "animate-fade-in"
-      }`}
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-100 transition-all duration-300 ease-in-out ${isExiting ? "animate-fade-out" : "animate-fade-in"
+        }`}
     >
       {message}
     </div>
@@ -78,6 +77,7 @@ export function AgregarTienda() {
 
   const [alert, setAlert] = useState<string | null>(null);
   const [filtradas, setFiltradas] = useState<string[]>([]);
+  const [categorias, setCategorias] = useState<{ IdCategoria: number; NombreCategoria: string }[]>([]);
 
   const router = useRouter();
   const crypto = new NextCrypto("secret key");
@@ -91,8 +91,27 @@ export function AgregarTienda() {
     "Bucaramanga",
     "Cúcuta",
     "Pereira",
+    "Santa Marta",
+    "Manizales",
+    "Barrancabermeja",
+
     // Agrega más ciudades aquí...
   ];
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/categoria");
+        if (!response.ok) throw new Error("Error al cargar las categorías");
+        const data = await response.json();
+        setCategorias(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCategorias();
+  }, []);
 
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -175,6 +194,12 @@ export function AgregarTienda() {
         const errorData = await response.json();
         setAlert(`Error al crear la tienda: ${errorData.message}`);
       }
+
+      const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const valor = e.target.value;
+        setCiudad(valor);
+      };
+
     } catch (error) {
       setAlert(
         "Hubo un error al crear la tienda. Inténtalo de nuevo más tarde."
@@ -215,18 +240,11 @@ export function AgregarTienda() {
                   <SelectValue placeholder="Selecciona una categoría" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">Moda</SelectItem>
-                  <SelectItem value="2">Electrodomésticos</SelectItem>
-                  <SelectItem value="3">Hogar</SelectItem>
-                  <SelectItem value="4">Deportes</SelectItem>
-                  <SelectItem value="5">Juguetes</SelectItem>
-                  <SelectItem value="6">Belleza</SelectItem>
-                  <SelectItem value="7">Electrónica</SelectItem>
-                  <SelectItem value="8">Libros</SelectItem>
-                  <SelectItem value="9">Alimentos</SelectItem>
-                  <SelectItem value="10">Salud</SelectItem>
-                  <SelectItem value="11">Oficina</SelectItem>
-                  <SelectItem value="12">Jardín</SelectItem>
+                  {categorias.map((cat) => (
+                    <SelectItem key={cat.IdCategoria} value={cat.IdCategoria.toString()}>
+                      {cat.NombreCategoria}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -256,7 +274,7 @@ export function AgregarTienda() {
                   onChange={(e) => setDireccion(e.target.value)}
                 />
               </div>
-              <div className="grid gap-2 relative">
+              <div className="grid gap-2">
                 <Label htmlFor="city" className="text-sm font-medium">
                   Ciudad
                 </Label>
@@ -266,22 +284,6 @@ export function AgregarTienda() {
                   value={ciudad}
                   onChange={handleCityChange}
                 />
-                {filtradas.length > 0 && (
-                  <ul className="absolute bg-white border border-gray-300 w-full max-h-60 overflow-auto z-50">
-                    {filtradas.map((ciudad, index) => (
-                      <li
-                        key={index}
-                        className="p-2 hover:bg-gray-200 cursor-pointer"
-                        onClick={() => {
-                          setCiudad(ciudad);
-                          setFiltradas([]);
-                        }}
-                      >
-                        {ciudad}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
             </div>
             <div className="grid gap-2">
@@ -290,25 +292,26 @@ export function AgregarTienda() {
               </Label>
               <Input
                 id="phone"
-                placeholder="Ej. 3201234567"
+                placeholder="Teléfono"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="miniature" className="text-sm font-medium">
+              <Label htmlFor="miniatura" className="text-sm font-medium">
                 Miniatura
               </Label>
               <Input
                 type="file"
+                id="miniatura"
                 accept="image/*"
                 onChange={(e) => handleImageChange(e, "miniatura")}
               />
               {previewMiniatura && (
                 <img
                   src={previewMiniatura}
-                  alt="Miniatura"
-                  className="mt-2 w-1/2"
+                  alt="Preview Miniatura"
+                  className="mt-2 w-full h-auto rounded-md"
                 />
               )}
             </div>
@@ -318,11 +321,16 @@ export function AgregarTienda() {
               </Label>
               <Input
                 type="file"
+                id="banner"
                 accept="image/*"
                 onChange={(e) => handleImageChange(e, "banner")}
               />
               {previewBanner && (
-                <img src={previewBanner} alt="Banner" className="mt-2 w-full" />
+                <img
+                  src={previewBanner}
+                  alt="Preview Banner"
+                  className="mt-2 w-full h-auto rounded-md"
+                />
               )}
             </div>
           </div>

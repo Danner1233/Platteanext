@@ -94,7 +94,7 @@ export function ProductosPerfil() {
                 />
                 <div className="absolute pw-12 inset-0 bg-black/70 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <h3 className="text-lg font-semibold mb-2">{tienda.NombreTienda}</h3>
-                  <p className="text-sm ">{truncarTexto(tienda.DescripcionTienda, 300)}</p>
+                  <p className="text-sm ml-4">{truncarTexto(tienda.DescripcionTienda, 300)}</p>
                 </div>
               </div>
             </Link>
