@@ -110,7 +110,7 @@ export function ProductosPerfil() {
             />
             <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white opacity-100 transition-opacity duration-300">
               <Link
-                href="#"
+                href="/agregartienda"
                 className="mt-4 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/80"
                 prefetch={false}
               >
