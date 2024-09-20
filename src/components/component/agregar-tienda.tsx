@@ -42,9 +42,9 @@ const Alert = ({
       setIsExiting(true);
       setTimeout(() => {
         setIsVisible(false);
-        onClose(); // Llamar a la función onClose después de que la alerta se oculte
-      }, 300); // Esperar que termine la animación antes de remover el alert
-    }, 10000);
+        onClose();
+      }, 300);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [onClose]);
@@ -53,7 +53,7 @@ const Alert = ({
 
   return (
     <div
-      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-60 transition-all duration-300 ease-in-out ${
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-100 transition-all duration-300 ease-in-out ${
         isExiting ? "animate-fade-out" : "animate-fade-in"
       }`}
     >
@@ -77,8 +77,22 @@ export function AgregarTienda() {
   const [previewBanner, setPreviewBanner] = useState<string | null>(null);
 
   const [alert, setAlert] = useState<string | null>(null);
+  const [filtradas, setFiltradas] = useState<string[]>([]);
+
   const router = useRouter();
   const crypto = new NextCrypto("secret key");
+
+  const ciudades = [
+    "Bogotá",
+    "Medellín",
+    "Cali",
+    "Barranquilla",
+    "Cartagena",
+    "Bucaramanga",
+    "Cúcuta",
+    "Pereira",
+    // Agrega más ciudades aquí...
+  ];
 
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -94,6 +108,16 @@ export function AgregarTienda() {
         setPreviewBanner(URL.createObjectURL(file));
       }
     }
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valor = e.target.value;
+    setCiudad(valor);
+    setFiltradas(
+      ciudades.filter((ciudad) =>
+        ciudad.toLowerCase().includes(valor.toLowerCase())
+      )
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,13 +145,16 @@ export function AgregarTienda() {
     if (banner) formData.append("BannerTienda", banner);
 
     try {
-      const response = await fetch("http://localhost:4000/api/tienda/persona/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        "http://localhost:4000/api/tienda/persona/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         const responseData = await response.json();
@@ -149,7 +176,9 @@ export function AgregarTienda() {
         setAlert(`Error al crear la tienda: ${errorData.message}`);
       }
     } catch (error) {
-      setAlert("Hubo un error al crear la tienda. Inténtalo de nuevo más tarde.");
+      setAlert(
+        "Hubo un error al crear la tienda. Inténtalo de nuevo más tarde."
+      );
     }
   };
 
@@ -161,7 +190,10 @@ export function AgregarTienda() {
         <CardDescription>Ingresa los detalles de tu tienda.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
+        <form
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          onSubmit={handleSubmit}
+        >
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name" className="text-sm font-medium">
@@ -224,7 +256,7 @@ export function AgregarTienda() {
                   onChange={(e) => setDireccion(e.target.value)}
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-2 relative">
                 <Label htmlFor="city" className="text-sm font-medium">
                   Ciudad
                 </Label>
@@ -232,8 +264,24 @@ export function AgregarTienda() {
                   id="city"
                   placeholder="Añade la ciudad.."
                   value={ciudad}
-                  onChange={(e) => setCiudad(e.target.value)}
+                  onChange={handleCityChange}
                 />
+                {filtradas.length > 0 && (
+                  <ul className="absolute bg-white border border-gray-300 w-full max-h-60 overflow-auto z-50">
+                    {filtradas.map((ciudad, index) => (
+                      <li
+                        key={index}
+                        className="p-2 hover:bg-gray-200 cursor-pointer"
+                        onClick={() => {
+                          setCiudad(ciudad);
+                          setFiltradas([]);
+                        }}
+                      >
+                        {ciudad}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
             <div className="grid gap-2">
@@ -242,61 +290,46 @@ export function AgregarTienda() {
               </Label>
               <Input
                 id="phone"
-                type="tel"
-                placeholder="(+57) 300-789-0123"
+                placeholder="Ej. 3201234567"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="banner" className="text-sm font-medium">
-                Banner de la Tienda
+              <Label htmlFor="miniature" className="text-sm font-medium">
+                Miniatura
               </Label>
-              <div className="flex items-center">
-                <Input
-                  id="banner"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageChange(e, "banner")}
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "miniatura")}
+              />
+              {previewMiniatura && (
+                <img
+                  src={previewMiniatura}
+                  alt="Miniatura"
+                  className="mt-2 w-1/2"
                 />
-                {previewBanner && (
-                  <div className="ml-4 w-32 h-16 overflow-hidden rounded-md">
-                    <img
-                      src={previewBanner}
-                      alt="Banner Preview"
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                )}
-              </div>
+              )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="thumbnail" className="text-sm font-medium">
-                Miniatura de la Tienda
+              <Label htmlFor="banner" className="text-sm font-medium">
+                Banner
               </Label>
-              <div className="flex items-center">
-                <Input
-                  id="thumbnail"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageChange(e, "miniatura")}
-                />
-                {previewMiniatura && (
-                  <div className="ml-4 w-32 h-16 overflow-hidden rounded-md">
-                    <img
-                      src={previewMiniatura}
-                      alt="Miniatura Preview"
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                )}
-              </div>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "banner")}
+              />
+              {previewBanner && (
+                <img src={previewBanner} alt="Banner" className="mt-2 w-full" />
+              )}
             </div>
           </div>
-          <CardFooter>
-            <div className="flex justify-end">
-              <Button type="submit">Agregar Tienda</Button>
-            </div>
+          <CardFooter className="mt-4">
+            <Button type="submit" className="bg-plattea1">
+              Crear Tienda
+            </Button>
           </CardFooter>
         </form>
       </CardContent>
