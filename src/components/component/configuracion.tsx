@@ -261,7 +261,7 @@ export function Configuracion() {
                 className="hidden"
               />
             </div>
-            <SubirImagen/>
+      
           </div>
         </div>
         <div className="space-y-2">

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Administrador } from '@/components/component/administrador';
 import { Footer } from '@/components/component/footer';
 import { Navbar } from '@/components/component/navbar-admin';
@@ -20,12 +19,7 @@ function Page() {
   if (loading) {
     return <div><LoadingAnimation /></div>; // Mostrar animación de carga
   }
-=======
-import { Administrador } from '@/components/component/administrador'
-import { Footer } from '@/components/component/footer'
-import { Navbar } from '@/components/component/navbar'
-import React from 'react'
->>>>>>> 7a421eb5269dc4715535961cc2346a7433002145
+
 
   return (
     <div className="flex flex-col min-h-screen">
