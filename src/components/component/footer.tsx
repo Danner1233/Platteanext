@@ -80,6 +80,9 @@ export function Footer() {
               <Link href="/terminosycondiciones" className="text-sm hover:underline">
                 Términos y condiciones del sitio
               </Link>
+              <Link href="/workwithus" className="text-sm hover:underline">
+              Vende en Plattea
+            </Link>
             </div>
           </div>
           <div className="flex flex-col items-start gap-4">
@@ -158,6 +161,9 @@ export function Footer() {
             </Link>
             <Link href="/terminosycondiciones" className="text-sm hover:underline">
               Términos y condiciones del sitio
+            </Link>
+            <Link href="/workwithus" className="text-sm hover:underline">
+              Vende en Plattea
             </Link>
 
           </div>

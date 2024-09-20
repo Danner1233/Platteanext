@@ -111,13 +111,6 @@ export function Navbar() {
             </Link>
           </NavigationMenuLink>
           <NavigationMenuLink asChild>
-            <Link
-              href="/workwithus"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-plattea1 px-4 py-2 text-sm font-medium text-plattea2 transition-colors hover:bg-plattea2 hover:text-plattea1 focus:bg-plattea2 focus:text-plattea1 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-plattea2/50 data-[state=open]:bg-plattea2/50"
-              prefetch={false}
-            >
-              Trabaja con nosotros
-            </Link>
           </NavigationMenuLink>
         </NavigationMenuList>
       </NavigationMenu>
@@ -159,13 +152,6 @@ export function Navbar() {
               prefetch={false}
             >
               Productos
-            </Link>
-            <Link
-              href="/workwithus"
-              className="flex w-full items-center py-2 text-lg font-semibold text-plattea1"
-              prefetch={false}
-            >
-              Trabaja con nosotros
             </Link>
           </div>
         </SheetContent>
