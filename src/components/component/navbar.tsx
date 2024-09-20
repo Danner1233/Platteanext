@@ -72,8 +72,10 @@ export function Navbar() {
     localStorage.removeItem("token");
     window.location.href = "/";
   };
-  console.log("navbar?.FotoPersonaURL ", navbar?.FotoPersonaURL)
-  console.log("navbar?.idRolFK ", navbar?.idRolFK)
+
+  const numero = navbar?.num || 0;
+
+
   return (
     <header className="bg-plattea1 flex h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
@@ -177,9 +179,9 @@ export function Navbar() {
               <span className="sr-only">Carrito</span>
             </Button>
           </Link>
-          {navbar?.num > 0 && (
+          {numero > 0 && (
             <div className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {navbar.num} {/* Cambié navbar?.num a navbar.num */}
+              {numero} {/* Cambié navbar?.num a navbar.num */}
             </div>
           )}
         </div>
