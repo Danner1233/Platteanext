@@ -98,7 +98,16 @@ export function Configuracion() {
           bannerFile !== null
       );
     }
-  }, [nombre, apellido, correo, descripcion, telefono, file, bannerFile, profile]);
+  }, [
+    nombre,
+    apellido,
+    correo,
+    descripcion,
+    telefono,
+    file,
+    bannerFile,
+    profile,
+  ]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -232,23 +241,32 @@ export function Configuracion() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phone">Número de Celular</Label>
-          <Input
-            id="phone"
-            type="tel"
-            value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
-            placeholder="Ingresa tu número de celular"
-          />
-        </div>
+  <Label htmlFor="phone">Número de Celular</Label>
+  <Input
+    id="phone"
+    type="tel"
+    value={telefono}
+    onChange={(e) => {
+      // Permitir solo números eliminando caracteres no numéricos
+      const inputValue = e.target.value.replace(/\D/g, "");
+      setTelefono(inputValue);
+    }}
+    placeholder="Ingresa tu número de celular"
+  />
+</div>
+
         <div className="space-y-2">
           <Label>Editar Foto de Perfil</Label>
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
               <AvatarImage
-                src={photoPreview || profile?.FotoPersonaURL || "/placeholder-user.jpg"}
+                src={
+                  photoPreview ||
+                  profile?.FotoPersonaURL ||
+                  "/placeholder-user.jpg"
+                }
                 alt="Foto de perfil"
-              />  
+              />
               <AvatarFallback>Usuario</AvatarFallback>
             </Avatar>
             <div>
@@ -261,7 +279,6 @@ export function Configuracion() {
                 className="hidden"
               />
             </div>
-            <SubirImagen/>
           </div>
         </div>
         <div className="space-y-2">
@@ -269,13 +286,16 @@ export function Configuracion() {
           <div className="relative h-40">
             <div className="absolute inset-0">
               <img
-                src={bannerPreview || profile?.bannerPersonaURL || "/placeholder-banner.jpg"}
+                src={
+                  bannerPreview ||
+                  profile?.bannerPersonaURL ||
+                  "/placeholder-banner.jpg"
+                }
                 alt="Banner"
                 className="object-cover w-full h-full"
               />
             </div>
             <div className="flex items-center justify-center h-full">
-             
               <input
                 type="file"
                 ref={bannerInputRef}
@@ -284,7 +304,12 @@ export function Configuracion() {
                 className="hidden"
               />
             </div>
-            <Button className="absolute top-1 right-2 " onClick={handleChangeBannerClick}>Cambiar Banner</Button>
+            <Button
+              className="absolute top-1 right-2 "
+              onClick={handleChangeBannerClick}
+            >
+              Cambiar Banner
+            </Button>
           </div>
         </div>
       </CardContent>
