@@ -20,6 +20,36 @@ interface Producto {
   PromedioCalificacion: number;
 }
 
+const Alert = ({ message, onClose }: { message: string, onClose: () => void }) => {
+  const [isExiting, setIsExiting] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        setIsVisible(false);
+        onClose(); // Llamar a la función onClose después de que la alerta se oculte
+      }, 300); // Esperar que termine la animación antes de remover el alert
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+    className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
+      isVisible ? 'animate-fade-in' : 'animate-fade-out'
+    }`}
+  >
+      {message}
+    </div>
+  );
+};
+
+
 export function Producto() {
   const params = useParams();
   const router = useRouter(); // Hook para el enrutador de Next.js
@@ -28,6 +58,7 @@ export function Producto() {
   const [rating, setRating] = useState(3);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string>("");
+  const [alert, setAlert] = useState<string | null>(null); // Para mostrar alertas
   const crypto = new NextCrypto('secret key');
 
   useEffect(() => {
@@ -35,23 +66,17 @@ export function Producto() {
       try {
         console.log("ID encriptado:", encryptedIdProducto);
 
-        // Reemplazar caracteres en el ID encriptado antes de decodificar
         const safeIdProducto = encryptedIdProducto.replace(/_/g, '/').replace(/-/g, '+');
-        // Decodificar el ID encriptado
         const decodedId = decodeURIComponent(safeIdProducto);
-
-        // Desencriptar el ID
         const decrypted = await crypto.decrypt(decodedId);
         console.log("ID desencriptado:", decrypted);
 
-        // Fetch el producto con el ID desencriptado
         const response = await fetch(`http://localhost:4000/api/producto/${decrypted}`);
         console.log("Response status:", response.status);
         if (response.ok) {
           const data = await response.json();
           const producto = data[0];
-          console.log("Response status:", producto); // Accede al primer elemento del array
-          setProducto(producto); // Asigna el primer objeto del array a producto
+          setProducto(producto);
           setIsLoaded(true);
         } else {
           throw new Error("Error fetching product");
@@ -59,6 +84,7 @@ export function Producto() {
       } catch (error) {
         console.error("Error en fetchProducto:", error);
         setError("Error al obtener el producto");
+        setAlert("Error al obtener el producto");
       }
     };
 
@@ -66,9 +92,6 @@ export function Producto() {
       fetchProducto();
     }
   }, [encryptedIdProducto]);
-
-  if (error) return <p>Error: {error}</p>;
-  if (!isLoaded || !producto) return <p>Cargando...</p>;
 
   const handleRatingChange = (value: SetStateAction<number>) => {
     setRating(value);
@@ -95,16 +118,19 @@ export function Producto() {
       });
 
       if (response.ok) {
-        alert("Producto añadido al carrito exitosamente");
+        setAlert("Producto añadido al carrito exitosamente");
       } else {
         throw new Error("Error al añadir el producto al carrito");
       }
     } catch (error) {
       console.error("Error en handleAddToCart:", error);
-      alert("Hubo un problema al añadir el producto al carrito");
+      setAlert("Hubo un problema al añadir el producto al carrito");
     }
   };
-  console.log(producto.NombreProducto)
+
+  if (error) return <Alert message={error} onClose={() => setAlert(null)} />;
+  if (!isLoaded || !producto) return <p>Cargando...</p>;
+
   return (
     <div className="flex flex-col h-full">
       <div className="left-4 pt-3">
@@ -115,8 +141,11 @@ export function Producto() {
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
         </Button>
-
       </div>
+
+      {/* Mostrar alerta si existe */}
+      {alert && <Alert message={alert} onClose={() => setAlert(null)} />}
+
       <div className="flex items-center justify-center px-4 md:px-6 py-8">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>

@@ -1,11 +1,24 @@
 "use client";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NextCrypto from "next-crypto";
 import { jwtDecode } from "jwt-decode";
@@ -13,6 +26,41 @@ import { jwtDecode } from "jwt-decode";
 interface DecodedToken {
   IdPersona: string;
 }
+
+const Alert = ({
+  message,
+  onClose,
+}: {
+  message: string;
+  onClose: () => void;
+}) => {
+  const [isExiting, setIsExiting] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        setIsVisible(false);
+        onClose(); // Llamar a la función onClose después de que la alerta se oculte
+      }, 300); // Esperar que termine la animación antes de remover el alert
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-60 transition-all duration-300 ease-in-out ${
+        isExiting ? "animate-fade-out" : "animate-fade-in"
+      }`}
+    >
+      {message}
+    </div>
+  );
+};
 
 export function AgregarTienda() {
   const [nombre, setNombre] = useState("");
@@ -28,6 +76,7 @@ export function AgregarTienda() {
   const [previewMiniatura, setPreviewMiniatura] = useState<string | null>(null);
   const [previewBanner, setPreviewBanner] = useState<string | null>(null);
 
+  const [alert, setAlert] = useState<string | null>(null);
   const router = useRouter();
   const crypto = new NextCrypto("secret key");
 
@@ -35,7 +84,7 @@ export function AgregarTienda() {
     event: React.ChangeEvent<HTMLInputElement>,
     type: "miniatura" | "banner"
   ) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0] || null;
     if (file) {
       if (type === "miniatura") {
         setMiniatura(file);
@@ -52,12 +101,11 @@ export function AgregarTienda() {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("No se encontró el token de autenticación.");
+      setAlert("No se encontró el token de autenticación.");
       return;
     }
 
     const formData = new FormData();
-
     const decoded: DecodedToken = jwtDecode(token);
     const userId = decoded.IdPersona;
 
@@ -72,12 +120,6 @@ export function AgregarTienda() {
     if (miniatura) formData.append("MiniaturaTienda", miniatura);
     if (banner) formData.append("BannerTienda", banner);
 
-    // Añadir console.log para depuración
-    console.log("Enviando formulario:");
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
-    }
-
     try {
       const response = await fetch("http://localhost:4000/api/tienda/persona/", {
         method: "POST",
@@ -87,36 +129,33 @@ export function AgregarTienda() {
         body: formData,
       });
 
-      console.log("Respuesta del servidor:", response);
-
       if (response.ok) {
         const responseData = await response.json();
-        console.log("Datos de respuesta:", responseData);
-
         const tiendaId = responseData.idTienda;
         if (!tiendaId) {
-          alert("No se recibió el id de la tienda");
+          setAlert("No se recibió el id de la tienda");
           return;
         }
 
         const encryptedId = await crypto.encrypt(tiendaId);
-        const safeId = encodeURIComponent(encryptedId.replace(/\//g, "_").replace(/\+/g, "-"));
+        const safeId = encodeURIComponent(
+          encryptedId.replace(/\//g, "_").replace(/\+/g, "-")
+        );
 
-        alert("Tienda creada correctamente");
+        setAlert("Tienda creada correctamente");
         router.push(`/shop/${safeId}`);
       } else {
         const errorData = await response.json();
-        console.error("Detalles del error:", errorData);
-        alert(`Error al crear la tienda: ${errorData.message}`);
+        setAlert(`Error al crear la tienda: ${errorData.message}`);
       }
     } catch (error) {
-      console.error("Error al crear la tienda:", error);
-      alert("Hubo un error al crear la tienda. Inténtalo de nuevo más tarde.");
+      setAlert("Hubo un error al crear la tienda. Inténtalo de nuevo más tarde.");
     }
   };
 
   return (
     <Card className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10 mb-20 mt-20">
+      {alert && <Alert message={alert} onClose={() => setAlert(null)} />}
       <CardHeader>
         <CardTitle className="text-3xl font-bold">Crea tu tienda</CardTitle>
         <CardDescription>Ingresa los detalles de tu tienda.</CardDescription>
@@ -144,18 +183,18 @@ export function AgregarTienda() {
                   <SelectValue placeholder="Selecciona una categoría" />
                 </SelectTrigger>
                 <SelectContent>
-                <SelectItem value="1">Moda</SelectItem>
-                <SelectItem value="2">Electrodomésticos</SelectItem>
-                <SelectItem value="3">Hogar</SelectItem>
-                <SelectItem value="4">Deportes</SelectItem>
-                <SelectItem value="5">Juguetes</SelectItem>
-                <SelectItem value="6">Belleza</SelectItem>
-                <SelectItem value="7">Electrónica</SelectItem>
-                <SelectItem value="8">Libros</SelectItem>
-                <SelectItem value="9">Alimentos</SelectItem>
-                <SelectItem value="10">Salud</SelectItem>
-                <SelectItem value="11">Oficina</SelectItem>
-                <SelectItem value="12">Jardín</SelectItem>
+                  <SelectItem value="1">Moda</SelectItem>
+                  <SelectItem value="2">Electrodomésticos</SelectItem>
+                  <SelectItem value="3">Hogar</SelectItem>
+                  <SelectItem value="4">Deportes</SelectItem>
+                  <SelectItem value="5">Juguetes</SelectItem>
+                  <SelectItem value="6">Belleza</SelectItem>
+                  <SelectItem value="7">Electrónica</SelectItem>
+                  <SelectItem value="8">Libros</SelectItem>
+                  <SelectItem value="9">Alimentos</SelectItem>
+                  <SelectItem value="10">Salud</SelectItem>
+                  <SelectItem value="11">Oficina</SelectItem>
+                  <SelectItem value="12">Jardín</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -180,7 +219,7 @@ export function AgregarTienda() {
                 </Label>
                 <Input
                   id="address"
-                  placeholder="Añade la direccion.."
+                  placeholder="Añade la dirección.."
                   value={direccion}
                   onChange={(e) => setDireccion(e.target.value)}
                 />
@@ -189,7 +228,12 @@ export function AgregarTienda() {
                 <Label htmlFor="city" className="text-sm font-medium">
                   Ciudad
                 </Label>
-                <Input id="city" placeholder="Añade la ciudad.." value={ciudad} onChange={(e) => setCiudad(e.target.value)} />
+                <Input
+                  id="city"
+                  placeholder="Añade la ciudad.."
+                  value={ciudad}
+                  onChange={(e) => setCiudad(e.target.value)}
+                />
               </div>
             </div>
             <div className="grid gap-2">
@@ -212,6 +256,7 @@ export function AgregarTienda() {
                 <Input
                   id="banner"
                   type="file"
+                  accept="image/*"
                   onChange={(e) => handleImageChange(e, "banner")}
                 />
                 {previewBanner && (
@@ -233,6 +278,7 @@ export function AgregarTienda() {
                 <Input
                   id="thumbnail"
                   type="file"
+                  accept="image/*"
                   onChange={(e) => handleImageChange(e, "miniatura")}
                 />
                 {previewMiniatura && (

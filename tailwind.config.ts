@@ -9,43 +9,43 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-            "border": "hsl(var(--border))",
-            "input": "hsl(var(--input))",
-            "ring": "hsl(var(--ring))",
-            "background": "hsl(var(--background))",
-            "foreground": "hsl(var(--foreground))",
-            "primary": {
-              "DEFAULT": "hsl(var(--primary))",
-              "foreground": "hsl(var(--primary-foreground))"
-            },
-            "secondary": {
-              "DEFAULT": "hsl(var(--secondary))",
-              "foreground": "hsl(var(--secondary-foreground))"
-            },
-            "destructive": {
-              "DEFAULT": "hsl(var(--destructive))",
-              "foreground": "hsl(var(--destructive-foreground))"
-            },
-            "muted": {
-              "DEFAULT": "hsl(var(--muted))",
-              "foreground": "hsl(var(--muted-foreground))"
-            },
-            "accent": {
-              "DEFAULT": "hsl(var(--accent))",
-              "foreground": "hsl(var(--accent-foreground))"
-            },
-            "popover": {
-              "DEFAULT": "hsl(var(--popover))",
-              "foreground": "hsl(var(--popover-foreground))"
-            },
-            "card": {
-              "DEFAULT": "hsl(var(--card))",
-              "foreground": "hsl(var(--card-foreground))"
-            }, 
+        "border": "hsl(var(--border))",
+        "input": "hsl(var(--input))",
+        "ring": "hsl(var(--ring))",
+        "background": "hsl(var(--background))",
+        "foreground": "hsl(var(--foreground))",
+        "primary": {
+          "DEFAULT": "hsl(var(--primary))",
+          "foreground": "hsl(var(--primary-foreground))"
+        },
+        "secondary": {
+          "DEFAULT": "hsl(var(--secondary))",
+          "foreground": "hsl(var(--secondary-foreground))"
+        },
+        "destructive": {
+          "DEFAULT": "hsl(var(--destructive))",
+          "foreground": "hsl(var(--destructive-foreground))"
+        },
+        "muted": {
+          "DEFAULT": "hsl(var(--muted))",
+          "foreground": "hsl(var(--muted-foreground))"
+        },
+        "accent": {
+          "DEFAULT": "hsl(var(--accent))",
+          "foreground": "hsl(var(--accent-foreground))"
+        },
+        "popover": {
+          "DEFAULT": "hsl(var(--popover))",
+          "foreground": "hsl(var(--popover-foreground))"
+        },
+        "card": {
+          "DEFAULT": "hsl(var(--card))",
+          "foreground": "hsl(var(--card-foreground))"
+        }, 
         customBlue: '#1e3a8a',
         customGreen: '#10b981',
         plattea1: '#1C2833',
-        platteaGreenv2: '#48C9B0',
+        platteaGreenv2: '#008000',
         plattea2: '#F7F9F9',
         customRed: '#e53e3e',
         customYellow: '#f6e05e',
@@ -66,27 +66,29 @@ const config: Config = {
         customCoolGray: '#6b7280',
         customTrueGray: '#9e9e9e',
         customWarmGray: '#9e9e9e',
-        customRoseGray: '#d6d3d1',
-        platteaBlack: '#000000',
-          },
+        customRoseGray: '#d6d3d1',
+        platteaBlack: '#000000',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+        'fade-in': {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '50%': { opacity: '1', transform: 'scale(1.05)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+        'fade-out': {
+          '0%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.05)' },
+          '100%': { opacity: '0', transform: 'scale(0.9)' },
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.3s ease-out',
-        'accordion-up': 'accordion-up 0.3s ease-out',
+        'fade-in': 'fade-in 0.5s ease-in-out forwards',
+        'fade-out': 'fade-out 0.5s ease-in-out forwards',
       },
     },
   },

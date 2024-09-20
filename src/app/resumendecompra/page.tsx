@@ -10,8 +10,10 @@ import { NavbarDefault } from '@/components/component/navbar-default';
 
 function page() {
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {

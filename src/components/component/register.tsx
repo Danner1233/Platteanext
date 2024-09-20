@@ -162,7 +162,6 @@ export function Register() {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Ingresa tu contraseña"
-                  value={clave}
                   onChange={(e) => {
                     setClave(e.target.value);
                     validarContraseña(e.target.value); // Validar contraseña en tiempo real

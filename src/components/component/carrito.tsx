@@ -119,84 +119,97 @@ export function Carrito() {
       </header>
       <div className="grid md:grid-cols-[1fr_300px] gap-8 sm:grid-cols-1 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
-          {items.map((item, index) => (
-            <div
-              key={item.IdProducto}
-              className="grid grid-cols-[80px_1fr_80px] items-center gap-4 border-b pb-4 sm:grid-cols-[60px_1fr_60px] lg:grid-cols-[100px_1fr_100px]"
-            >
-              <img
-                src={item.FotoProductoURL}
-                alt={item.NombreProducto}
-                width={80}
-                height={80}
-                className="rounded-md object-cover sm:w-[60px] sm:h-[60px] lg:w-[100px] lg:h-[100px]"
-                style={{ aspectRatio: "80/80", objectFit: "cover" }}
-              />
-              <div>
-                <h3 className="font-medium">{item.NombreProducto}</h3>
-                <p className="text-sm text-muted-foreground">{item.NombreTienda}</p>
-                <p className="text-sm text-muted-foreground">$ {item.PrecioProducto}</p>
-              </div>
-              <div className="flex items-center gap-4">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => handleQuantityChange(index, item.cantidad - 1)}
-                >
-                  <MinusIcon className="h-4 w-4" />
-                </Button>
-                <span>{item.cantidad}</span>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => handleQuantityChange(index, item.cantidad + 1)}
-                >
-                  <PlusIcon className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => handleRemoveItem(item.IdDetalleCarrito)}
-                >
-                  <RemoveIcon className="h-4 w-4 text-red-600" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="bg-muted/40 rounded-md p-6 space-y-4 sm:mt-4 lg:mt-0">
-          <div className="flex justify-between">
-            <span>Subtotal</span>
-            <span className="font-medium">${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Envío</span>
-            <span className="font-medium">$5.00</span>
-          </div>
-          <Separator />
-          <div className="flex justify-between items-center">
-            <span className="text-lg font-medium">Total</span>
-            <span className="text-lg font-medium">${total.toFixed(2)}</span>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Link href="/products">
-              <Button variant="outline" className="flex-1">
-                Continuar comprando
-              </Button>
-            </Link>
-            <div className="flex-1">
-              <Link href={isEmpty ? "#" : "/agregartarjeta"} passHref>
-                <Button
-                  className={`flex-1 ${isEmpty ? "bg-gray-300 cursor-not-allowed" : "bg-plattea1"}`}
-                  disabled={isEmpty}
-                  onClick={handleProceedToPayment}
-                >
-                  Proceder al pago
+          {isEmpty ? (
+            <div className="text-center">
+              <p className="text-lg font-medium">No hay nada aquí</p>
+              <Link href="/products">
+                <Button className="mt-4 bg-plattea1">
+                  Comprar
                 </Button>
               </Link>
             </div>
-          </div>
+          ) : (
+            items.map((item, index) => (
+              <div
+                key={item.IdProducto}
+                className="grid grid-cols-[80px_1fr_80px] items-center gap-4 border-b pb-4 sm:grid-cols-[60px_1fr_60px] lg:grid-cols-[100px_1fr_100px]"
+              >
+                <img
+                  src={item.FotoProductoURL}
+                  alt={item.NombreProducto}
+                  width={80}
+                  height={80}
+                  className="rounded-md object-cover sm:w-[60px] sm:h-[60px] lg:w-[100px] lg:h-[100px]"
+                  style={{ aspectRatio: "80/80", objectFit: "cover" }}
+                />
+                <div>
+                  <h3 className="font-medium">{item.NombreProducto}</h3>
+                  <p className="text-sm text-muted-foreground">{item.NombreTienda}</p>
+                  <p className="text-sm text-muted-foreground">$ {item.PrecioProducto}</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleQuantityChange(index, item.cantidad - 1)}
+                  >
+                    <MinusIcon className="h-4 w-4" />
+                  </Button>
+                  <span>{item.cantidad}</span>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleQuantityChange(index, item.cantidad + 1)}
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleRemoveItem(item.IdDetalleCarrito)}
+                  >
+                    <RemoveIcon className="h-4 w-4 text-red-600" />
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
+        {!isEmpty && (
+          <div className="bg-muted/40 rounded-md p-6 space-y-4 sm:mt-4 lg:mt-0">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span className="font-medium">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Envío</span>
+              <span className="font-medium">$5.00</span>
+            </div>
+            <Separator />
+            <div className="flex justify-between items-center">
+              <span className="text-lg font-medium">Total</span>
+              <span className="text-lg font-medium">${total.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Link href="/products">
+                <Button variant="outline" className="flex-1">
+                  Continuar comprando
+                </Button>
+              </Link>
+              <div className="flex-1">
+                <Link href={isEmpty ? "#" : "/agregartarjeta"} passHref>
+                  <Button
+                    className={`flex-1 ${isEmpty ? "bg-gray-300 cursor-not-allowed" : "bg-plattea1"}`}
+                    disabled={isEmpty}
+                    onClick={handleProceedToPayment}
+                  >
+                    Proceder al pago
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
