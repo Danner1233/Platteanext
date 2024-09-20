@@ -108,8 +108,6 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
             <div>No hay productos similares disponibles.</div>
           )}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
       </Carousel>
     </div>
   );
