@@ -1,6 +1,6 @@
 import { Administrador } from '@/components/component/administrador'
 import { Footer } from '@/components/component/footer'
-import { Navbar } from '@/components/component/navbar-admin'
+import { Navbar } from '@/components/component/navbar'
 import React from 'react'
 
 function page() {
