@@ -30,9 +30,12 @@ export function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Guardar el token en localStorage o en cookies
+        // Guardar el token y el idRolFK en localStorage
         localStorage.setItem("token", data.token);
-        console.log("token", data.token);
+        localStorage.setItem("idRolFK", data.persona.idRolFK);  // Guardar idRolFK en localStorage
+        console.log("Token:", data.token);
+        console.log("Rol:", data.persona.idRolFK);
+
         // Redirigir a la página deseada
         router.push("./");
       } else {
@@ -163,7 +166,7 @@ function EyeIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
-  )
+  );
 }
 
 function EyeOffIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
@@ -184,5 +187,5 @@ function EyeOffIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
       <path d="M16.9 16.9a10.3 10.3 0 0 1-4.4 1.1C7.8 18 5.6 14.9 5.6 12s2.2-6 6.9-6c1.3 0 2.5.3 3.5.8" />
       <path d="M23 1 1 23" />
     </svg>
-  )
+  );
 }
