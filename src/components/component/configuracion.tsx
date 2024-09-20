@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+
 import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
@@ -247,7 +248,7 @@ export function Configuracion() {
               <AvatarImage
                 src={photoPreview || profile?.FotoPersonaURL || "/placeholder-user.jpg"}
                 alt="Foto de perfil"
-              />
+              />  
               <AvatarFallback>Usuario</AvatarFallback>
             </Avatar>
             <div>
@@ -260,6 +261,7 @@ export function Configuracion() {
                 className="hidden"
               />
             </div>
+            <SubirImagen/>
           </div>
         </div>
         <div className="space-y-2">

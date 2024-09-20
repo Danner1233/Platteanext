@@ -99,7 +99,7 @@ export function ProductosDestacados() {
                     ${producto.PrecioProducto}
                   </h4>
                   <Button size="sm" className="bg-plattea1 text-plattea2">
-                    Comprar
+                    Ver
                   </Button>
                 </div>
               </div>

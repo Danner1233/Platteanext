@@ -2,12 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel';
+import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import axios from 'axios';
 import NextCrypto from 'next-crypto';
 
@@ -32,28 +28,17 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
   useEffect(() => {
     const fetchProductosSimilares = async () => {
       try {
-        console.log('Fetching productos similares...');
         const safeIdProducto = encryptedIdProducto.replace(/_/g, '/').replace(/-/g, '+');
         const decodedId = decodeURIComponent(safeIdProducto);
         const decryptedId = await crypto.decrypt(decodedId);
 
-        console.log('ID desencriptado:', decryptedId);
-
         const response = await axios.get(`http://localhost:4000/api/productos-similares/${decryptedId}`);
-        console.log('Response data:', response);
-        console.log('Response data (solo data):', response.data);
-        console.log('Response data (es array):', Array.isArray(response.data));
-
-        // Asignar productos similares
         const productos = Array.isArray(response.data) ? response.data : [];
         setProductosSimilares(productos);
       } catch (error) {
         console.error('Error al obtener productos similares:', error);
       }
     };
-    
-
-  
 
     if (encryptedIdProducto) {
       fetchProductosSimilares();
@@ -67,44 +52,50 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
   };
 
   return (
-    <section className="w-full py-12">
-      <div className="container mx-auto grid gap-6 md:gap-8 px-4 md:px-6">
-        <h2 className="text-2xl font-bold">Productos Similares</h2>
-        <Carousel autoplay={true} autoplayInterval={3000} infinite={true}>
-          <CarouselContent className="flex gap-4">
-            {productosSimilares.length > 0 ? (
-              productosSimilares.map((producto: Producto, index: number) => (
-                <CarouselItem key={`${producto.IdProducto}-${index}`} className="flex-shrink-0 md:basis-1/3 lg:basis-1/4">
-                  <div className="grid gap-4">
-                    <div className="relative group">
-                      <Link href={`/producto/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
-                        <span className="sr-only">Ver</span>
-                      </Link>
-                      <img
-                        src={producto.FotoProductoURL || "/placeholder.svg"}
-                        alt={producto.NombreProducto}
-                        width={250}
-                        height={250}
-                        className="rounded-lg object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
-                      />
-                      <div className="p-2">
-                        <h3 className="font-semibold text-bold">{producto.NombreProducto}</h3>
-                        <p className="text-sm leading-none"> {truncarTexto(producto.DescripcionProducto, 121)}</p>
-                        <div className="text-xl font-bold">${producto.PrecioProducto}</div>
-                      </div>
-                    </div>
-                    <Button variant="outline" className="w-full text-xs py-1">
-                      Agregar al carrito
-                    </Button>
-                  </div>
-                </CarouselItem>
-              ))
-            ) : (
-              <div>No hay productos similares disponibles.</div>
-            )}
-          </CarouselContent>
-        </Carousel>
-      </div>
-    </section>
+<div className="w-full max-w-[1600px] mx-auto px-0 py-12"> {/* Cambiado a max-w-full */}
+  <h2 className="text-2xl font-bold mb-6">Productos Similares</h2>
+  <Carousel
+    opts={{
+      align: "start",
+      loop: true,
+    }}
+    className="w-full"
+  >
+    <CarouselContent className="-ml-4">
+      {productosSimilares.length > 0 ? (
+        productosSimilares.map((producto: Producto) => (
+          <CarouselItem key={producto.IdProducto} className="pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"> {/* Ajustar tamaño */}
+            <Card className="h-full">
+              <CardContent className="flex flex-col p-0">
+                <div className="relative pt-[100%] w-full">
+                  <Link href={`/producto/${producto.IdProducto}`} className="absolute inset-0 z-10" prefetch={false}>
+                    <span className="sr-only">Ver</span>
+                  </Link>
+                  <img 
+                    src={producto.FotoProductoURL || "/placeholder.svg"} 
+                    alt={producto.NombreProducto} 
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4 flex flex-col flex-grow">
+                  <h3 className="font-semibold text-lg mb-2 line-clamp-2">{producto.NombreProducto}</h3>
+                  <p className="text-sm text-gray-600 mb-2 flex-grow line-clamp-3">{truncarTexto(producto.DescripcionProducto, 121)}</p>
+                  <p className="text-lg font-bold text-primary">{producto.PrecioProducto}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </CarouselItem>
+        ))
+      ) : (
+        <div>No hay productos similares disponibles.</div>
+      )}
+    </CarouselContent>
+    <CarouselPrevious />
+    <CarouselNext />
+  </Carousel>
+</div>
+
+
+
   );
 }

@@ -26,6 +26,7 @@ interface DecodedToken {
 
 interface Profile {
   FotoPersonaURL: string;
+  idRolFK: number;
 }
 
 export function Navbar() {
