@@ -67,7 +67,7 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
   };
 
   return (
-    <div className="w-full mx-auto px-4 py-12">
+    <div className="flex-column items-center justify-center px-4 md:px-6 py-8">
       <h2 className="text-2xl font-bold mb-6">Productos Similares</h2>
       <Carousel
         autoplay={true}
@@ -105,7 +105,7 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
               </CarouselItem>
             ))
           ) : (
-            <div>No hay productos similares disponibles.</div>
+            <div className=''>No hay productos similares disponibles.</div>
           )}
         </CarouselContent>
       </Carousel>

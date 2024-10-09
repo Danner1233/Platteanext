@@ -210,7 +210,7 @@ export function Navbar() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href="/perfil" className="text-plattea1">
+              <Link href="/perfil" className="text-plattea1 w-full h-full">
                 Perfil
               </Link>
             </DropdownMenuItem>
@@ -220,11 +220,11 @@ export function Navbar() {
               </Link>
             </DropdownMenuItem> */}
             <DropdownMenuItem>
-              <Link href="/configuracion" className="text-plattea1">
+              <Link href="/configuracion" className="text-plattea1 w-full h-full">
                 Configuración
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={logout} className="text-plattea1">
+            <DropdownMenuItem onClick={logout} className="text-plattea1 w-full h-full cursor-pointer">
               Cerrar sesión
             </DropdownMenuItem>
           </DropdownMenuContent>

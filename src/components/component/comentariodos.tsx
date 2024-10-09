@@ -135,7 +135,8 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
   };
 
   return (
-    <Card className="p-4 w-full mb-1.9">
+    <Card className="px-4 md:px-6 py-8 w-full max-w-[1600px] m-auto">
+
       {/* Puntuacion Section */}
       <div className="w-full p-6">
         <div className="grid gap-4 sm:gap-6">

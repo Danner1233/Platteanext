@@ -33,7 +33,7 @@ function Page() {
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
       <Producto />
       <ProductosProducto encryptedIdProducto={idProducto || ''} />
-      <main className="flex-grow">
+      <main className="flex-grow w-full h-full flex m-auto flex">
         <Comentariodos idProducto={idProducto || ''} />
       </main>
       <Footer />
