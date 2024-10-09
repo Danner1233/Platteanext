@@ -30,10 +30,8 @@ export function EditarProductos() {
     if (encryptedIdTienda) {
       const fetchProductos = async () => {
         try {
-          console.log('Encrypted Id Tienda:', encryptedIdTienda);
           const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
           const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
-          console.log('Decrypted Id:', decryptedId);
 
           const response = await fetch(`http://localhost:4000/api/tienda/producto/${decryptedId}`);
           if (response.status === 404) {
@@ -44,7 +42,6 @@ export function EditarProductos() {
             throw new Error('Network response was not ok');
           }
           const data: Producto[] = await response.json();
-          console.log('Fetched Products:', data);
           setProductos(data);
 
           // Encriptar IDs de productos para los enlaces
@@ -56,7 +53,6 @@ export function EditarProductos() {
           }
           setEncryptedProductLinks(productLinks);
         } catch (error: any) {
-          console.error('Error fetching products:', error);
           setError(error.message || 'An unexpected error occurred');
         } finally {
           setLoading(false);
@@ -77,6 +73,12 @@ export function EditarProductos() {
     return texto.length > maxLength
       ? texto.substring(0, maxLength) + "..."
       : texto;
+  };
+
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -155,7 +157,8 @@ export function EditarProductos() {
                   <h3 className="font-semibold text-lg">{truncarTexto(producto.NombreProducto, 25)}</h3>
                   <p className="text-sm text-muted-foreground">{truncarTexto(producto.DescripcionProducto, 100)}</p>
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-lg">${producto.PrecioProducto}</span>
+                    {/* Formatear el precio */}
+                    <span className="font-semibold text-lg">${formatPrice(producto.PrecioProducto)}</span>
                   </div>
                 </div>
               </div>
@@ -208,7 +211,9 @@ function TrashIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     >
       <path d="M3 6h18" />
       <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+      <path d="M9 6V3h6v3" />
     </svg>
   );
 }

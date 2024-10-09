@@ -76,7 +76,6 @@ export function AgregarProducto() {
   const [stock, setStock] = useState<string>("");
   const [imagen, setImagen] = useState<File | null>(null);
 
-  // Referencias para enfoque automático
   const nombreRef = useRef<HTMLInputElement>(null);
   const descripcionRef = useRef<HTMLTextAreaElement>(null);
   const precioRef = useRef<HTMLInputElement>(null);
@@ -111,10 +110,12 @@ export function AgregarProducto() {
       return;
     }
 
+    const cleanPrecio = precio.replace(/\./g, "").replace(/,/g, "");
+
     const formData = new FormData();
     formData.append("NombreProducto", nombre);
     formData.append("DescripcionProducto", descripcion);
-    formData.append("PrecioProducto", precio);
+    formData.append("PrecioProducto", cleanPrecio);
     formData.append("StockProducto", stock);
     formData.append("FotoProducto", imagen);
     formData.append("IdTiendaFK", idTienda);
@@ -142,7 +143,17 @@ export function AgregarProducto() {
     setImagen(file);
   };
 
-  // Manejo de la tecla Enter para cambiar enfoque
+  const formatPrice = (value: string) => {
+    return value
+      .replace(/[^\d,]/g, "") // Remover todo lo que no sea dígito o coma
+      .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Añadir puntos cada tres dígitos
+  };
+
+  const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const formattedPrice = formatPrice(e.target.value);
+    setPrecio(formattedPrice);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent, nextRef: React.RefObject<any>) => {
     if (e.key === "Enter" && nextRef.current) {
       nextRef.current.focus();
@@ -191,12 +202,12 @@ export function AgregarProducto() {
               <Label htmlFor="price">Precio</Label>
               <Input
                 id="price"
-                type="number"
+                type="text"
                 placeholder="Ingresa el precio del producto"
                 value={precio}
                 ref={precioRef}
                 onKeyDown={(e) => handleKeyDown(e, stockRef)}
-                onChange={(e) => setPrecio(e.target.value)}
+                onChange={handlePriceChange}
               />
             </div>
             <div className="grid gap-2">
