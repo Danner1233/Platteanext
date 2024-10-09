@@ -68,6 +68,12 @@ export function ProductosTienda() {
       : texto;
   };
 
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
+  };
+
   if (loading) return <p className="text-center">Loading...</p>;
   if (error) {
     return (
@@ -115,7 +121,7 @@ export function ProductosTienda() {
                 <h3 className="text-xl font-bold mb-2 truncate">{truncarTexto(producto.NombreProducto, 50)}</h3>
                 <p className="text-sm text-gray-600 h-20 overflow-hidden overflow-ellipsis">{truncarTexto(producto.DescripcionProducto, 100)}</p>
               </div>
-              <h4 className="text-lg font-semibold mt-2">${producto.PrecioProducto}</h4>
+              <h4 className="text-lg font-semibold mt-2">${formatPrice(producto.PrecioProducto)}</h4>
             </div>
           </div>
         ))}

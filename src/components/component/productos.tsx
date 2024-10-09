@@ -126,7 +126,11 @@ export function Productos() {
   };
 
   if (error) return <p>Error: {error}</p>;
-
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
+  };
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
       <div className="mb-8">
@@ -198,7 +202,7 @@ export function Productos() {
                   </p>
                 </div>
                 <h4 className="text-lg font-semibold md:text-xl mt-2">
-                  ${producto.PrecioProducto}
+                  ${formatPrice(producto.PrecioProducto)}
                 </h4>
               </div>
             </div>

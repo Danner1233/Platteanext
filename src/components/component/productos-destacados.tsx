@@ -58,6 +58,11 @@ export function ProductosDestacados() {
       ? texto.substring(0, maxLength) + "..."
       : texto;
   };
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
+  };
 
   if (error) return <p>Error: {error}</p>;
   if (!isLoaded) return <p>Cargando...</p>;
@@ -98,7 +103,7 @@ export function ProductosDestacados() {
                 </p>
                 <div className="flex items-center justify-between">
                   <h4 className="text-base font-semibold md:text-lg">
-                    ${producto.PrecioProducto}
+                    ${formatPrice(producto.PrecioProducto)}
                   </h4>
                   <Button size="sm" className="bg-plattea1 text-plattea2">
                     Ver

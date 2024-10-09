@@ -109,7 +109,11 @@ export function Producto() {
   const handleRatingChange = (value: SetStateAction<number>) => {
     setRating(value);
   };
-
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
+  };
   const handleAddToCart = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -187,7 +191,7 @@ export function Producto() {
             </div>
             <p className="text-muted-foreground">{producto.DescripcionProducto}</p>
             <div className="flex flex-col md:flex-row items-center justify-between">
-              <h3 className="text-3xl font-bold">${producto.PrecioProducto}</h3>
+              <h3 className="text-3xl font-bold">${formatPrice(producto.PrecioProducto)}</h3>
               <div className="flex gap-2 mt-4 md:mt-0">
                 <Button onClick={handleAddToCart}>Añadir al carrito</Button>
               </div>

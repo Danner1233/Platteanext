@@ -66,6 +66,11 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
       : texto;
   };
 
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
+  };
   return (
     <div className="w-full mx-auto px-4 py-12">
       <h2 className="text-2xl font-bold mb-6">Productos Similares</h2>
@@ -98,7 +103,7 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
                     <div className="p-4 flex flex-col flex-grow">
                       <h3 className="font-semibold text-lg mb-2 line-clamp-2">{truncarTexto(producto.NombreProducto,25)}</h3>
                       <p className="text-sm text-gray-600 mb-2 flex-grow line-clamp-3">{truncarTexto(producto.DescripcionProducto, 121)}</p>
-                      <p className="text-lg font-bold text-primary">{producto.PrecioProducto}</p>
+                      <p className="text-lg font-bold text-primary">{formatPrice(producto.PrecioProducto)}</p>
                     </div>
                   </CardContent>
                 </Card>
