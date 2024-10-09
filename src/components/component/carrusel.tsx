@@ -78,14 +78,6 @@ export function Carrusel() {
                     muted
                     className="h-[350px] w-full object-cover" // Ajusta la clase aquí
                   />
-                  <Link
-                    href="#"
-                    className="bg-plattea1 text-plattea2 absolute bottom-4 right-4 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium focus:outline-none"
-                    prefetch={false}
-                  >
-                    Ver más
-                    <ArrowRightIcon className="ml-2 h-4 w-4" />
-                  </Link>
                 </div>
               </CarouselItem>
               <CarouselItem>

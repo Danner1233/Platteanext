@@ -31,8 +31,14 @@ function Page() {
   return (
     <div className="flex flex-col min-h-screen">
       {isLoggedIn ? <Navbar /> : <NavbarDefault />}
-      <Producto />
-      <ProductosProducto encryptedIdProducto={idProducto || ''} />
+      <div className="flex-grow px-4 py-6 sm:px-6 lg:px-8">
+    <Producto />
+  </div>
+
+  {/* Sección de Productos Similares */}
+  <div className="w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <ProductosProducto encryptedIdProducto={idProducto || ''} />
+  </div>
       <main className="flex-grow">
         <Comentariodos idProducto={idProducto || ''} />
       </main>
