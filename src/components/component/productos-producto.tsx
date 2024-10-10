@@ -72,7 +72,7 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
     return new Intl.NumberFormat('es-ES').format(numero);
   };
   return (
-    <div className="flex-column items-center justify-center px-4 md:px-6 py-8">
+    <div className="flex-column items-center justify-center px-4 md:px-6 py-8 max-w-[1600px] m-auto">
       <h2 className="text-2xl font-bold mb-6">Productos Similares</h2>
       <Carousel
         autoplay={true}

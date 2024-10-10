@@ -30,26 +30,22 @@ function Page() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
-<<<<<<< HEAD
-      <Producto />
-      <ProductosProducto encryptedIdProducto={idProducto || ''} />
-      <main className="flex-grow w-full h-full flex m-auto flex">
-=======
-      <div className="flex-grow px-4 py-6 sm:px-6 lg:px-8">
+    {isLoggedIn ? <Navbar /> : <NavbarDefault />}
     <Producto />
-  </div>
-
-  {/* Sección de Productos Similares */}
-  <div className="w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
-    <ProductosProducto encryptedIdProducto={idProducto || ''} />
-  </div>
-      <main className="flex-grow">
->>>>>>> a237b14dc77a46840b3fe277173a5fa542299bd1
-        <Comentariodos idProducto={idProducto || ''} />
-      </main>
-      <Footer />
+    
+    {/* Aplica las mismas clases de estilo responsivo a ProductosProducto */}
+    <div className="w-full h-full flex-grow">
+      <ProductosProducto encryptedIdProducto={idProducto || ''} />
     </div>
+    
+    {/* Este main ya tiene las clases responsivas */}
+    <main className="flex-grow w-full h-full flex m-auto">
+      <Comentariodos idProducto={idProducto || ''} />
+    </main>
+    
+    <Footer />
+  </div>
+  
   );
 }
 
