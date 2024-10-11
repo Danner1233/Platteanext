@@ -10,6 +10,7 @@ import { jwtDecode } from "jwt-decode";
 import NextCrypto from 'next-crypto';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { PasarelaPagos } from "./pasarela-pagos";
 
 interface JWTDecoded {
   IdPersona: number;
@@ -70,6 +71,7 @@ export function Tarjeta() {
         <CardHeader>
           <CardTitle>Agregar Tarjeta de Crédito</CardTitle>
           <CardDescription>Ingresa tu información de pago.</CardDescription>
+          <PasarelaPagos />
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Los demás campos los dejamos igual */}
