@@ -42,16 +42,19 @@ export function Carrito() {
   }, []);
 
   const handleQuantityChange = async (index: number, value: number) => {
-    if (value > 0) {
-      const updatedItems = [...items];
+    const updatedItems = [...items];
+    const maxStock = updatedItems[index].StockProducto;
+  
+    // Asegúrate de que la cantidad no exceda el stock disponible
+    if (value > 0 && value <= maxStock) {
       updatedItems[index].cantidad = value;
       setItems(updatedItems);
-
+  
       const token = localStorage.getItem("token");
       if (token) {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
-
+  
         try {
           const response = await fetch(`http://localhost:4000/api/carrito/`, {
             method: "PATCH",
@@ -65,7 +68,7 @@ export function Carrito() {
               Cantidad: value,
             }),
           });
-
+  
           if (!response.ok) {
             throw new Error("Error al actualizar la cantidad");
           }
@@ -73,8 +76,11 @@ export function Carrito() {
           console.error("Error al actualizar la cantidad:", error);
         }
       }
+    } else if (value > maxStock) {
+      alert(`La cantidad máxima disponible para este producto es ${maxStock}`);
     }
   };
+  
 
   const handleRemoveItem = async (itemId: number) => {
     try {
