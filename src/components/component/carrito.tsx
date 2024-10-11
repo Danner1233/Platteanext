@@ -224,13 +224,20 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
         </div>
         {!isEmpty && (
           <div className="bg-muted/40 rounded-md p-6 space-y-4 sm:mt-4 lg:mt-0">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span className="font-medium">${formatPrice(subtotal.toFixed(2))}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Envío</span>
+              <span className="font-medium">${formatPrice(shipping.toFixed(2))}</span>
+            </div>
             <Separator />
             <div className="flex justify-between font-medium">
-              <span className="text-xl" >Total</span >
+              <span>Total</span>
               <span className="text-xl">${formatPrice(total.toFixed(2))}</span>
             </div>
-            < Separator />
-            <Link href="/checkout">
+            <Link href="/agregartarjeta">
               <Button
                 onClick={handleProceedToPayment}
                 className={`w-full mt-2 bg-plattea1 text-white rounded-lg shadow transition-transform transform hover:scale-105 hover:bg-plattea1 ${
