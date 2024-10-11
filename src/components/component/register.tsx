@@ -1,17 +1,17 @@
-'use client';
-import { JSX, SVGProps, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+"use client";
+import { JSX, SVGProps, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function Register() {
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [clave, setClave] = useState('');
-  const [telefono, setTelefono] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [clave, setClave] = useState("");
+  const [telefono, setTelefono] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null); // Error específico para la contraseña
   const [showPassword, setShowPassword] = useState(false);
@@ -20,20 +20,20 @@ export function Register() {
   const validarFormulario = () => {
     let valid = true;
 
-      if (nombre.length < 4) {
-        setError('El nombre debe tener al menos 4 caracteres.');
-        valid = false;
+    if (nombre.length < 4) {
+      setError("El nombre debe tener al menos 4 caracteres.");
+      valid = false;
     } else if (apellido.length < 4) {
-      setError('El apellido debe tener al menos 4 caracteres.');
+      setError("El apellido debe tener al menos 4 caracteres.");
       valid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
-      setError('Correo electrónico inválido.');
+      setError("Correo electrónico inválido.");
       valid = false;
     } else if (!/^[0-9]+$/.test(telefono)) {
-      setError('El teléfono debe contener solo números.');
+      setError("El teléfono debe contener solo números.");
       valid = false;
     } else if (telefono.length < 10) {
-      setError('El teléfono debe tener 10 dígitos.');
+      setError("El teléfono debe tener 10 dígitos.");
       valid = false;
     } else if (!validarContraseña(clave)) {
       valid = false;
@@ -49,7 +49,9 @@ export function Register() {
     const hasUpperCase = /[A-Z]/.test(clave);
     const hasNumber = /[0-9]/.test(clave);
     if (clave.length < 8 || !hasUpperCase || !hasNumber) {
-      setPasswordError('La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.');
+      setPasswordError(
+        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número."
+      );
       return false;
     }
     setPasswordError(null);
@@ -64,9 +66,9 @@ export function Register() {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:4000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           NombrePersona: nombre,
           ApellidoPersona: apellido,
@@ -79,14 +81,14 @@ export function Register() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Usuario creado correctamente:', data);
-        router.push('./login');
+        console.log("Usuario creado correctamente:", data);
+        router.push("./login");
       } else {
         setError(data.message);
       }
     } catch (error) {
-      console.error('Error al crear el usuario:', error);
-      setError('Error al crear el usuario');
+      console.error("Error al crear el usuario:", error);
+      setError("Error al crear el usuario");
     }
   };
 
@@ -106,7 +108,9 @@ export function Register() {
               </Link>
             </div>
             <h1 className="text-3xl font-bold">Registrarse</h1>
-            <p className="text-muted-foreground">Ingresa tus datos para crear una cuenta</p>
+            <p className="text-muted-foreground">
+              Ingresa tus datos para crear una cuenta
+            </p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -141,8 +145,16 @@ export function Register() {
                 onChange={(e) => setTelefono(e.target.value)}
                 required
                 onFocus={() => setError(null)}
+                pattern="[0-9]*" // Solo permite números
+                onKeyPress={(e) => {
+                  // Previene el ingreso de letras y caracteres especiales
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Correo electrónico</Label>
               <Input
@@ -160,7 +172,7 @@ export function Register() {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="Ingresa tu contraseña"
                   onChange={(e) => {
                     setClave(e.target.value);
@@ -198,7 +210,7 @@ export function Register() {
             </div>
           </form>
           <div className="mt-4 text-center text-sm">
-            ¿Ya tienes una cuenta?{' '}
+            ¿Ya tienes una cuenta?{" "}
             <Link href="/login" className="underline" prefetch={false}>
               Inicia sesión
             </Link>
@@ -212,14 +224,16 @@ export function Register() {
           width="1920"
           height="1080"
           className="h-full w-full object-cover"
-          style={{ aspectRatio: '1920/1080', objectFit: 'cover' }}
+          style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
         />
       </div>
     </div>
   );
 }
 
-function ArrowLeftIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function ArrowLeftIcon(
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) {
   return (
     <svg
       {...props}

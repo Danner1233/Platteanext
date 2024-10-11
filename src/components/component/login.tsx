@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
-import { JSX, SVGProps, useState } from 'react';
+import { JSX, SVGProps, useRef, useState } from 'react';
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -13,6 +13,10 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
   const router = useRouter();
   const [error, setError] = useState("");
+
+  // Refs para los campos de entrada
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -48,6 +52,13 @@ export function Login() {
     }
   };
 
+  // Función para manejar el evento de Enter y enfocar el siguiente campo
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, nextRef: React.RefObject<HTMLInputElement>) => {
+    if (e.key === "Enter" && nextRef.current) {
+      nextRef.current.focus();  // Enfocar el siguiente campo
+    }
+  };
+
   return (
     <div className="w-full  lg:grid lg:min-h-[600px] lg:grid-cols-2  h-screen">
       <div className="flex items-center justify-center py-12">
@@ -74,7 +85,9 @@ export function Login() {
                 type="email"
                 placeholder="m@example.com"
                 value={email}
+                ref={emailInputRef}  // Añadir ref para el campo de correo
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={(e) => handleKeyPress(e, passwordInputRef)} // Mover al siguiente campo al presionar Enter
               />
             </div>
             <div className="space-y-2">
@@ -85,6 +98,7 @@ export function Login() {
                   name="password"
                   type={showPassword ? "text" : "password"} // Tipo de campo basado en el estado
                   placeholder="Ingresa tu contraseña"
+                  ref={passwordInputRef}  // Añadir ref para el campo de contraseña
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
@@ -119,7 +133,6 @@ export function Login() {
               Regístrate
             </Link>
           </div>
-          
         </div>
       </div>
       <div className=" bg-muted lg:block ">
