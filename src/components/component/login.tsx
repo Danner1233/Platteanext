@@ -108,14 +108,21 @@ export function Login() {
             </div>
           </form>
           <div className="mt-4 text-center text-sm">
+            ¿Has olvidado tu contraseña?{" "}
+            <Link href="/recuperarClave" className="underline">
+              Cambiar Contraseña
+            </Link>
+          </div>
+          <div className="mt-4 text-center text-sm">
             ¿No tienes una cuenta?{" "}
             <Link href="/register" className="underline">
               Regístrate
             </Link>
           </div>
+          
         </div>
       </div>
-      <div className="hidden bg-muted lg:block">
+      <div className="h-screen bg-muted lg:block ">
         <img
           src="/InicioSesion.jpg"
           alt="Imagen de inicio de sesión"

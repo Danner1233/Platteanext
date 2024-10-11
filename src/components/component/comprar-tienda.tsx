@@ -52,8 +52,6 @@ export function ComprarTienda() {
               </Link>
             </div>
           </div>
-
-          {/* Premium Plan */}
           <div className="bg-card rounded-lg overflow-hidden shadow-lg flex flex-col">
             <div className="bg-muted text-muted-foreground py-4 px-6 text-center">
               <h3 className="text-2xl font-bold">Basico</h3>
