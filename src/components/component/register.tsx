@@ -91,7 +91,7 @@ export function Register() {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 h-screen">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto w-[350px] space-y-6">
           <div className="space-y-2 text-center">
@@ -205,7 +205,7 @@ export function Register() {
           </div>
         </div>
       </div>
-      <div className="h-screen bg-muted lg:block">
+      <div className=" bg-muted lg:block">
         <img
           src="/Registrarse.jpg"
           alt="Imagen de registro"
