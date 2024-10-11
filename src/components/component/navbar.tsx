@@ -31,7 +31,7 @@ interface Navbar {
 
 }
 
-export function Navbar() {
+export function Navbar({ cartUpdated }: { cartUpdated: boolean }) {
   const [navbar, setNavbar] = useState<Navbar | null>(null);
   const [error, setError] = useState<string>("");
 
@@ -54,7 +54,6 @@ export function Navbar() {
         if (response.ok) {
           const data: Navbar = await response.json();
           setNavbar(data);
-          console.log("FotoPersonaURL: ", data.FotoPersonaURL, "idRolFK", data.idRolFK); // Imprime data directamente
         } else {
           throw new Error("Error fetching profile");
         }
@@ -64,7 +63,7 @@ export function Navbar() {
     };
 
     fetchProfile();
-  }, []);
+  }, [cartUpdated]);
 
   if (error) return <p>Error: {error}</p>;
   const logout = () => {

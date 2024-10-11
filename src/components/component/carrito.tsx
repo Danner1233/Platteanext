@@ -11,10 +11,21 @@ interface DecodedToken {
   IdPersona: string;
 }
 
-export function Carrito() {
+interface ProductoProps {
+  onhandleRemoveItem: () => void; // Prop para manejar la eliminación de ítems
+}
+
+export function Carrito({ onhandleRemoveItem }: ProductoProps) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [cartUpdated, setCartUpdated] = useState(false);
+  
+  // Estado para controlar las actualizaciones del carrito
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
+  };
   useEffect(() => {
     async function fetchCarrito() {
       try {
@@ -26,9 +37,7 @@ export function Carrito() {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(
-          `http://localhost:4000/api/carrito/${userId}`
-        );
+        const response = await fetch(`http://localhost:4000/api/carrito/${userId}`);
         const data = await response.json();
         setItems(Object.values(data));
         setLoading(false);
@@ -39,22 +48,21 @@ export function Carrito() {
     }
 
     fetchCarrito();
-  }, []);
+  }, [cartUpdated]); // Dependencia del estado cartUpdated
 
   const handleQuantityChange = async (index: number, value: number) => {
     const updatedItems = [...items];
     const maxStock = updatedItems[index].StockProducto;
-  
-    // Asegúrate de que la cantidad no exceda el stock disponible
+
     if (value > 0 && value <= maxStock) {
       updatedItems[index].cantidad = value;
       setItems(updatedItems);
-  
+
       const token = localStorage.getItem("token");
       if (token) {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
-  
+
         try {
           const response = await fetch(`http://localhost:4000/api/carrito/`, {
             method: "PATCH",
@@ -68,10 +76,11 @@ export function Carrito() {
               Cantidad: value,
             }),
           });
-  
+
           if (!response.ok) {
             throw new Error("Error al actualizar la cantidad");
           }
+          onhandleRemoveItem(); // Llama a la función para manejar la actualización del carrito
         } catch (error) {
           console.error("Error al actualizar la cantidad:", error);
         }
@@ -80,7 +89,6 @@ export function Carrito() {
       alert(`La cantidad máxima disponible para este producto es ${maxStock}`);
     }
   };
-  
 
   const handleRemoveItem = async (itemId: number) => {
     try {
@@ -92,6 +100,7 @@ export function Carrito() {
       );
       if (response.ok) {
         setItems(items.filter((item) => item.IdDetalleCarrito !== itemId));
+        onhandleRemoveItem(); // Llama a la función para manejar la actualización del carrito
       } else {
         console.error("Error removing item:", await response.json());
       }
@@ -120,9 +129,7 @@ export function Carrito() {
   const handleProceedToPayment = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isEmpty) {
       e.preventDefault();
-      alert(
-        "Tu carrito está vacío. Añade productos antes de proceder al pago."
-      );
+      alert("Tu carrito está vacío. Añade productos antes de proceder al pago.");
     }
   };
 
@@ -134,23 +141,21 @@ export function Carrito() {
       <div className="grid md:grid-cols-[1fr_300px] gap-8 sm:grid-cols-1 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
           {isEmpty ? (
-           <div className="flex flex-col items-center justify-center p-6 bg-white border border-gray-200 rounded-lg shadow-lg transition-shadow hover:shadow-xl">
-           <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-             <path d="M3 3h18v18H3z" className="opacity-0" /> {/* Área invisible para centrar el ícono */}
-             <path d="M5 8h14l-1.5 8H6.5L5 8z" strokeLinecap="round" strokeLinejoin="round" />
-             <circle cx="8" cy="20" r="2" />
-             <circle cx="16" cy="20" r="2" />
-           </svg>
-           <p className="text-xl font-semibold text-gray-800 mb-2">¡Oh no! No hay productos en el carrito</p>
-           <p className="text-sm text-gray-600 mb-4">Explora nuestra tienda y agrega algunos productos.</p>
-           <Link href="/products">
-             <Button className="mt-4 bg-plattea1 text-white rounded-lg shadow transition-transform transform hover:scale-105 hover:bg-plattea1">
-               Ir a Comprar
-             </Button>
-           </Link>
-         </div>
-         
-         
+            <div className="flex flex-col items-center justify-center p-6 bg-white border border-gray-200 rounded-lg shadow-lg transition-shadow hover:shadow-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 3h18v18H3z" className="opacity-0" />
+                <path d="M5 8h14l-1.5 8H6.5L5 8z" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="8" cy="20" r="2" />
+                <circle cx="16" cy="20" r="2" />
+              </svg>
+              <p className="text-xl font-semibold text-gray-800 mb-2">¡Oh no! No hay productos en el carrito</p>
+              <p className="text-sm text-gray-600 mb-4">Explora nuestra tienda y agrega algunos productos.</p>
+              <Link href="/products">
+                <Button className="mt-4 bg-plattea1 text-white rounded-lg shadow transition-transform transform hover:scale-105 hover:bg-plattea1">
+                  Ir a Comprar
+                </Button>
+              </Link>
+            </div>
           ) : (
             items.map((item, index) => (
               <div
@@ -167,20 +172,14 @@ export function Carrito() {
                 />
                 <div>
                   <h3 className="font-medium">{item.NombreProducto}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {item.NombreTienda}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    $ {item.PrecioProducto}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{item.NombreTienda}</p>
+                  <p className="text-sm text-muted-foreground">$ {formatPrice(item.PrecioProducto)}</p>
                 </div>
                 <div className="flex items-center gap-1">
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() =>
-                      handleQuantityChange(index, item.cantidad - 1)
-                    }
+                    onClick={() => handleQuantityChange(index, item.cantidad - 1)}
                   >
                     <MinusIcon className="h-4 w-4" />
                   </Button>
@@ -207,9 +206,7 @@ export function Carrito() {
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() =>
-                      handleQuantityChange(index, item.cantidad + 1)
-                    }
+                    onClick={() => handleQuantityChange(index, item.cantidad + 1)}
                   >
                     <PlusIcon className="h-4 w-4" />
                   </Button>
@@ -227,45 +224,30 @@ export function Carrito() {
         </div>
         {!isEmpty && (
           <div className="bg-muted/40 rounded-md p-6 space-y-4 sm:mt-4 lg:mt-0">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span className="font-medium">${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Envío</span>
-              <span className="font-medium">$5.00</span>
-            </div>
             <Separator />
-            <div className="flex justify-between items-center">
-              <span className="text-lg font-medium">Total</span>
-              <span className="text-lg font-medium">${total.toFixed(2)}</span>
+            <div className="flex justify-between font-medium">
+              <span className="text-xl" >Total</span >
+              <span className="text-xl">${formatPrice(total.toFixed(2))}</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Link href="/products">
-                <Button variant="outline" className="flex-1">
-                  Continuar comprando
-                </Button>
-              </Link>
-              <div className="flex-1">
-                <Link href={isEmpty ? "#" : "/agregartarjeta"} passHref>
-                  <Button
-                    className={`flex-1 ${
-                      isEmpty ? "bg-gray-300 cursor-not-allowed" : "bg-plattea1"
-                    }`}
-                    disabled={isEmpty}
-                    onClick={handleProceedToPayment}
-                  >
-                    Proceder al pago
-                  </Button>
-                </Link>
-              </div>
-            </div>
+            < Separator />
+            <Link href="/checkout">
+              <Button
+                onClick={handleProceedToPayment}
+                className={`w-full mt-2 bg-plattea1 text-white rounded-lg shadow transition-transform transform hover:scale-105 hover:bg-plattea1 ${
+                  isEmpty ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={isEmpty} // Deshabilitar el botón si está vacío
+              >
+                Proceder al pago
+              </Button>
+            </Link>
           </div>
         )}
       </div>
     </div>
   );
 }
+
 
 function MinusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
