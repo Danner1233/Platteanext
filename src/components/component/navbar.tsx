@@ -214,7 +214,7 @@ export function Navbar({ cartUpdated }: { cartUpdated: boolean }) {
               </Link>
             </DropdownMenuItem>
             {/* <DropdownMenuItem>
-              <Link href="/historial" className="text-plattea1">
+              <Link href="/historialpedidos" className="text-plattea1">
                 Historial
               </Link>
             </DropdownMenuItem> */}

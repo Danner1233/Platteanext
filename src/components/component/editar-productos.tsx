@@ -87,25 +87,29 @@ export function EditarProductos() {
   const handleDelete = async (idProducto: string) => {
     const confirmed = window.confirm('¿Estás seguro de que deseas eliminar este producto?');
     if (!confirmed) return;
-
+  
     try {
+      // Encriptar el ID del producto
       const encryptedId = await crypto.encrypt(idProducto);
       const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
-
+  
+      // Realizar la solicitud de eliminación
       const response = await fetch(`http://localhost:4000/api/producto/${safeId}`, {
         method: 'DELETE',
       });
-
+  
+      // Verificar la respuesta
       if (!response.ok) {
-        throw new Error('Failed to delete the product');
+        throw new Error('No se pudo eliminar el producto');
       }
-
+  
+      // Actualizar el estado de productos
       setProductos((prevProductos) => prevProductos.filter(producto => producto.IdProducto !== idProducto));
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error('Error al eliminar el producto:', error);
+      alert('Error al eliminar el producto. Intenta nuevamente más tarde.');
     }
   };
-
   return (
     <div>
       <div className="left-4 pt-8 pb-8">

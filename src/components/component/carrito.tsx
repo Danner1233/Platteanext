@@ -230,7 +230,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
               <span className="text-xl">${formatPrice(total.toFixed(2))}</span>
             </div>
             < Separator />
-            <Link href="/checkout">
+            <Link href="/agregartarjeta">
               <Button
                 onClick={handleProceedToPayment}
                 className={`w-full mt-2 bg-plattea1 text-white rounded-lg shadow transition-transform transform hover:scale-105 hover:bg-plattea1 ${
