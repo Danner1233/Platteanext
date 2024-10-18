@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
 import { AgregarProducto } from './agregar-producto';
+import { ProductoEditar } from './producto-editar';
+import Swal from 'sweetalert2'; // Importa SweetAlert2
 
 interface Producto {
   IdProducto: string;
@@ -85,24 +87,47 @@ export function EditarProductos() {
   if (error) return <p>Error: {error}</p>;
 
   const handleDelete = async (idProducto: string) => {
-    const confirmed = window.confirm('¿Estás seguro de que deseas eliminar este producto?');
-    if (!confirmed) return;
+    const encryptedId = await crypto.encrypt(idProducto);
+    const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
 
-    try {
-      const encryptedId = await crypto.encrypt(idProducto);
-      const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+    // Usar SweetAlert2 para la confirmación
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esta acción!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar!',
+      cancelButtonText: 'Cancelar',
+    });
 
-      const response = await fetch(`http://localhost:4000/api/producto/${safeId}`, {
-        method: 'DELETE',
-      });
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`http://localhost:4000/api/producto/${safeId}`, {
+          method: 'DELETE',
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to delete the product');
+        if (!response.ok) {
+          throw new Error('Failed to delete the product');
+        }
+
+        setProductos((prevProductos) => prevProductos.filter(producto => producto.IdProducto !== idProducto));
+
+        // Mostrar mensaje de éxito
+        await Swal.fire(
+          'Eliminado!',
+          'El producto ha sido eliminado.',
+          'success'
+        );
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        await Swal.fire(
+          'Error!',
+          'Hubo un problema al eliminar el producto.',
+          'error'
+        );
       }
-
-      setProductos((prevProductos) => prevProductos.filter(producto => producto.IdProducto !== idProducto));
-    } catch (error) {
-      console.error('Error deleting product:', error);
     }
   };
 
@@ -141,12 +166,7 @@ export function EditarProductos() {
                     style={{ aspectRatio: "600/400", objectFit: "cover" }}
                   />
                   <div className="absolute top-4 right-4 flex gap-2">
-                    <Link href={`/editarproducto/${encryptedIdProducto}`}>
-                      <Button size="icon" variant="ghost" onClick={() => setProductoSeleccionado(producto)}>
-                        <FilePenIcon className="w-5 h-5" />
-                        <span className="sr-only">Editar</span>
-                      </Button>
-                    </Link>
+                    <ProductoEditar />
                     <Button size="icon" variant="ghost" onClick={() => handleDelete(producto.IdProducto)}>
                       <TrashIcon className="w-5 h-5" />
                       <span className="sr-only">Eliminar</span>
@@ -210,10 +230,8 @@ function TrashIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
     >
       <path d="M3 6h18" />
-      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-      <path d="M10 11v6" />
-      <path d="M14 11v6" />
-      <path d="M9 6V3h6v3" />
+      <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" />
+      <path d="M4 6V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2" />
     </svg>
   );
 }
