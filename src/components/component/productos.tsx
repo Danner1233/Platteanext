@@ -93,10 +93,10 @@ export function Productos() {
   }
 
   const priceRanges = [
-    { range: [0, 50], label: "$0 - $50" },
-    { range: [50, 100], label: "$50 - $100" },
-    { range: [100, 200], label: "$100 - $200" },
-    { range: [200, 500], label: "$200 - $500" },
+    { range: [0, 50000], label: "$0 - $50.000" },
+    { range: [50000, 100000], label: "$50.000 - $100.000" },
+    { range: [100000, 200000], label: "$100.000 - $200.000" },
+    { range: [200000, 500000], label: "$200.000 - $500.000" },
   ];
 
   const handlePriceFilter = (min: number, max: number) => {

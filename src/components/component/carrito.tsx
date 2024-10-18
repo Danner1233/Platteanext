@@ -11,7 +11,11 @@ interface DecodedToken {
   IdPersona: string;
 }
 
-export function Carrito() {
+interface ProductoProps {
+  onhandleRemoveItem: () => void; // Prop para manejar la eliminación de ítems
+}
+
+export function Carrito({ onhandleRemoveItem }: ProductoProps) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [alertMessage, setAlertMessage] = useState<string | null>(null); // Estado para la alerta
@@ -59,6 +63,14 @@ export function Carrito() {
     );
   };
 
+  const [cartUpdated, setCartUpdated] = useState(false);
+  
+  // Estado para controlar las actualizaciones del carrito
+  const formatPrice = (precio: string) => {
+    // Convertir el precio a número y formatearlo con puntos de miles
+    const numero = Number(precio);
+    return new Intl.NumberFormat('es-ES').format(numero);
+  };
   useEffect(() => {
     async function fetchCarrito() {
       try {
@@ -81,7 +93,7 @@ export function Carrito() {
     }
 
     fetchCarrito();
-  }, []);
+  }, [cartUpdated]); // Dependencia del estado cartUpdated
 
   const handleQuantityChange = async (index: number, value: number) => {
     const updatedItems = [...items];
@@ -114,6 +126,7 @@ export function Carrito() {
           if (!response.ok) {
             throw new Error("Error al actualizar la cantidad");
           }
+          onhandleRemoveItem(); // Llama a la función para manejar la actualización del carrito
         } catch (error) {
           console.error("Error al actualizar la cantidad:", error);
         }
@@ -130,6 +143,7 @@ export function Carrito() {
       });
       if (response.ok) {
         setItems(items.filter((item) => item.IdDetalleCarrito !== itemId));
+        onhandleRemoveItem(); // Llama a la función para manejar la actualización del carrito
       } else {
         console.error("Error removing item:", await response.json());
       }
@@ -159,6 +173,7 @@ export function Carrito() {
     if (isEmpty) {
       e.preventDefault();
       setAlertMessage("Tu carrito está vacío. Añade productos antes de proceder al pago."); // Mostrar alerta
+      alert("Tu carrito está vacío. Añade productos antes de proceder al pago.");
     }
   };
 
@@ -174,6 +189,7 @@ export function Carrito() {
             <div className="flex flex-col items-center justify-center p-6 bg-white border border-gray-200 rounded-lg shadow-lg transition-shadow hover:shadow-xl">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 3h18v18H3z" className="opacity-0" /> {/* Área invisible para centrar el ícono */}
+                <path d="M3 3h18v18H3z" className="opacity-0" />
                 <path d="M5 8h14l-1.5 8H6.5L5 8z" strokeLinecap="round" strokeLinejoin="round" />
                 <circle cx="8" cy="20" r="2" />
                 <circle cx="16" cy="20" r="2" />
@@ -202,20 +218,14 @@ export function Carrito() {
                 />
                 <div>
                   <h3 className="font-medium">{item.NombreProducto}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {item.NombreTienda}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    $ {item.PrecioProducto}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{item.NombreTienda}</p>
+                  <p className="text-sm text-muted-foreground">$ {formatPrice(item.PrecioProducto)}</p>
                 </div>
                 <div className="flex items-center gap-1">
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() =>
-                      handleQuantityChange(index, item.cantidad - 1)
-                    }
+                    onClick={() => handleQuantityChange(index, item.cantidad - 1)}
                   >
                     <MinusIcon className="h-4 w-4" />
                   </Button>
@@ -223,9 +233,7 @@ export function Carrito() {
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() =>
-                      handleQuantityChange(index, item.cantidad + 1)
-                    }
+                    onClick={() => handleQuantityChange(index, item.cantidad + 1)}
                   >
                     <PlusIcon className="h-4 w-4" />
                   </Button>

@@ -87,50 +87,32 @@ export function EditarProductos() {
   if (error) return <p>Error: {error}</p>;
 
   const handleDelete = async (idProducto: string) => {
-    const encryptedId = await crypto.encrypt(idProducto);
-    const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
-
-    // Usar SweetAlert2 para la confirmación
-    const result = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'No podrás revertir esta acción!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar!',
-      cancelButtonText: 'Cancelar',
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const response = await fetch(`http://localhost:4000/api/producto/${safeId}`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete the product');
-        }
-
-        setProductos((prevProductos) => prevProductos.filter(producto => producto.IdProducto !== idProducto));
-
-        // Mostrar mensaje de éxito
-        await Swal.fire(
-          'Eliminado!',
-          'El producto ha sido eliminado.',
-          'success'
-        );
-      } catch (error) {
-        console.error('Error deleting product:', error);
-        await Swal.fire(
-          'Error!',
-          'Hubo un problema al eliminar el producto.',
-          'error'
-        );
+    const confirmed = window.confirm('¿Estás seguro de que deseas eliminar este producto?');
+    if (!confirmed) return;
+  
+    try {
+      // Encriptar el ID del producto
+      const encryptedId = await crypto.encrypt(idProducto);
+      const safeId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
+  
+      // Realizar la solicitud de eliminación
+      const response = await fetch(`http://localhost:4000/api/producto/${safeId}`, {
+        method: 'DELETE',
+      });
+  
+      // Verificar la respuesta
+      if (!response.ok) {
+        throw new Error('No se pudo eliminar el producto');
       }
+  
+      // Actualizar el estado de productos
+      setProductos((prevProductos) => prevProductos.filter(producto => producto.IdProducto !== idProducto));
+    } catch (error) {
+      console.error('Error al eliminar el producto:', error);
+      alert('Error al eliminar el producto. Intenta nuevamente más tarde.');
+
     }
   };
-
   return (
     <div>
       <div className="left-4 pt-8 pb-8">

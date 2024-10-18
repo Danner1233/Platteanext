@@ -10,7 +10,7 @@ import { LoadingAnimation } from '@/components/component/loading-animation';
 function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [cartUpdated, setCartUpdated] = useState(false); 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -22,12 +22,15 @@ function Page() {
   if (loading) {
     return <div><LoadingAnimation /></div>; // Mostrar animación de carga
   }
+  const handleCartUpdate = () => {
+    setCartUpdated(prev => !prev); // Alterna el valor para forzar actualización
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
-      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+      {isLoggedIn ? <Navbar cartUpdated={cartUpdated} /> : <NavbarDefault />}
       <main className="flex-grow">
-        <Carrito />
+        <Carrito onhandleRemoveItem={handleCartUpdate}/>
       </main>
       <Footer />
     </div>

@@ -20,6 +20,11 @@ interface Producto {
   PromedioCalificacion: number;
 }
 
+interface ProductoProps {
+  onAddToCart: () => void; // Asegúrate de que esta prop esté definida
+}
+
+
 const Alert = ({ message, onClose }: { message: string, onClose: () => void }) => {
   const [isExiting, setIsExiting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -63,7 +68,7 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
   );
 };
 
-export function Producto() {
+export function Producto({ onAddToCart }: ProductoProps)  {
   const params = useParams();
   const router = useRouter(); // Hook para el enrutador de Next.js
   const encryptedIdProducto = params.IdProducto as string; // Asegúrate de que sea una cadena
@@ -136,6 +141,7 @@ export function Producto() {
 
       if (response.ok) {
         setAlert("Producto añadido al carrito exitosamente");
+        onAddToCart();
       } else {
         throw new Error("Error al añadir el producto al carrito");
       }
