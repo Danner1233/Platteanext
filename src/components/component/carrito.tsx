@@ -18,6 +18,51 @@ interface ProductoProps {
 export function Carrito({ onhandleRemoveItem }: ProductoProps) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null); // Estado para la alerta
+
+  const Alert = ({ message, onClose }: { message: string; onClose: () => void }) => {
+    const [isExiting, setIsExiting] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsExiting(true);
+        setTimeout(() => {
+          setIsVisible(false);
+          onClose(); // Llamar a la función onClose después de que la alerta se oculte
+        }, 300); // Esperar que termine la animación antes de remover el alert
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }, [onClose]);
+
+    if (!isVisible) return null;
+
+    return (
+      <div
+        className={`fixed top-4 right-4 bg-customRed text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
+          isExiting ? 'animate-fade-out' : 'animate-fade-in'
+        }`}
+      >
+        <div className="flex justify-between items-center">
+          <span>{message}</span>
+          <button
+            onClick={() => {
+              setIsExiting(true);
+              setTimeout(() => {
+                setIsVisible(false);
+                onClose();
+              }, 300);
+            }}
+            className="text-white ml-2"
+          >
+            &times; {/* Este es el carácter para la X */}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const [cartUpdated, setCartUpdated] = useState(false);
   
   // Estado para controlar las actualizaciones del carrito
@@ -54,6 +99,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
     const updatedItems = [...items];
     const maxStock = updatedItems[index].StockProducto;
 
+    // Asegúrate de que la cantidad no exceda el stock disponible
     if (value > 0 && value <= maxStock) {
       updatedItems[index].cantidad = value;
       setItems(updatedItems);
@@ -86,18 +132,15 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
         }
       }
     } else if (value > maxStock) {
-      alert(`La cantidad máxima disponible para este producto es ${maxStock}`);
+      setAlertMessage(`La cantidad máxima disponible para este producto es ${maxStock}`); // Mostrar alerta
     }
   };
 
   const handleRemoveItem = async (itemId: number) => {
     try {
-      const response = await fetch(
-        `http://localhost:4000/api/carrito/${itemId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://localhost:4000/api/carrito/${itemId}`, {
+        method: "DELETE",
+      });
       if (response.ok) {
         setItems(items.filter((item) => item.IdDetalleCarrito !== itemId));
         onhandleRemoveItem(); // Llama a la función para manejar la actualización del carrito
@@ -129,12 +172,14 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
   const handleProceedToPayment = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isEmpty) {
       e.preventDefault();
+      setAlertMessage("Tu carrito está vacío. Añade productos antes de proceder al pago."); // Mostrar alerta
       alert("Tu carrito está vacío. Añade productos antes de proceder al pago.");
     }
   };
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 sm:px-2 lg:px-8">
+      {alertMessage && <Alert message={alertMessage} onClose={() => setAlertMessage(null)} />}
       <header className="mb-8">
         <h1 className="text-2xl font-bold">Carrito de compras</h1>
       </header>
@@ -143,6 +188,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center p-6 bg-white border border-gray-200 rounded-lg shadow-lg transition-shadow hover:shadow-xl">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 3h18v18H3z" className="opacity-0" /> {/* Área invisible para centrar el ícono */}
                 <path d="M3 3h18v18H3z" className="opacity-0" />
                 <path d="M5 8h14l-1.5 8H6.5L5 8z" strokeLinecap="round" strokeLinejoin="round" />
                 <circle cx="8" cy="20" r="2" />
@@ -183,26 +229,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
                   >
                     <MinusIcon className="h-4 w-4" />
                   </Button>
-                  <input
-                    type="number"
-                    value={item.cantidad}
-                    min="1"
-                    className="w-12 text-center border rounded appearance-none -moz-appearance-textfield"
-                    onChange={(e) => {
-                      const value = parseInt(e.target.value);
-                      if (!isNaN(value) && value > 0) {
-                        handleQuantityChange(index, value);
-                      }
-                    }}
-                    onBlur={(e) => {
-                      const value = parseInt(e.target.value);
-                      if (!isNaN(value) && value > 0) {
-                        handleQuantityChange(index, value);
-                      } else {
-                        handleQuantityChange(index, 1); // Reset to 1 if invalid
-                      }
-                    }}
-                  />
+                  <span>{item.cantidad}</span>
                   <Button
                     size="icon"
                     variant="outline"
@@ -215,100 +242,54 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
                     variant="outline"
                     onClick={() => handleRemoveItem(item.IdDetalleCarrito)}
                   >
-                    <RemoveIcon className="h-4 w-4 text-red-600" />
+                    <TrashIcon className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
             ))
           )}
         </div>
-        {!isEmpty && (
-          <div className="bg-muted/40 rounded-md p-6 space-y-4 sm:mt-4 lg:mt-0">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span className="font-medium">${formatPrice(subtotal.toFixed(2))}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Envío</span>
-              <span className="font-medium">${formatPrice(shipping.toFixed(2))}</span>
-            </div>
-            <Separator />
-            <div className="flex justify-between font-medium">
-              <span>Total</span>
-              <span className="text-xl">${formatPrice(total.toFixed(2))}</span>
-            </div>
-            <Link href="/agregartarjeta">
-              <Button
-                onClick={handleProceedToPayment}
-                className={`w-full mt-2 bg-plattea1 text-white rounded-lg shadow transition-transform transform hover:scale-105 hover:bg-plattea1 ${
-                  isEmpty ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                disabled={isEmpty} // Deshabilitar el botón si está vacío
-              >
-                Proceder al pago
-              </Button>
-            </Link>
+        <div className="rounded-lg border bg-white p-6 shadow">
+          <h2 className="text-lg font-semibold">Resumen del pedido</h2>
+          <Separator className="my-4" />
+          <div className="flex justify-between">
+            <span>Subtotal</span>
+            <span>$ {subtotal.toFixed(2)}</span>
           </div>
-        )}
+          <div className="flex justify-between">
+            <span>Envío</span>
+            <span>$ {shipping}</span>
+          </div>
+          <div className="flex justify-between font-bold">
+            <span>Total</span>
+            <span>$ {total.toFixed(2)}</span>
+          </div>
+          <Button
+            className="mt-4 w-full bg-plattea1 text-white rounded-lg shadow hover:bg-plattea2"
+            onClick={handleProceedToPayment}
+          >
+            Proceder al pago
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
 
+const PlusIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 4v16m8-8H4" />
+  </svg>
+);
 
-function MinusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-    </svg>
-  );
-}
+const MinusIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M20 12H4" />
+  </svg>
+);
 
-function PlusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 5v14m7-7H5" />
-    </svg>
-  );
-}
-
-function RemoveIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 4H8l-1 1H3v2h2l1 13h12l1-13h2V5h-2l-1-1zM8 2h8v2H8z" />
-    </svg>
-  );
-}
+const TrashIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M3 6h18M9 6V4a2 2 0 0 1 4 0v2m4 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+  </svg>
+);
