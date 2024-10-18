@@ -29,7 +29,7 @@ function Page() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+      {isLoggedIn ? <Navbar cartUpdated={false} /> : <NavbarDefault />}
       <main className="flex-grow">
         <Nosotros />
       </main>

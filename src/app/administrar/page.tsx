@@ -53,7 +53,7 @@ function Page() {
   // Si el usuario no está logueado o no es administrador, redirige automáticamente, por lo que este contenido se muestra solo si es administrador
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar cartUpdated={false} />
       <main className="flex-grow">
         <Administrador />
       </main>
