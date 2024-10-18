@@ -19,7 +19,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import axios from "axios"; // Asegúrate de tener axios instalado
+import axios from "axios";
 import { PencilIcon, TrashIcon } from "lucide-react";
 
 // Interfaces
@@ -54,6 +54,10 @@ export function Administrador() {
   const [tiendas, setTiendas] = useState<Tienda[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPageUser, setCurrentPageUser] = useState(1);
+  const [currentPageStore, setCurrentPageStore] = useState(1);
+  const [currentPageCategory, setCurrentPageCategory] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Cambiado a estado
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategoria, setSelectedCategoria] = useState<Categoria | null>(null);
   const [newCategoria, setNewCategoria] = useState<{ Nombre: string; Foto: File | null }>({ Nombre: "", Foto: null });
@@ -88,7 +92,17 @@ export function Administrador() {
       }
     }
   };
-
+  const handleDeleteStore = async (id: string) => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta tienda?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:4000/tienda/${id}`);
+        setTiendas((prev) => prev.filter((tienda) => tienda.IdTienda !== id));
+      } catch (error) {
+        console.error("Error al eliminar la tienda:", error);
+      }
+    }
+  };
   const handleDeleteCategoria = async (id: number) => {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta categoría?");
     if (confirmDelete) {
@@ -171,6 +185,30 @@ export function Administrador() {
     return texto.length > maxLength ? texto.substring(0, maxLength) + "..." : texto;
   };
 
+  const filteredPersonas = personas.filter((persona) =>
+    `${persona.NombrePersona} ${persona.ApellidoPersona} ${persona.CorreoPersona} ${persona.idRolFK === 2 ? "Administrador" : "Cliente"}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+  
+  const totalPagesUser = Math.ceil(filteredPersonas.length / itemsPerPage);
+  const currentPersonas = filteredPersonas.slice((currentPageUser - 1) * itemsPerPage, currentPageUser * itemsPerPage);
+  
+  const filteredTiendas = tiendas.filter((tienda) =>
+    `${tienda.NombreTienda} ${tienda.DireccionTienda} ${tienda.CiudadTienda}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+  
+  const totalPagesStore = Math.ceil(filteredTiendas.length / itemsPerPage);
+  const currentTiendas = filteredTiendas.slice((currentPageStore - 1) * itemsPerPage, currentPageStore * itemsPerPage);
+  
+  const filteredCategorias = categorias.filter((categoria) =>
+    categoria.NombreCategoria.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  const totalPagesCategory = Math.ceil(filteredCategorias.length / itemsPerPage);
+  const currentCategorias = filteredCategorias.slice((currentPageCategory - 1) * itemsPerPage, currentPageCategory * itemsPerPage);
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40 items-center justify-center">
       <div className="flex flex-col sm:gap-4 sm:py-4 w-full max-w-6xl">
@@ -203,103 +241,148 @@ export function Administrador() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-y-auto max-h-60">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Nombre</TableHead>
-                          <TableHead>Correo</TableHead>
-                          <TableHead>Descripción</TableHead>
-                          <TableHead>Teléfono</TableHead>
-                          <TableHead>Rol</TableHead>
-                          <TableHead>Eliminar</TableHead>
+                  <div className="flex items-center mb-4">
+                    <label className="mr-2">Mostrar:</label>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                      className="border rounded-md p-1"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={15}>15</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nombre</TableHead>
+                        <TableHead>Correo</TableHead>
+                        <TableHead>Descripción</TableHead>
+                        <TableHead>Teléfono</TableHead>
+                        <TableHead>Rol</TableHead>
+                        <TableHead>Eliminar</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {currentPersonas.map((persona) => (
+                        <TableRow key={persona.CorreoPersona}>
+                          <TableCell className="font-medium">
+                            {persona.NombrePersona} {persona.ApellidoPersona}
+                          </TableCell>
+                          <TableCell>{persona.CorreoPersona}</TableCell>
+                          <TableCell>
+                            {persona.DescripcionPersona || "NULL"}
+                          </TableCell>
+                          <TableCell>{persona.TelefonoPersona}</TableCell>
+                          <TableCell>
+                            {persona.idRolFK === 2 ? "Administrador" : "Cliente"}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleDeleteUser(persona.CorreoPersona)}
+                            >
+                              <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                            </Button>
+                          </TableCell>
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {personas
-                          .filter((persona) =>
-                            `${persona.NombrePersona} ${persona.ApellidoPersona}`
-                              .toLowerCase()
-                              .includes(searchTerm.toLowerCase())
-                          )
-                          .map((persona) => (
-                            <TableRow key={persona.CorreoPersona}>
-                              <TableCell className="font-medium">
-                                {persona.NombrePersona} {persona.ApellidoPersona}
-                              </TableCell>
-                              <TableCell>{persona.CorreoPersona}</TableCell>
-                              <TableCell>
-                                {persona.DescripcionPersona || "NULL"}
-                              </TableCell>
-                              <TableCell>{persona.TelefonoPersona}</TableCell>
-                              <TableCell>
-                                {persona.idRolFK === 1 ? "Administrador" : "Cliente"}
-                              </TableCell>
-                              <TableCell>
-                                <Button
-                                  variant="ghost"
-                                  onClick={() => handleDeleteUser(persona.CorreoPersona)}
-                                >
-                                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="flex justify-between mt-4">
+                    <Button
+                      disabled={currentPageUser === 1}
+                      onClick={() => setCurrentPageUser(currentPageUser - 1)}
+                    >
+                      Anterior
+                    </Button>
+                    <span>Página {currentPageUser} de {totalPagesUser}</span>
+                    <Button
+                      disabled={currentPageUser === totalPagesUser}
+                      onClick={() => setCurrentPageUser(currentPageUser + 1)}
+                    >
+                      Siguiente
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
+<TabsContent value="stores">
+  <Card>
+    <CardHeader>
+      <CardTitle>Tiendas</CardTitle>
+      <CardDescription>
+        Administra todas las tiendas y su información.
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div className="flex items-center mb-4">
+        <label className="mr-2">Mostrar:</label>
+        <select
+          value={itemsPerPage}
+          onChange={(e) => setItemsPerPage(Number(e.target.value))}
+          className="border rounded-md p-1"
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+          <option value={20}>20</option>
+        </select>
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Descripción</TableHead>
+            <TableHead>Dirección</TableHead>
+            <TableHead>Ciudad</TableHead>
+            <TableHead>Eliminar</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {currentTiendas.map((tienda) => (
+            <TableRow key={tienda.IdTienda}>
+              <TableCell className="font-medium">
+                {tienda.NombreTienda}
+              </TableCell>
+              <TableCell>
+                {truncarTexto(tienda.DescripcionTienda, 78)}
+              </TableCell>
+              <TableCell>{tienda.DireccionTienda}</TableCell>
+              <TableCell>{tienda.CiudadTienda}</TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => handleDeleteStore(tienda.IdTienda)} // Conectar el botón de eliminar
+                >
+                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="flex justify-between mt-4">
+        <Button
+          disabled={currentPageStore === 1}
+          onClick={() => setCurrentPageStore(currentPageStore - 1)}
+        >
+          Anterior
+        </Button>
+        <span>Página {currentPageStore} de {totalPagesStore}</span>
+        <Button
+          disabled={currentPageStore === totalPagesStore}
+          onClick={() => setCurrentPageStore(currentPageStore + 1)}
+        >
+          Siguiente
+        </Button>
+      </div>
+    </CardContent>
+  </Card>
+</TabsContent>
 
-            <TabsContent value="stores">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Tiendas</CardTitle>
-                  <CardDescription>
-                    Administra todas las tiendas y su información.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-y-auto max-h-60">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Nombre</TableHead>
-                          <TableHead>Descripción</TableHead>
-                          <TableHead>Dirección</TableHead>
-                          <TableHead>Ciudad</TableHead>
-                          <TableHead>Eliminar</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {tiendas
-                          .filter((tienda) =>
-                            tienda.NombreTienda.toLowerCase().includes(searchTerm.toLowerCase())
-                          )
-                          .map((tienda) => (
-                            <TableRow key={tienda.IdTienda}>
-                              <TableCell className="font-medium">
-                                {tienda.NombreTienda}
-                              </TableCell>
-                              <TableCell>
-                                {truncarTexto(tienda.DescripcionTienda, 150)}
-                              </TableCell>
-                              <TableCell>{tienda.DireccionTienda}</TableCell>
-                              <TableCell>{tienda.CiudadTienda}</TableCell>
-                              <TableCell>
-                                <Button variant="ghost">
-                                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
 
             <TabsContent value="category">
               <Card>
@@ -315,51 +398,77 @@ export function Administrador() {
                       Agregar Categoría
                     </Button>
                   </div>
-                  <div className="overflow-y-auto max-h-60">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>ID</TableHead>
-                          <TableHead>Nombre</TableHead>
-                          <TableHead>Foto</TableHead>
-                          <TableHead>Editar</TableHead>
-                          <TableHead>Eliminar</TableHead>
+                  <div className="flex items-center mb-4">
+                    <label className="mr-2">Mostrar:</label>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                      className="border rounded-md p-1"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={15}>15</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Nombre</TableHead>
+                        <TableHead>Foto</TableHead>
+                        <TableHead>Editar</TableHead>
+                        <TableHead>Eliminar</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {currentCategorias.map((categoria) => (
+                        <TableRow key={categoria.IdCategoria}>
+                          <TableCell>{categoria.IdCategoria}</TableCell>
+                          <TableCell className="font-medium">
+                            {categoria.NombreCategoria}
+                          </TableCell>
+                          <TableCell>
+                            <img
+                              src={categoria.FotoCategoria}
+                              alt={categoria.NombreCategoria}
+                              className="h-16 w-16 object-cover"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleOpenModal(categoria)}
+                            >
+                              <PencilIcon className="w-4 h-4" aria-hidden="true" />
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleDeleteCategoria(categoria.IdCategoria)}
+                            >
+                              <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                            </Button>
+                          </TableCell>
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {categorias.map((categoria) => (
-                          <TableRow key={categoria.IdCategoria}>
-                            <TableCell>{categoria.IdCategoria}</TableCell>
-                            <TableCell className="font-medium">
-                              {categoria.NombreCategoria}
-                            </TableCell>
-                            <TableCell>
-                              <img
-                                src={categoria.FotoCategoria}
-                                alt={categoria.NombreCategoria}
-                                className="h-16 w-16 object-cover"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                variant="ghost"
-                                onClick={() => handleOpenModal(categoria)}
-                              >
-                                <PencilIcon className="w-4 h-4" aria-hidden="true" />
-                              </Button>
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                variant="ghost"
-                                onClick={() => handleDeleteCategoria(categoria.IdCategoria)}
-                              >
-                                <TrashIcon className="w-4 h-4" aria-hidden="true" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="flex justify-between mt-4">
+                    <Button
+                      disabled={currentPageCategory === 1}
+                      onClick={() => setCurrentPageCategory(currentPageCategory - 1)}
+                    >
+                      Anterior
+                    </Button>
+                    <span>Página {currentPageCategory} de {totalPagesCategory}</span>
+                    <Button
+                      disabled={currentPageCategory === totalPagesCategory}
+                      onClick={() => setCurrentPageCategory(currentPageCategory + 1)}
+                    >
+                      Siguiente
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -389,25 +498,12 @@ export function Administrador() {
                   onChange={handleFileChange}
                   className="mt-2"
                 />
-                {newCategoria.Foto && (
-                  <div className="mt-2">
-                    <img
-                      src={URL.createObjectURL(newCategoria.Foto)}
-                      alt="Vista previa"
-                      className="h-32 w-32 object-cover"
-                    />
-                  </div>
-                )}
-                <div className="mt-4 flex justify-end">
-                  <Button
-                    variant="outline"
-                    onClick={handleModalClose}
-                    className="mr-2"
-                  >
+                <div className="flex justify-end mt-4">
+                  <Button type="button" variant="outline" onClick={handleModalClose}>
                     Cancelar
                   </Button>
-                  <Button type="submit">
-                    {selectedCategoria ? "Guardar Cambios" : "Agregar"}
+                  <Button type="submit" className="ml-2">
+                    {selectedCategoria ? "Actualizar" : "Agregar"}
                   </Button>
                 </div>
               </form>
