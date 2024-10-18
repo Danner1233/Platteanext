@@ -113,7 +113,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
     (acc, item) => acc + parseFloat(item.PrecioProducto) * item.cantidad,
     0
   );
-  const shipping = 5;
+  const shipping = 15000 * items.length;
   const total = subtotal + shipping;
 
   const isEmpty = items.length === 0;
@@ -178,16 +178,17 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
                 <div className="flex items-center gap-1">
                   <Button
                     size="icon"
-                    variant="outline"
+                    className="p-2 bg-white hover:bg-gray-100 text-black"
+
                     onClick={() => handleQuantityChange(index, item.cantidad - 1)}
                   >
                     <MinusIcon className="h-4 w-4" />
                   </Button>
                   <input
-                    type="number"
+
                     value={item.cantidad}
-                    min="1"
-                    className="w-12 text-center border rounded appearance-none -moz-appearance-textfield"
+                    className="w-8 text-center appearance-none -moz-appearance-textfield outline-none"
+                     min="0"
                     onChange={(e) => {
                       const value = parseInt(e.target.value);
                       if (!isNaN(value) && value > 0) {
@@ -205,14 +206,16 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
                   />
                   <Button
                     size="icon"
-                    variant="outline"
+                    className="p-2 bg-white hover:bg-gray-100 text-black"
+
                     onClick={() => handleQuantityChange(index, item.cantidad + 1)}
                   >
                     <PlusIcon className="h-4 w-4" />
                   </Button>
                   <Button
                     size="icon"
-                    variant="outline"
+                    className="p-2 bg-white hover:bg-gray-100 text-red-600"
+
                     onClick={() => handleRemoveItem(item.IdDetalleCarrito)}
                   >
                     <RemoveIcon className="h-4 w-4 text-red-600" />

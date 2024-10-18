@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
+import {  Package } from 'lucide-react';
 interface Producto {
   IdProducto: string;
   NombreProducto: string;
@@ -87,7 +87,7 @@ export function ProductosTienda() {
           </svg>
         </div>
         <p className="text-lg font-bold text-center mb-2">¡Ups! No has agregado ningún producto</p>
-        <p className="text-sm text-center text-gray-600">Agrega un producto pulsando en el botón de la caja 😊</p>
+        <p className="text-sm text-center text-gray-600">Agrega un producto pulsando en el botón de la caja </p><Package className="w-20 h-20" />
       </div>
     );
 }

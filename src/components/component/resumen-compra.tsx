@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import NextCrypto from 'next-crypto';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-
+import { Separator } from "@/components/ui/separator";
 
 interface Producto {
   IdProducto: string;
@@ -26,7 +26,6 @@ interface JWTDecoded {
 
 export function ResumenCompra() {
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [total, setTotal] = useState(0);
   const [alertMessage, setAlertMessage] = useState<string | null>(null); // Estado de la alerta
   const params = useParams();
   const encryptedIdPedido = params.IdPedido as string;
@@ -37,6 +36,7 @@ export function ResumenCompra() {
     const [isExiting, setIsExiting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
+    
     useEffect(() => {
       const timer = setTimeout(() => {
         setIsExiting(true);
@@ -94,7 +94,7 @@ export function ResumenCompra() {
           (acc, producto) => acc + producto.cantidad * parseFloat(producto.PrecioProducto),
           0
         );
-        setTotal(totalCompra);
+
       } catch (error) {
         console.error('Error al obtener productos:', error);
         setAlertMessage('Error al obtener los productos'); // Mostrar alerta de error
@@ -114,7 +114,7 @@ export function ResumenCompra() {
       const safeIdPedido = encryptedIdPedido.replace(/_/g, '/').replace(/-/g, '+');
       const decodedId = decodeURIComponent(safeIdPedido);
       const decryptedId = await crypto.decrypt(decodedId);
-
+      console.log(total.toFixed(2))
       const response = await axios.post("http://localhost:4000/api/confirmarpedido", {
         IdPedido: decryptedId,
         Total: total.toFixed(2),
@@ -135,6 +135,19 @@ export function ResumenCompra() {
     }
   };
 
+  const subtotal = productos.reduce(
+    (acc, item) => acc + parseFloat(item.PrecioProducto) * item.cantidad,
+    0
+  );
+  const shipping = 15000 * productos.length;
+  const total = subtotal + shipping;
+
+  const isEmpty = productos.length === 0;
+
+  const formatPrice = (precio: string) => {
+    const numero = Number(precio);
+    return new Intl.NumberFormat("es-ES").format(numero);
+  };
   return (
     <div className="bg-background p-6 md:p-8 lg:p-10">
       {alertMessage && <Alert message={alertMessage} onClose={() => setAlertMessage(null)} />}
@@ -159,9 +172,9 @@ export function ResumenCompra() {
                 </TableCell>
                 <TableCell>{producto.NombreProducto}</TableCell>
                 <TableCell>{producto.cantidad}</TableCell>
-                <TableCell className="hidden md:table-cell">${producto.PrecioProducto}</TableCell>
+                <TableCell className="hidden md:table-cell">${formatPrice(producto.PrecioProducto)}</TableCell>
                 <TableCell className="hidden md:table-cell">
-                  ${producto.cantidad * parseFloat(producto.PrecioProducto)}
+                  ${formatPrice(producto.cantidad * parseFloat(producto.PrecioProducto))}
                 </TableCell>
               </TableRow>
             ))}
@@ -170,12 +183,19 @@ export function ResumenCompra() {
       </div>
       <div className="flex justify-between mt-6">
         <Card className="w-full md:w-1/3">
-          <CardHeader>
-            <CardTitle>Total</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">${total.toFixed(2)}</p>
-          </CardContent>
+        <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span className="font-medium">${formatPrice(subtotal.toFixed(2))}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Envío</span>
+              <span className="font-medium">${formatPrice(shipping.toFixed(2))}</span>
+            </div>
+            <Separator />
+            <div className="flex justify-between font-bold">
+              <span>Total</span>
+              <span>${formatPrice(total.toFixed(2))}</span>
+            </div>
         </Card>
         <Button onClick={handleConfirmarCompra} className="self-center">
           Confirmar compra
