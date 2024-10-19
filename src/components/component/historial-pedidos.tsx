@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
 import Link from "next/link";
@@ -53,6 +54,7 @@ export function HistorialPedidos() {
 
         const data: Pedido[] = await response.json();
         setPedidos(data);
+        console.log(data)
       } catch (error) {
         console.error("Error en fetchPedidos:", error);
         setError("Error al cargar los pedidos");

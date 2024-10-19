@@ -23,11 +23,13 @@ function Page() {
   }, []);
 
   return (
-    <div>
-      {isLoggedIn ? <Navbar /> : <NavbarDefault />}
+    <div className="flex flex-col min-h-screen">
+      {isLoggedIn ? <Navbar cartUpdated={false} /> : <NavbarDefault />}
       <Carrusel />
+      <main className="flex-grow">
       <ProductosDestacados />
       <TiendasDestacadas />
+      </main>
       <Footer />
     </div>
   );
