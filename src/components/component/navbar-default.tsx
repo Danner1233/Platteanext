@@ -13,7 +13,7 @@ export function NavbarDefault() {
     <header className="bg-plattea1 flex h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
         <CustomLogo className="h-12 w-12 text-plattea2" /> {/* Color normal */}
-        <span className="sr-only">Acme Inc</span>
+        <span className="sr-only">Plattea</span>
       </Link>
       <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList>
@@ -54,7 +54,7 @@ export function NavbarDefault() {
             className="lg:hidden bg-plattea1 text-plattea2"
           >
             <MenuIcon className="h-6 w-6" />
-            <span className="sr-only">Toggle navigation menu</span>
+            <span className="sr-only">Menu de navegacion</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="bg-plattea2">

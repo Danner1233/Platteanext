@@ -182,9 +182,6 @@ export function Navbar({ cartUpdated }: { cartUpdated: boolean }) {
             </div>
           )}
         </div>
-
-
-
         {/* Menú de usuario */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
