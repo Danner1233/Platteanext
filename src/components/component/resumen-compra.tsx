@@ -94,7 +94,7 @@ export function ResumenCompra() {
       const decodedId = decodeURIComponent(safeIdPedido);
       const decryptedId = await crypto.decrypt(decodedId);
       const subtotal = productos.reduce((acc, item) => acc + parseFloat(item.PrecioProducto) * item.cantidad, 0);
-      const shipping = 5.00; // Cambia esto si es necesario
+      const shipping = 15000 * productos.length; // Costo de envío por cada ítem
       const total = subtotal + shipping;
 
       const response = await axios.post("http://localhost:4000/api/confirmarpedido", {
@@ -117,8 +117,9 @@ export function ResumenCompra() {
     }
   };
 
+ 
   const subtotal = productos.reduce((acc, item) => acc + parseFloat(item.PrecioProducto) * item.cantidad, 0);
-  const shipping = 30000; // Cambia esto si es necesario
+  const shipping = 15000 * productos.length; // Costo de envío por cada ítem
   const total = subtotal + shipping;
   const formatPrice = (precio: string) => {
     // Convertir el precio a número y formatearlo con puntos de miles
