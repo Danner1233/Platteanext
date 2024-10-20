@@ -2,8 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import NextCrypto from 'next-crypto'; // Asegúrate de tener esta importación
-import { useEffect, useState, JSX, SVGProps } from "react";
+import NextCrypto from 'next-crypto';
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Tienda {
@@ -19,6 +19,9 @@ export function Tiendas() {
   const [tiendas, setTiendas] = useState<Tienda[]>([]);
   const [filteredTiendas, setFilteredTiendas] = useState<Tienda[]>([]);
   const [search, setSearch] = useState('');
+  const [location, setLocation] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12; 
   const [encryptedIds, setEncryptedIds] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState<string>("");
   const crypto = new NextCrypto('secret key');
@@ -32,11 +35,9 @@ export function Tiendas() {
           setTiendas(data);
           setFilteredTiendas(data);
 
-          // Encriptar IDs
           const encrypted = await Promise.all(data.map(async (tienda) => {
             const encryptedId = await crypto.encrypt(tienda.IdTienda);
             const safeEncryptedId = encryptedId.replace(/\//g, '_').replace(/\+/g, '-');
-            console.log(`Original ID: ${tienda.IdTienda}, Encrypted ID: ${safeEncryptedId}`); // Console log para verificar
             return {
               id: tienda.IdTienda,
               encryptedId: safeEncryptedId
@@ -60,84 +61,112 @@ export function Tiendas() {
   }, []);
 
   useEffect(() => {
-    const filtered = tiendas.filter((tienda) =>
-      tienda.NombreTienda.toLowerCase().includes(search.toLowerCase())
-    );
+    const normalizeString = (str: string) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    };
+
+    const filtered = tiendas.filter((tienda) => {
+      const normalizedNombre = normalizeString(tienda.NombreTienda);
+      const normalizedSearch = normalizeString(search);
+      const normalizedLocation = normalizeString(location);
+      const normalizedCiudad = normalizeString(tienda.CiudadTienda);
+
+      return normalizedNombre.includes(normalizedSearch) &&
+             normalizedCiudad.includes(normalizedLocation);
+    });
     setFilteredTiendas(filtered);
-  }, [search, tiendas]);
+  }, [search, location, tiendas]);
+
+  const totalPages = Math.ceil(filteredTiendas.length / itemsPerPage);
+  const currentTiendas = filteredTiendas.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-7">
-      <h2 className="text-2xl font-bold mb-5">Tiendas</h2>
-      <Busqueda search={search} setSearch={setSearch} />
+      <h2 className="text-3xl font-bold mb-5 text-left">Descubre Nuestras Tiendas</h2>
+      <Busqueda 
+        search={search} 
+        setSearch={setSearch} 
+        location={location} 
+        setLocation={setLocation} 
+      />
       <section className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
-        {filteredTiendas.map((tienda) => (
+        {currentTiendas.map((tienda) => (
           <Link key={tienda.IdTienda} href={`/shop/${encryptedIds[tienda.IdTienda] || ''}`}>
-            <div className="relative overflow-hidden rounded-lg group">
-              <div className="absolute inset-0 z-10">
-                <span className="sr-only">Ver tienda</span>
-              </div>
+            <div className="relative overflow-hidden rounded-lg shadow-lg group transition-transform transform hover:scale-105">
               <img
                 src={tienda.MiniaturaTiendaURL}
                 alt={tienda.NombreTienda}
-                width={400}
-                height={300}
-                className="object-cover w-full h-60"
+                className="object-cover w-full h-60 transition-transform duration-300 ease-in-out"
                 style={{ aspectRatio: "400/300", objectFit: "cover" }}
               />
-              <div className="p-4 bg-background">
-                <h3 className="text-lg font-semibold md:text-xl">{tienda.NombreTienda}</h3>
-                <p className="text-sm text-muted-foreground">Ciudad: {tienda.CiudadTienda}</p>
-                <p className="text-sm text-muted-foreground">Dirección: {tienda.DireccionTienda}</p>
+              <div className="p-4 bg-white">
+                <h3 className="text-lg font-semibold md:text-xl text-gray-800">{tienda.NombreTienda}</h3>
+                <p className="text-sm text-gray-600">Ciudad: {tienda.CiudadTienda}</p>
+                <p className="text-sm text-gray-600">Dirección: {tienda.DireccionTienda}</p>
               </div>
             </div>
           </Link>
         ))}
       </section>
+      <div className="flex justify-center items-center mt-6">
+        <Button 
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+          disabled={currentPage === 1}
+          className={`mr-2 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-plattea1 transition'}`}
+        >
+          Anterior
+        </Button>
+        <div className="flex items-center">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <Button 
+              key={index} 
+              onClick={() => setCurrentPage(index + 1)} 
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === index + 1 ? 'bg-gray-500 text-white' : 'bg-gray-200 hover:bg-gray-300'} transition`}
+            >
+              {index + 1}
+            </Button>
+          ))}
+        </div>
+        <Button 
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+          disabled={currentPage === totalPages}
+          className={`ml-2 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-plattea1 transition'}`}
+        >
+          Siguiente
+        </Button>
+      </div>
+      <div className="text-center mt-4">
+        <span className="text-gray-600">Página {currentPage} de {totalPages}</span>
+      </div>
     </div>
   );
 }
 
-function Busqueda({ search, setSearch }: { search: string; setSearch: (value: string) => void }) {
+function Busqueda({ search, setSearch, location, setLocation }: { search: string; setSearch: (value: string) => void; location: string; setLocation: (value: string) => void; }) {
   return (
-    <div className="flex w-full max-w-md m-8">
-      <Input
-        type="search"
-        placeholder="Buscar..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="flex-1 h-10 px-4 py-2 text-sm rounded-l-md border border-r-0 border-input focus:outline-none focus:ring-1 focus:ring-primary"
-      />
-      <Button
-        type="submit"
-        variant="ghost"
-        size="icon"
-        className="h-10 px-3 rounded-r-md border border-input focus:outline-none focus:ring-1 focus:ring-primary"
-      >
-        <SearchIcon className="w-5 h-5 text-muted-foreground" />
-      </Button>
+    <div className="flex flex-col md:flex-row w-full mb-6">
+      <div className="flex flex-col w-full md:w-1/4 md:mr-4">
+        <label className="mb-1 text-sm font-semibold text-gray-700">Buscar Tiendas</label>
+        <Input
+          type="search"
+          placeholder="Buscar tiendas..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="h-10 px-4 py-2 text-sm rounded-md border border-gray-300 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+        />
+      </div>
+      <div className="flex flex-col w-full md:w-1/5 md:ml-0 mt-4 md:mt-0">
+        <label className="mb-1 text-sm font-semibold text-gray-700">Ubicación</label>
+        <Input
+          type="text"
+          placeholder="Ubicación..."
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="h-10 px-4 py-2 text-sm rounded-md border border-gray-300 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+        />
+      </div>
     </div>
-  );
-}
-
-function SearchIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
   );
 }
