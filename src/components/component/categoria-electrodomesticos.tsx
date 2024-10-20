@@ -63,7 +63,7 @@ export function CategoriaElectrodomesticos() {
             </div>
           ))
         ) : (
-          <p>No tiendas found.</p>
+          <p className="text-center text-lg text-gray-600 ">No hay tiendas disponibles en esta categoría.</p>
         )}
       </div>
     </section>
