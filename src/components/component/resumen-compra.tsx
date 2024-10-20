@@ -118,7 +118,7 @@ export function ResumenCompra() {
   };
 
   const subtotal = productos.reduce((acc, item) => acc + parseFloat(item.PrecioProducto) * item.cantidad, 0);
-  const shipping = 15000; // Cambia esto si es necesario
+  const shipping = 30000; // Cambia esto si es necesario
   const total = subtotal + shipping;
   const formatPrice = (precio: string) => {
     // Convertir el precio a número y formatearlo con puntos de miles

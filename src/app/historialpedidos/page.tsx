@@ -1,6 +1,6 @@
 "use client"
 import { Footer } from '@/components/component/footer'
-import { HistorialPedidos } from '@/components/component/historial-pedidos'
+import  HistorialPedidos  from '@/components/component/historial-pedidos'
 import { LoadingAnimation } from '@/components/component/loading-animation'
 import { Navbar } from '@/components/component/navbar'
 import { NavbarDefault } from '@/components/component/navbar-default'

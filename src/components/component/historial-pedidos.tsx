@@ -1,23 +1,19 @@
 "use client"
+
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
-import Link from "next/link";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { jwtDecode } from "jwt-decode";
-
-interface Articulo {
-  nombre: string;
-  cantidad: number;
-  precio: number;
-  imagen: string; // Asegúrate de que esta propiedad esté en el objeto artículo
-}
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Calendar, Package, Truck, CheckCircle, Info } from "lucide-react";
 
 interface Pedido {
   IdPedido: number;
-  IdPersonaFK: number;
+  NumeroPedido: string; // Número del pedido
   Direccion: string;
-  Ciudad: string;
   FechaPedido: string; 
+  EstadoPedido: string; 
   Total: string; 
   articulos?: string; // Cambiado a string para reflejar el resultado de GROUP_CONCAT
 }
@@ -26,8 +22,9 @@ interface DecodedToken {
   IdPersona: string;
 }
 
-export function HistorialPedidos() {
+export default function HistorialPedidos() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [pedidoSeleccionado, setPedidoSeleccionado] = useState<Pedido | null>(null);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
@@ -54,7 +51,6 @@ export function HistorialPedidos() {
 
         const data: Pedido[] = await response.json();
         setPedidos(data);
-        console.log(data)
       } catch (error) {
         console.error("Error en fetchPedidos:", error);
         setError("Error al cargar los pedidos");
@@ -66,63 +62,99 @@ export function HistorialPedidos() {
 
   if (error) return <p>Error: {error}</p>;
 
-  
   const formatPrice = (precio: string) => {
-    // Convertir el precio a número y formatearlo con puntos de miles
     const numero = Number(precio);
     return new Intl.NumberFormat('es-ES').format(numero);
   };
 
+  const getIconoEstado = (estado: string) => {
+    switch (estado) {
+      case "Enviado":
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case "En Proceso":
+        return <Truck className="h-5 w-5 text-blue-500" />;
+      case "Pendiente":
+        return <Package className="h-5 w-5 text-yellow-500" />;
+      default:
+        return <Info className="h-5 w-5 text-gray-500" />;
+    }
+  };
+
   return (
     <div className="w-full h-full">
-      <Card className="h-full">
+      <Card className="h-full mt-8 mb-8 mx-auto w-full max-w-7xl" >
         <CardHeader className="px-7 md:px-10">
-          <Link href="#" className="font-medium" prefetch={false}>
-            Historial de Pedidos
-          </Link>
+          <h1 className="text-2xl font-bold mb-4">Historial de Pedidos</h1>
           <CardDescription>
-            <Link href="#" className="font-medium" prefetch={false}>
-              Todos tus pedidos realizados.
-            </Link>
+            Todos tus pedidos realizados.
           </CardDescription>
         </CardHeader>
         <CardContent className="h-full">
           <Table className="h-full w-full">
             <TableHeader>
               <TableRow>
-                <TableHead>Fecha del Pedido</TableHead>
                 <TableHead>Número de Pedido</TableHead>
-                <TableHead>Artículos</TableHead>
-                <TableHead className="text-right">Total</TableHead>
+                <TableHead>Fecha</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-  {pedidos.map((pedido) => (
-    <TableRow key={pedido.IdPedido} className="cursor-pointer">
-      <TableCell>
-        <Link href={`/historial/${pedido.IdPedido}`} className="font-medium" prefetch={false}>
-          {new Date(pedido.FechaPedido).toLocaleDateString()}
-        </Link>
-      </TableCell>
-      <TableCell>
-        <Link href={`/historial/${pedido.IdPedido}`} className="font-medium" prefetch={false}>
-          {pedido.IdPedido}
-        </Link>
-      </TableCell>
-      <TableCell>
-        <Link href={`/historial/${pedido.IdPedido}`} className="font-medium" prefetch={false}>
-          {pedido.articulos || "No hay artículos"}
-        </Link>
-      </TableCell>
-      <TableCell className="text-right">
-        <Link href={`/historial/${pedido.IdPedido}`} className="font-medium" prefetch={false}>
-          ${formatPrice(parseFloat(pedido.Total).toFixed(2))}
-        </Link>
-      </TableCell>
-    </TableRow>
-  ))}
-</TableBody>
-
+              {pedidos.map((pedido) => (
+                <TableRow key={pedido.IdPedido} className="cursor-pointer">
+                  <TableCell>{pedido.NumeroPedido}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {new Date(pedido.FechaPedido).toLocaleDateString()}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      {getIconoEstado(pedido.EstadoPedido)}
+                      <span className="ml-2">{pedido.EstadoPedido}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>${formatPrice(parseFloat(pedido.Total).toFixed(2))}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" onClick={() => setPedidoSeleccionado(pedido)}>
+                          Ver Detalles
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Detalles del Pedido {pedidoSeleccionado?.NumeroPedido}</DialogTitle>
+                          <DialogDescription>
+                            Información detallada sobre el pedido seleccionado.
+                          </DialogDescription>
+                        </DialogHeader>
+                        {pedidoSeleccionado && (
+                          <div className="mt-4">
+                            <p><strong>Fecha:</strong> {pedidoSeleccionado.FechaPedido}</p>
+                            <p><strong>Estado:</strong> {pedidoSeleccionado.EstadoPedido}</p>
+                            <p><strong>Total:</strong> {pedidoSeleccionado.Total}</p>
+                            <p><strong>Dirección:</strong> {pedidoSeleccionado.Direccion}</p>
+                            <p><strong>Artículos:</strong></p>
+                            {pedidoSeleccionado.articulos ? (
+                              pedidoSeleccionado.articulos.split(', ').map((articulo) => (
+                                <p key={articulo}>
+                                  {articulo}
+                                </p>
+                              ))
+                            ) : (
+                              <p>No hay artículos</p>
+                            )}
+                          </div>
+                        )}
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
           </Table>
         </CardContent>
       </Card>
