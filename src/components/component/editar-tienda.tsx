@@ -18,8 +18,47 @@ interface Tienda {
   MiniaturaTiendaURL: string;
   BannerTiendaURL: string;
   IdCategoriaFK: string;
-  EstadoTienda: boolean; // Asegúrate de incluir el estado
+  EstadoTienda: boolean;
 }
+
+const Alert = ({ message, onClose }: { message: string, onClose: () => void }) => {
+  const [isExiting, setIsExiting] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        setIsVisible(false);
+        onClose();
+      }, 300); // Duración de la animación antes de ocultar el alert
+    }, 3000); // Tiempo que se muestra el alert
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
+      <div className="flex justify-between items-center">
+        <span>{message}</span>
+        <button
+          onClick={() => {
+            setIsExiting(true);
+            setTimeout(() => {
+              setIsVisible(false);
+              onClose();
+            }, 300);
+          }}
+          className="text-white ml-2"
+        >
+          &times;
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export function EditarTienda() {
   const params = useParams();
@@ -30,7 +69,8 @@ export function EditarTienda() {
   const [tienda, setTienda] = useState<Tienda | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isDirty, setIsDirty] = useState(false); // Estado para rastrear cambios
+  const [isDirty, setIsDirty] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null); // Estado para la alerta
 
   useEffect(() => {
     const fetchTienda = async () => {
@@ -58,6 +98,12 @@ export function EditarTienda() {
     setIsDirty(true);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) {
+      setIsDirty(true);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -74,8 +120,8 @@ export function EditarTienda() {
         throw new Error('Error al actualizar la tienda');
       }
 
-      alert('Tienda actualizada correctamente');
-      setIsDirty(false); // Resetea el estado después de guardar
+      setAlertMessage('Tienda actualizada correctamente');
+      setIsDirty(false);
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
@@ -97,26 +143,11 @@ export function EditarTienda() {
       const updatedTienda = await response.json();
       setTienda(updatedTienda);
 
-      // Cambia el mensaje de alerta según el nuevo estado
-      const message = updatedTienda.EstadoTienda ? 'activada' : 'desactivada';
-      alert(`Tienda ${message} correctamente.`);
-
-      // Redirigir al perfil si la tienda se desactiva
-      if (!updatedTienda.EstadoTienda) {
-        router.push('/perfil'); // Cambia '/perfil' a la ruta real de tu perfil
-      }
+      const message = updatedTienda.EstadoTienda ? 'Tienda activada correctamente' : 'Tienda desactivada correctamente';
+      setAlertMessage(message);
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
-  };
-
-  // Compara los valores actuales con los originales
-  const hasChanges = () => {
-    if (!tienda) return false;
-    const formData = new FormData(document.querySelector('form'));
-    return Array.from(formData.entries()).some(([key, value]) => {
-      return tienda[key as keyof Tienda] !== value;
-    });
   };
 
   if (loading) return <p>Loading...</p>;
@@ -124,6 +155,9 @@ export function EditarTienda() {
 
   return (
     <div className="flex justify-center">
+      {alertMessage && (
+        <Alert message={alertMessage} onClose={() => setAlertMessage(null)} />
+      )}
       <div className="absolute left-4 pt-8">
         <Button
           onClick={() => router.back()}
@@ -147,7 +181,7 @@ export function EditarTienda() {
                 name="NombreTienda"
                 defaultValue={tienda?.NombreTienda}
                 placeholder="Ingresa el nombre de la tienda"
-                onChange={handleInputChange} // Agrega el manejador de cambios
+                onChange={handleInputChange}
               />
             </div>
             <div className="grid gap-2">
@@ -211,7 +245,7 @@ export function EditarTienda() {
                   className="rounded-md"
                   style={{ aspectRatio: "200/100", objectFit: "cover" }}
                 />
-                <Input id="bannerTienda" name="BannerTienda" type="file" />
+                <Input id="bannerTienda" name="BannerTienda" type="file" onChange={handleFileChange} />
               </div>
             </div>
             <div className="grid gap-2">
@@ -225,14 +259,14 @@ export function EditarTienda() {
                   className="rounded-md"
                   style={{ aspectRatio: "100/100", objectFit: "cover" }}
                 />
-                <Input id="miniaturaTienda" name="MiniaturaTienda" type="file" />
+                <Input id="miniaturaTienda" name="MiniaturaTienda" type="file" onChange={handleFileChange} />
               </div>
             </div>
             <div className='flex'>
               <div>
                 <Button
                   className="bg-blue-500 text-white"
-                  disabled={!isDirty || !hasChanges()} // Desactiva si no hay cambios
+                  disabled={!isDirty}
                 >
                   Guardar Cambios
                 </Button>
