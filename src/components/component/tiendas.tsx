@@ -83,14 +83,16 @@ export function Tiendas() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="container mx-auto px-4 md:px-6 lg:px-7">
-      <h2 className="text-3xl font-bold mb-5 text-left">Descubre Nuestras Tiendas</h2>
+    <div className="container mx-auto px-4 md:px-6 lg:px-7 ">
+      <h2 className="text-3xl font-bold mb-5 ml-5">Descubre Nuestras Tiendas</h2>
+      <div className="ml-5 ">
       <Busqueda 
         search={search} 
         setSearch={setSearch} 
         location={location} 
         setLocation={setLocation} 
       />
+      </div>
       <section className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-4 md:p-6">
         {currentTiendas.map((tienda) => (
           <Link key={tienda.IdTienda} href={`/shop/${encryptedIds[tienda.IdTienda] || ''}`}>

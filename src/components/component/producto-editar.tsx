@@ -63,7 +63,7 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    
+
     const updatedProducto: Producto = {
       ...producto!,
       NombreProducto: formData.get("NombreProducto") as string,
@@ -166,7 +166,13 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="category">Categoría</Label>
-                <Select id="category" name="IdCategoriaFK" defaultValue={producto.IdCategoriaFK.toString()} onChange={handleInputChange}>
+                <Select
+                  id="category"
+                  name="IdCategoriaFK"
+                  defaultValue={producto.IdCategoriaFK ? producto.IdCategoriaFK.toString() : ""}
+                  onChange={handleInputChange}
+                >
+
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
