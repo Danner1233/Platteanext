@@ -182,9 +182,6 @@ export function Navbar({ cartUpdated }: { cartUpdated: boolean }) {
             </div>
           )}
         </div>
-
-
-
         {/* Menú de usuario */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -213,11 +210,11 @@ export function Navbar({ cartUpdated }: { cartUpdated: boolean }) {
                 Perfil
               </Link>
             </DropdownMenuItem>
-            {/* <DropdownMenuItem>
+             <DropdownMenuItem>
               <Link href="/historialpedidos" className="text-plattea1">
                 Historial
               </Link>
-            </DropdownMenuItem> */}
+            </DropdownMenuItem> 
             <DropdownMenuItem>
               <Link href="/configuracion" className="text-plattea1 w-full h-full">
                 Configuración
