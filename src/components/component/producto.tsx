@@ -138,7 +138,7 @@ export function Producto({ onAddToCart }: ProductoProps)  {
           IdProductoFK: producto?.IdProducto
         }),
       });
-
+    
       if (response.ok) {
         setAlert("Producto añadido al carrito exitosamente");
         onAddToCart();
@@ -147,7 +147,7 @@ export function Producto({ onAddToCart }: ProductoProps)  {
       }
     } catch (error) {
       console.error("Error en handleAddToCart:", error);
-      setAlert("Hubo un problema al añadir el producto al carrito");
+      setAlert("Este producto ya está en tu carrito. Si deseas, puedes actualizar la cantidad desde tu carrito.");
     }
   };
 
