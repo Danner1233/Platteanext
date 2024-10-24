@@ -29,6 +29,7 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
   const [producto, setProducto] = useState<Producto | null>(null);
   const [error, setError] = useState<string>("");
   const [isModified, setIsModified] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false); // Controla el estado del diálogo
   const crypto = new NextCrypto('secret key');
 
   useEffect(() => {
@@ -87,10 +88,10 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
       });
 
       if (response.ok) {
-        alert("Producto actualizado exitosamente");
         setProducto(updatedProducto);
         setIsModified(false);
-        onProductoActualizado(); // Llamar al callback aquí
+        onProductoActualizado();
+        setIsDialogOpen(false); // Cierra el diálogo al guardar cambios
       } else {
         throw new Error("Error al actualizar el producto");
       }
@@ -101,9 +102,9 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
   };
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" onClick={() => setIsDialogOpen(true)}>
           <UndoIcon className="h-5 w-5" />
           <span className="sr-only">Editar producto</span>
         </Button>
@@ -172,7 +173,6 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
                   defaultValue={producto.IdCategoriaFK ? producto.IdCategoriaFK.toString() : ""}
                   onChange={handleInputChange}
                 >
-
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
