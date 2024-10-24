@@ -57,6 +57,19 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
   );
 };
 
+// Componente de Confirmación
+const ConfirmDeleteAlert = ({ onConfirm, onCancel }: { onConfirm: () => void, onCancel: () => void }) => {
+  return (
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg z-50">
+      <h2 className="text-lg font-semibold">¿Estás seguro de que deseas eliminar este producto?</h2>
+      <div className="mt-4 flex justify-end">
+        <Button onClick={onCancel} className="mr-2">Cancelar</Button>
+        <Button onClick={onConfirm} variant="destructive">Eliminar</Button>
+      </div>
+    </div>
+  );
+};
+
 export function EditarProductos() {
   const params = useParams();
   const router = useRouter();
@@ -67,6 +80,7 @@ export function EditarProductos() {
   const [error, setError] = useState<string | null>(null);
   const [encryptedProductLinks, setEncryptedProductLinks] = useState<Map<string, string>>(new Map());
   const [alertMessage, setAlertMessage] = useState<string | null>(null); // Para manejar el mensaje de la alerta
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string | null }>({ id: null }); // Para manejar confirmación de eliminación
 
   const fetchProductos = async () => {
     if (encryptedIdTienda) {
@@ -102,7 +116,7 @@ export function EditarProductos() {
   };
 
   useEffect(() => {
-    fetchProductos();
+    fetchProductos(); // Llamar a la función de fetch al cargar el componente
   }, [encryptedIdTienda]);
 
   const truncarTexto = (texto: string, maxLength: number) => {
@@ -116,24 +130,22 @@ export function EditarProductos() {
     return new Intl.NumberFormat('es-ES').format(numero);
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-
   const handleDelete = async (idProducto: string) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+    setConfirmDelete({ id: idProducto });
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (confirmDelete.id) {
       try {
-        const safeIdProducto = idProducto.replace(/_/g, '/').replace(/-/g, '+');
+        // Desencriptar el ID antes de eliminar
+        const safeIdProducto = confirmDelete.id.replace(/_/g, '/').replace(/-/g, '+');
         const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdProducto));
 
         if (!decryptedId) {
           throw new Error('El ID desencriptado es nulo o inválido');
         }
 
-        // Eliminar el producto de la lista inmediatamente
-        setProductos((prevProductos) =>
-          prevProductos.filter(producto => producto.IdProducto !== idProducto)
-        );
-
+        // Llamar a la API para eliminar el producto
         const response = await fetch(`http://localhost:4000/api/producto/${decryptedId}`, {
           method: 'DELETE',
         });
@@ -145,17 +157,35 @@ export function EditarProductos() {
 
         // Mostrar alerta de éxito
         setAlertMessage('Producto eliminado con éxito');
+
+        // Recargar la lista de productos tras eliminar
+        fetchProductos();
       } catch (error: any) {
         console.error('Error al eliminar el producto:', error);
         setAlertMessage('Error al eliminar el producto. Intenta nuevamente más tarde.');
+      } finally {
+        setConfirmDelete({ id: null }); // Resetear confirmación
       }
     }
   };
 
+  const cancelDelete = () => {
+    setConfirmDelete({ id: null });
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <div>
       {alertMessage && <Alert message={alertMessage} onClose={() => setAlertMessage(null)} />} {/* Mostrar alerta */}
-      
+      {confirmDelete.id && (
+        <ConfirmDeleteAlert 
+          onConfirm={confirmDeleteProduct} 
+          onCancel={cancelDelete} 
+        />
+      )}
+
       <div className="left-4 pt-8 pb-8">
         <Button
           onClick={() => router.back()}
@@ -166,7 +196,7 @@ export function EditarProductos() {
         </Button>
         <div className="relative mb-6">
           <div className="absolute right-10">
-            <AgregarProducto />
+            <AgregarProducto onProductoAgregado={fetchProductos} /> {/* Actualiza productos al agregar */}
           </div>
         </div>
       </div>
@@ -189,8 +219,8 @@ export function EditarProductos() {
                     style={{ aspectRatio: "600/400", objectFit: "cover" }}
                   />
                   <div className="absolute top-4 right-4 flex gap-2">
-                    <ProductoEditar 
-                      encryptedIdProducto={encryptedIdProducto} 
+                    <ProductoEditar
+                      encryptedIdProducto={encryptedIdProducto}
                       onProductoActualizado={fetchProductos} // Callback para actualizar productos
                     />
                     <Button size="icon" variant="ghost" onClick={() => handleDelete(encryptedIdProducto)}>
@@ -211,9 +241,7 @@ export function EditarProductos() {
           })}
         </div>
       ) : (
-        <div className="text-center">
-          No hay productos disponibles
-        </div>
+        <p className="ml-4">No hay productos disponibles.</p>
       )}
     </div>
   );
