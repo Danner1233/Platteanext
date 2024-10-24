@@ -159,7 +159,7 @@ export function Navbar() {
         {/* Ícono de carrito */}
         <Link href="/carrito">
           <Button size="icon" className="bg-plattea1 text-plattea2">
-            <CartIcon className="h-6 w-6" />
+            <CartIcon className="h-8 w-8" />
             <span className="sr-only">Carrito</span>
           </Button>
         </Link>
@@ -266,14 +266,13 @@ function CustomLogo(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
 function CartIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
+      width="32" // Aumentado de 24 a 32
+      height="32" // Aumentado de 24 a 32
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -287,3 +286,4 @@ function CartIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+

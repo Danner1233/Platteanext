@@ -40,9 +40,13 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
   if (!isVisible) return null;
 
   return (
+<<<<<<< HEAD
     <div
       className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${isExiting ? 'opacity-0' : 'opacity-100'}`}
     >
+=======
+    <div className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
+>>>>>>> ba49fe87d05d77bd53616f407e76348df9c8001d
       <div className="flex justify-between items-center">
         <span>{message}</span>
         <button
@@ -100,6 +104,12 @@ export function EditarTienda() {
     setIsDirty(true);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) {
+      setIsDirty(true);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -141,10 +151,13 @@ export function EditarTienda() {
 
       const message = updatedTienda.EstadoTienda ? 'Tienda activada correctamente' : 'Tienda desactivada correctamente';
       setAlertMessage(message);
+<<<<<<< HEAD
 
       if (!updatedTienda.EstadoTienda) {
         router.push('/perfil');
       }
+=======
+>>>>>>> ba49fe87d05d77bd53616f407e76348df9c8001d
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
@@ -174,11 +187,111 @@ export function EditarTienda() {
         </CardHeader>
         <CardContent>
           <form className="grid gap-6" onSubmit={handleSubmit}>
+<<<<<<< HEAD
             {/* Resto del formulario */}
             <div className='flex'>
               <Button className="bg-blue-500 text-white" disabled={!isDirty}>
                 Guardar Cambios
               </Button>
+=======
+            <div className="grid gap-2">
+              <Label htmlFor="nombreTienda">Nombre de la Tienda</Label>
+              <Input
+                id="nombreTienda"
+                name="NombreTienda"
+                defaultValue={tienda?.NombreTienda}
+                placeholder="Ingresa el nombre de la tienda"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="descripcionTienda">Descripción</Label>
+              <Textarea
+                id="descripcionTienda"
+                name="DescripcionTienda"
+                defaultValue={tienda?.DescripcionTienda}
+                placeholder="Ingresa la descripción de la tienda"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="direccionTienda">Dirección</Label>
+              <Input
+                id="direccionTienda"
+                name="DireccionTienda"
+                defaultValue={tienda?.DireccionTienda}
+                placeholder="Ingresa la dirección de la tienda"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="ciudadTienda">Ciudad</Label>
+              <Input
+                id="ciudadTienda"
+                name="CiudadTienda"
+                defaultValue={tienda?.CiudadTienda}
+                placeholder="Ingresa la ciudad"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="telefonoTienda">Teléfono</Label>
+              <Input
+                id="telefonoTienda"
+                name="TelefonoTienda"
+                defaultValue={tienda?.TelefonoTienda}
+                placeholder="Ingresa el teléfono de la tienda"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="idCategoriaFK">Categoría</Label>
+              <Input
+                id="idCategoriaFK"
+                name="IdCategoriaFK"
+                defaultValue={tienda?.IdCategoriaFK}
+                placeholder="Ingresa la categoría de la tienda"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="bannerTienda">Banner de la Tienda</Label>
+              <div className="flex items-center gap-2">
+                <img
+                  src={tienda?.BannerTiendaURL || "/placeholder.svg"}
+                  alt="Banner de la tienda"
+                  width={200}
+                  height={100}
+                  className="rounded-md"
+                  style={{ aspectRatio: "200/100", objectFit: "cover" }}
+                />
+                <Input id="bannerTienda" name="BannerTienda" type="file" onChange={handleFileChange} />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="miniaturaTienda">Miniatura de la Tienda</Label>
+              <div className="flex items-center gap-2">
+                <img
+                  src={tienda?.MiniaturaTiendaURL || "/placeholder.svg"}
+                  alt="Miniatura de la tienda"
+                  width={100}
+                  height={100}
+                  className="rounded-md"
+                  style={{ aspectRatio: "100/100", objectFit: "cover" }}
+                />
+                <Input id="miniaturaTienda" name="MiniaturaTienda" type="file" onChange={handleFileChange} />
+              </div>
+            </div>
+            <div className='flex'>
+              <div>
+                <Button
+                  className="bg-blue-500 text-white"
+                  disabled={!isDirty}
+                >
+                  Guardar Cambios
+                </Button>
+              </div>
+>>>>>>> ba49fe87d05d77bd53616f407e76348df9c8001d
               <Button type="button" onClick={handleToggleState} className={`bg-${tienda?.EstadoTienda ? 'red-500' : 'plattea1'} text-white ml-52`}>
                 {tienda?.EstadoTienda ? 'Desactivar Tienda' : 'Activar Tienda'}
               </Button>
