@@ -57,6 +57,21 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
   );
 };
 
+// Componente para el diálogo de confirmación
+const ConfirmDialog = ({ onConfirm, onCancel }: { onConfirm: () => void, onCancel: () => void }) => {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+        <p>¿Estás seguro de que deseas eliminar este producto?</p>
+        <div className="mt-4 flex justify-center gap-4">
+          <Button onClick={onConfirm} className="bg-red-600 text-white">Eliminar</Button>
+          <Button onClick={onCancel} className="bg-gray-200">Cancelar</Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export function EditarProductos() {
   const params = useParams();
   const router = useRouter();
@@ -67,6 +82,8 @@ export function EditarProductos() {
   const [error, setError] = useState<string | null>(null);
   const [encryptedProductLinks, setEncryptedProductLinks] = useState<Map<string, string>>(new Map());
   const [alertMessage, setAlertMessage] = useState<string | null>(null); // Para manejar el mensaje de la alerta
+  const [productoToDelete, setProductoToDelete] = useState<string | null>(null); // Producto que se va a eliminar
+  const [confirmVisible, setConfirmVisible] = useState(false); // Controla la visibilidad del diálogo de confirmación
 
   const fetchProductos = async () => {
     if (encryptedIdTienda) {
@@ -116,11 +133,13 @@ export function EditarProductos() {
     return new Intl.NumberFormat('es-ES').format(numero);
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  const handleDelete = (idProducto: string) => {
+    setProductoToDelete(idProducto); // Guardamos el producto que se va a eliminar
+    setConfirmVisible(true); // Mostramos el diálogo de confirmación
+  };
 
-  const handleDelete = async (idProducto: string) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+  const confirmDelete = async () => {
+
       try {
         const safeIdProducto = idProducto.replace(/_/g, '/').replace(/-/g, '+');
         const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdProducto));
@@ -131,9 +150,10 @@ export function EditarProductos() {
 
         // Eliminar el producto de la lista inmediatamente
         setProductos((prevProductos) =>
-          prevProductos.filter(producto => producto.IdProducto !== idProducto)
+          prevProductos.filter(producto => producto.IdProducto !== productoToDelete)
         );
-
+        console.log("id: " ,decryptedId)
+        
         const response = await fetch(`http://localhost:4000/api/producto/${decryptedId}`, {
           method: 'DELETE',
         });
@@ -143,19 +163,24 @@ export function EditarProductos() {
           throw new Error('Error al eliminar el producto: ' + (errorData.message || 'Error desconocido'));
         }
 
-        // Mostrar alerta de éxito
         setAlertMessage('Producto eliminado con éxito');
       } catch (error: any) {
         console.error('Error al eliminar el producto:', error);
         setAlertMessage('Error al eliminar el producto. Intenta nuevamente más tarde.');
+      } finally {
+        setConfirmVisible(false); // Ocultamos el diálogo de confirmación
       }
-    }
+    
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div>
       {alertMessage && <Alert message={alertMessage} onClose={() => setAlertMessage(null)} />} {/* Mostrar alerta */}
-      
+      {confirmVisible && <ConfirmDialog onConfirm={confirmDelete} onCancel={() => setConfirmVisible(false)} />} {/* Mostrar confirmación */}
+
       <div className="left-4 pt-8 pb-8">
         <Button
           onClick={() => router.back()}
@@ -193,27 +218,23 @@ export function EditarProductos() {
                       encryptedIdProducto={encryptedIdProducto} 
                       onProductoActualizado={fetchProductos} // Callback para actualizar productos
                     />
-                    <Button size="icon" variant="ghost" onClick={() => handleDelete(encryptedIdProducto)}>
-                      <TrashIcon className="w-5 h-5" />
-                      <span className="sr-only">Eliminar</span>
+                    <Button size="icon" onClick={() => handleDelete(producto.IdProducto)}>
+                      <TrashIcon className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
-                <div className="p-4 grid gap-2">
-                  <h3 className="font-semibold text-lg">{truncarTexto(producto.NombreProducto, 25)}</h3>
-                  <p className="text-sm text-muted-foreground">{truncarTexto(producto.DescripcionProducto, 100)}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-lg">${formatPrice(producto.PrecioProducto)}</span>
-                  </div>
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold">{truncarTexto(producto.NombreProducto, 25)}</h2>
+                  <p className="text-muted-foreground mb-2">{truncarTexto(producto.DescripcionProducto, 40)}</p>
+                  <p className="text-accent-foreground font-bold">Stock: {producto.StockProducto}</p>
+                  <p className="text-accent-foreground font-bold">${formatPrice(producto.PrecioProducto)}</p>
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        <div className="text-center">
-          No hay productos disponibles
-        </div>
+        <p>No hay productos disponibles en esta tienda.</p>
       )}
     </div>
   );
