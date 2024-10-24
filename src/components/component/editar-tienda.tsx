@@ -21,6 +21,49 @@ interface Tienda {
   EstadoTienda: boolean; // Asegúrate de incluir el estado
 }
 
+const Alert = ({ message, onClose }: { message: string, onClose: () => void }) => {
+  const [isExiting, setIsExiting] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        setIsVisible(false);
+        onClose(); // Llamar a la función onClose después de que la alerta se oculte
+      }, 300); // Esperar que termine la animación antes de remover el alert
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
+        isVisible ? 'animate-fade-in' : 'animate-fade-out'
+      }`}
+    >
+      <div className="flex justify-between items-center">
+        <span>{message}</span>
+        <button
+          onClick={() => {
+            setIsExiting(true);
+            setTimeout(() => {
+              setIsVisible(false);
+              onClose();
+            }, 300);
+          }}
+          className="text-white ml-2"
+        >
+          &times; {/* Este es el carácter para la X */}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export function EditarTienda() {
   const params = useParams();
   const router = useRouter();

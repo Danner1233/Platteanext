@@ -203,7 +203,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
           </div>
         ))
       ) : (
-        <p>No hay comentarios disponibles.</p>
+        <p></p>
       )}
     </Card>
   );
