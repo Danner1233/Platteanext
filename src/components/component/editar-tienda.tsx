@@ -18,7 +18,7 @@ interface Tienda {
   MiniaturaTiendaURL: string;
   BannerTiendaURL: string;
   IdCategoriaFK: string;
-  EstadoTienda: boolean; // Asegúrate de incluir el estado
+  EstadoTienda: boolean;
 }
 
 const Alert = ({ message, onClose }: { message: string, onClose: () => void }) => {
@@ -30,9 +30,9 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
       setIsExiting(true);
       setTimeout(() => {
         setIsVisible(false);
-        onClose(); // Llamar a la función onClose después de que la alerta se oculte
-      }, 300); // Esperar que termine la animación antes de remover el alert
-    }, 3000);
+        onClose();
+      }, 300); // Duración de la animación antes de ocultar el alert
+    }, 3000); // Tiempo que se muestra el alert
 
     return () => clearTimeout(timer);
   }, [onClose]);
@@ -41,9 +41,7 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
 
   return (
     <div
-      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
-        isVisible ? 'animate-fade-in' : 'animate-fade-out'
-      }`}
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${isExiting ? 'opacity-0' : 'opacity-100'}`}
     >
       <div className="flex justify-between items-center">
         <span>{message}</span>
@@ -57,7 +55,7 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
           }}
           className="text-white ml-2"
         >
-          &times; {/* Este es el carácter para la X */}
+          &times;
         </button>
       </div>
     </div>
@@ -73,7 +71,8 @@ export function EditarTienda() {
   const [tienda, setTienda] = useState<Tienda | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isDirty, setIsDirty] = useState(false); // Estado para rastrear cambios
+  const [isDirty, setIsDirty] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null); // Estado para la alerta
 
   useEffect(() => {
     const fetchTienda = async () => {
@@ -117,8 +116,8 @@ export function EditarTienda() {
         throw new Error('Error al actualizar la tienda');
       }
 
-      alert('Tienda actualizada correctamente');
-      setIsDirty(false); // Resetea el estado después de guardar
+      setAlertMessage('Tienda actualizada correctamente');
+      setIsDirty(false);
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
@@ -140,26 +139,15 @@ export function EditarTienda() {
       const updatedTienda = await response.json();
       setTienda(updatedTienda);
 
-      // Cambia el mensaje de alerta según el nuevo estado
-      const message = updatedTienda.EstadoTienda ? 'activada' : 'desactivada';
-      alert(`Tienda ${message} correctamente.`);
+      const message = updatedTienda.EstadoTienda ? 'Tienda activada correctamente' : 'Tienda desactivada correctamente';
+      setAlertMessage(message);
 
-      // Redirigir al perfil si la tienda se desactiva
       if (!updatedTienda.EstadoTienda) {
-        router.push('/perfil'); // Cambia '/perfil' a la ruta real de tu perfil
+        router.push('/perfil');
       }
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
-  };
-
-  // Compara los valores actuales con los originales
-  const hasChanges = () => {
-    if (!tienda) return false;
-    const formData = new FormData(document.querySelector('form'));
-    return Array.from(formData.entries()).some(([key, value]) => {
-      return tienda[key as keyof Tienda] !== value;
-    });
   };
 
   if (loading) return <p>Loading...</p>;
@@ -167,10 +155,13 @@ export function EditarTienda() {
 
   return (
     <div className="flex justify-center">
+      {alertMessage && (
+        <Alert message={alertMessage} onClose={() => setAlertMessage(null)} />
+      )}
       <div className="absolute left-4 pt-8">
         <Button
           onClick={() => router.back()}
-          className="inline-flex h-10 ml-8 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-10 hover:bg-gray-200"
+          className="inline-flex h-10 ml-8 items-center justify-center rounded-md border border-input bg-accent text-accent-foreground px-4 text-sm font-medium shadow-sm"
         >
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
@@ -183,103 +174,11 @@ export function EditarTienda() {
         </CardHeader>
         <CardContent>
           <form className="grid gap-6" onSubmit={handleSubmit}>
-            <div className="grid gap-2">
-              <Label htmlFor="nombreTienda">Nombre de la Tienda</Label>
-              <Input
-                id="nombreTienda"
-                name="NombreTienda"
-                defaultValue={tienda?.NombreTienda}
-                placeholder="Ingresa el nombre de la tienda"
-                onChange={handleInputChange} // Agrega el manejador de cambios
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="descripcionTienda">Descripción</Label>
-              <Textarea
-                id="descripcionTienda"
-                name="DescripcionTienda"
-                defaultValue={tienda?.DescripcionTienda}
-                placeholder="Ingresa la descripción de la tienda"
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="direccionTienda">Dirección</Label>
-              <Input
-                id="direccionTienda"
-                name="DireccionTienda"
-                defaultValue={tienda?.DireccionTienda}
-                placeholder="Ingresa la dirección de la tienda"
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="ciudadTienda">Ciudad</Label>
-              <Input
-                id="ciudadTienda"
-                name="CiudadTienda"
-                defaultValue={tienda?.CiudadTienda}
-                placeholder="Ingresa la ciudad"
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="telefonoTienda">Teléfono</Label>
-              <Input
-                id="telefonoTienda"
-                name="TelefonoTienda"
-                defaultValue={tienda?.TelefonoTienda}
-                placeholder="Ingresa el teléfono de la tienda"
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="idCategoriaFK">Categoría</Label>
-              <Input
-                id="idCategoriaFK"
-                name="IdCategoriaFK"
-                defaultValue={tienda?.IdCategoriaFK}
-                placeholder="Ingresa la categoría de la tienda"
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="bannerTienda">Banner de la Tienda</Label>
-              <div className="flex items-center gap-2">
-                <img
-                  src={tienda?.BannerTiendaURL || "/placeholder.svg"}
-                  alt="Banner de la tienda"
-                  width={200}
-                  height={100}
-                  className="rounded-md"
-                  style={{ aspectRatio: "200/100", objectFit: "cover" }}
-                />
-                <Input id="bannerTienda" name="BannerTienda" type="file" />
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="miniaturaTienda">Miniatura de la Tienda</Label>
-              <div className="flex items-center gap-2">
-                <img
-                  src={tienda?.MiniaturaTiendaURL || "/placeholder.svg"}
-                  alt="Miniatura de la tienda"
-                  width={100}
-                  height={100}
-                  className="rounded-md"
-                  style={{ aspectRatio: "100/100", objectFit: "cover" }}
-                />
-                <Input id="miniaturaTienda" name="MiniaturaTienda" type="file" />
-              </div>
-            </div>
+            {/* Resto del formulario */}
             <div className='flex'>
-              <div>
-                <Button
-                  className="bg-blue-500 text-white"
-                  disabled={!isDirty || !hasChanges()} // Desactiva si no hay cambios
-                >
-                  Guardar Cambios
-                </Button>
-              </div>
+              <Button className="bg-blue-500 text-white" disabled={!isDirty}>
+                Guardar Cambios
+              </Button>
               <Button type="button" onClick={handleToggleState} className={`bg-${tienda?.EstadoTienda ? 'red-500' : 'plattea1'} text-white ml-52`}>
                 {tienda?.EstadoTienda ? 'Desactivar Tienda' : 'Activar Tienda'}
               </Button>
