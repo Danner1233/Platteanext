@@ -2,7 +2,7 @@ import NextCrypto from 'next-crypto';
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -73,6 +73,7 @@ export function EditarTienda() {
   const [tienda, setTienda] = useState<Tienda | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDirty, setIsDirty] = useState(false); // Estado para rastrear cambios
 
   useEffect(() => {
     const fetchTienda = async () => {
@@ -96,6 +97,10 @@ export function EditarTienda() {
     fetchTienda();
   }, [encryptedIdTienda]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setIsDirty(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -113,6 +118,7 @@ export function EditarTienda() {
       }
 
       alert('Tienda actualizada correctamente');
+      setIsDirty(false); // Resetea el estado después de guardar
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
@@ -133,7 +139,10 @@ export function EditarTienda() {
 
       const updatedTienda = await response.json();
       setTienda(updatedTienda);
-      alert(`Tienda ${updatedTienda.EstadoTienda ? 'activada' : 'desactivada'} correctamente.`);
+
+      // Cambia el mensaje de alerta según el nuevo estado
+      const message = updatedTienda.EstadoTienda ? 'activada' : 'desactivada';
+      alert(`Tienda ${message} correctamente.`);
 
       // Redirigir al perfil si la tienda se desactiva
       if (!updatedTienda.EstadoTienda) {
@@ -142,6 +151,15 @@ export function EditarTienda() {
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
+  };
+
+  // Compara los valores actuales con los originales
+  const hasChanges = () => {
+    if (!tienda) return false;
+    const formData = new FormData(document.querySelector('form'));
+    return Array.from(formData.entries()).some(([key, value]) => {
+      return tienda[key as keyof Tienda] !== value;
+    });
   };
 
   if (loading) return <p>Loading...</p>;
@@ -157,7 +175,6 @@ export function EditarTienda() {
           <ArrowLeftIcon className="w-4 h-4 mr-2" />
           Volver atrás
         </Button>
-
       </div>
       <Card className="w-full max-w-xl mt-8 mb-8">
         <CardHeader>
@@ -173,6 +190,7 @@ export function EditarTienda() {
                 name="NombreTienda"
                 defaultValue={tienda?.NombreTienda}
                 placeholder="Ingresa el nombre de la tienda"
+                onChange={handleInputChange} // Agrega el manejador de cambios
               />
             </div>
             <div className="grid gap-2">
@@ -182,6 +200,7 @@ export function EditarTienda() {
                 name="DescripcionTienda"
                 defaultValue={tienda?.DescripcionTienda}
                 placeholder="Ingresa la descripción de la tienda"
+                onChange={handleInputChange}
               />
             </div>
             <div className="grid gap-2">
@@ -191,6 +210,7 @@ export function EditarTienda() {
                 name="DireccionTienda"
                 defaultValue={tienda?.DireccionTienda}
                 placeholder="Ingresa la dirección de la tienda"
+                onChange={handleInputChange}
               />
             </div>
             <div className="grid gap-2">
@@ -200,6 +220,7 @@ export function EditarTienda() {
                 name="CiudadTienda"
                 defaultValue={tienda?.CiudadTienda}
                 placeholder="Ingresa la ciudad"
+                onChange={handleInputChange}
               />
             </div>
             <div className="grid gap-2">
@@ -209,6 +230,7 @@ export function EditarTienda() {
                 name="TelefonoTienda"
                 defaultValue={tienda?.TelefonoTienda}
                 placeholder="Ingresa el teléfono de la tienda"
+                onChange={handleInputChange}
               />
             </div>
             <div className="grid gap-2">
@@ -218,6 +240,7 @@ export function EditarTienda() {
                 name="IdCategoriaFK"
                 defaultValue={tienda?.IdCategoriaFK}
                 placeholder="Ingresa la categoría de la tienda"
+                onChange={handleInputChange}
               />
             </div>
             <div className="grid gap-2">
@@ -248,14 +271,21 @@ export function EditarTienda() {
                 <Input id="miniaturaTienda" name="MiniaturaTienda" type="file" />
               </div>
             </div>
-            <Button className="ml-auto bg-blue-500 text-white">Guardar Cambios</Button>
+            <div className='flex'>
+              <div>
+                <Button
+                  className="bg-blue-500 text-white"
+                  disabled={!isDirty || !hasChanges()} // Desactiva si no hay cambios
+                >
+                  Guardar Cambios
+                </Button>
+              </div>
+              <Button type="button" onClick={handleToggleState} className={`bg-${tienda?.EstadoTienda ? 'red-500' : 'plattea1'} text-white ml-52`}>
+                {tienda?.EstadoTienda ? 'Desactivar Tienda' : 'Activar Tienda'}
+              </Button>
+            </div>
           </form>
         </CardContent>
-        <CardFooter>
-          <Button type="button" onClick={handleToggleState} className={`bg-${tienda?.EstadoTienda ? 'red-500' : 'green-500'} text-white`}>
-            {tienda?.EstadoTienda ? 'Desactivar Tienda' : 'Activar Tienda'}
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );
