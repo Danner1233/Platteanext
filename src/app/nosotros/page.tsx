@@ -8,7 +8,7 @@ import { NavbarDefault } from "@/components/component/navbar-default";
 import { Navbar } from "@/components/component/navbar";
 import Head from "next/head"; // Asegúrate de importar Head correctamente
 import { Busqueda } from "@/components/component/busqueda";
-import { Nosotros } from "@/components/component/nosotros";
+import  Nosotros  from "@/components/component/nosotros";
 import { LoadingAnimation } from "@/components/component/loading-animation";
 
 function Page() {
