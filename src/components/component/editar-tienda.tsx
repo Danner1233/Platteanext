@@ -40,13 +40,7 @@ const Alert = ({ message, onClose }: { message: string, onClose: () => void }) =
   if (!isVisible) return null;
 
   return (
-<<<<<<< HEAD
-    <div
-      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${isExiting ? 'opacity-0' : 'opacity-100'}`}
-    >
-=======
     <div className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
->>>>>>> ba49fe87d05d77bd53616f407e76348df9c8001d
       <div className="flex justify-between items-center">
         <span>{message}</span>
         <button
@@ -151,13 +145,6 @@ export function EditarTienda() {
 
       const message = updatedTienda.EstadoTienda ? 'Tienda activada correctamente' : 'Tienda desactivada correctamente';
       setAlertMessage(message);
-<<<<<<< HEAD
-
-      if (!updatedTienda.EstadoTienda) {
-        router.push('/perfil');
-      }
-=======
->>>>>>> ba49fe87d05d77bd53616f407e76348df9c8001d
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred');
     }
@@ -187,13 +174,6 @@ export function EditarTienda() {
         </CardHeader>
         <CardContent>
           <form className="grid gap-6" onSubmit={handleSubmit}>
-<<<<<<< HEAD
-            {/* Resto del formulario */}
-            <div className='flex'>
-              <Button className="bg-blue-500 text-white" disabled={!isDirty}>
-                Guardar Cambios
-              </Button>
-=======
             <div className="grid gap-2">
               <Label htmlFor="nombreTienda">Nombre de la Tienda</Label>
               <Input
@@ -291,7 +271,6 @@ export function EditarTienda() {
                   Guardar Cambios
                 </Button>
               </div>
->>>>>>> ba49fe87d05d77bd53616f407e76348df9c8001d
               <Button type="button" onClick={handleToggleState} className={`bg-${tienda?.EstadoTienda ? 'red-500' : 'plattea1'} text-white ml-52`}>
                 {tienda?.EstadoTienda ? 'Desactivar Tienda' : 'Activar Tienda'}
               </Button>
