@@ -23,8 +23,6 @@ import { useRouter } from "next/navigation";
 import NextCrypto from "next-crypto";
 import { jwtDecode } from "jwt-decode";
 
-
-
 interface DecodedToken {
   IdPersona: string;
 }
@@ -55,8 +53,9 @@ const Alert = ({
 
   return (
     <div
-      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-100 transition-all duration-300 ease-in-out ${isExiting ? "animate-fade-out" : "animate-fade-in"
-        }`}
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-100 transition-all duration-300 ease-in-out ${
+        isExiting ? "animate-fade-out" : "animate-fade-in"
+      }`}
     >
       {message}
     </div>
@@ -79,7 +78,9 @@ export function AgregarTienda() {
 
   const [alert, setAlert] = useState<string | null>(null);
   const [filtradas, setFiltradas] = useState<string[]>([]);
-  const [categorias, setCategorias] = useState<{ IdCategoria: number; NombreCategoria: string }[]>([]);
+  const [categorias, setCategorias] = useState<
+    { IdCategoria: number; NombreCategoria: string }[]
+  >([]);
 
   const router = useRouter();
   const crypto = new NextCrypto("secret key");
@@ -201,7 +202,6 @@ export function AgregarTienda() {
         const valor = e.target.value;
         setCiudad(valor);
       };
-
     } catch (error) {
       setAlert(
         "Hubo un error al crear la tienda. Inténtalo de nuevo más tarde."
@@ -210,7 +210,7 @@ export function AgregarTienda() {
   };
 
   return (
-    <Card className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10 mb-20 mt-20">
+    <Card className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10 mb-20 mt-20 relative">
       {alert && <Alert message={alert} onClose={() => setAlert(null)} />}
       <CardHeader>
         <CardTitle className="text-3xl font-bold">Crea tu tienda</CardTitle>
@@ -222,7 +222,7 @@ export function AgregarTienda() {
           onSubmit={handleSubmit}
         >
           <div className="grid gap-4">
-            <div className="grid gap-2">
+            <div className=" grid gap-2">
               <Label htmlFor="name" className="text-sm font-medium">
                 Nombre de la Tienda
               </Label>
@@ -243,7 +243,10 @@ export function AgregarTienda() {
                 </SelectTrigger>
                 <SelectContent>
                   {categorias.map((cat) => (
-                    <SelectItem key={cat.IdCategoria} value={cat.IdCategoria.toString()}>
+                    <SelectItem
+                      key={cat.IdCategoria}
+                      value={cat.IdCategoria.toString()}
+                    >
                       {cat.NombreCategoria}
                     </SelectItem>
                   ))}
@@ -313,7 +316,7 @@ export function AgregarTienda() {
                 <img
                   src={previewMiniatura}
                   alt="Preview Miniatura"
-                  className="mt-2 w-full h-auto rounded-md"
+                  className="mt-2 w-8 h-8 object-cover rounded-md" // Cambia las dimensiones aquí
                 />
               )}
             </div>
@@ -331,18 +334,20 @@ export function AgregarTienda() {
                 <img
                   src={previewBanner}
                   alt="Preview Banner"
-                  className="mt-2 w-full h-auto rounded-md"
+                  className="mt-2 w-16 h-8 object-cover rounded-md" // Cambia las dimensiones aquí
                 />
               )}
             </div>
           </div>
-          <CardFooter className="mt-4">
-            <Button type="submit" className="bg-plattea1">
-              Crear Tienda
-            </Button>
-          </CardFooter>
         </form>
       </CardContent>
+      <div className="absolute top-8 right-4 mt-7 ">
+        <CardFooter>
+          <Button type="submit" className="bg-plattea1">
+            Crear Tienda
+          </Button>
+        </CardFooter>
+      </div>
     </Card>
   );
 }
