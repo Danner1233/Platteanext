@@ -8,7 +8,9 @@ import React, { useEffect, useState } from 'react'
 
 function page() {
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

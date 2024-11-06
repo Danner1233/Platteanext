@@ -10,6 +10,7 @@ import Head from "next/head"; // Asegúrate de importar Head correctamente
 import { Busqueda } from "@/components/component/busqueda";
 
 function page() {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {

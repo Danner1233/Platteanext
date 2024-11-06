@@ -254,16 +254,33 @@ export function AgregarTienda() {
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="description" className="text-sm font-medium">
-                Descripción
+              <Label htmlFor="phone" className="text-sm font-medium">
+                Teléfono
               </Label>
-              <Textarea
-                id="description"
-                rows={3}
-                placeholder="Describe tu tienda..."
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
+              <Input
+                id="phone"
+                placeholder="Teléfono"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="banner" className="text-sm font-medium">
+                Banner
+              </Label>
+              <Input
+                type="file"
+                id="banner"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "banner")}
+              />
+              {previewBanner && (
+                <img
+                  src={previewBanner}
+                  alt="Preview Banner"
+                  className="mt-2 w-32 h-16 object-cover rounded-md" // Cambia las dimensiones aquí
+                />
+              )}
             </div>
           </div>
           <div className="grid gap-4">
@@ -292,14 +309,15 @@ export function AgregarTienda() {
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="phone" className="text-sm font-medium">
-                Teléfono
+              <Label htmlFor="description" className="text-sm font-medium">
+                Descripción
               </Label>
-              <Input
-                id="phone"
-                placeholder="Teléfono"
-                value={telefono}
-                onChange={(e) => setTelefono(e.target.value)}
+              <Textarea
+                id="description"
+                rows={3}
+                placeholder="Describe tu tienda..."
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
@@ -316,25 +334,7 @@ export function AgregarTienda() {
                 <img
                   src={previewMiniatura}
                   alt="Preview Miniatura"
-                  className="mt-2 w-8 h-8 object-cover rounded-md" // Cambia las dimensiones aquí
-                />
-              )}
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="banner" className="text-sm font-medium">
-                Banner
-              </Label>
-              <Input
-                type="file"
-                id="banner"
-                accept="image/*"
-                onChange={(e) => handleImageChange(e, "banner")}
-              />
-              {previewBanner && (
-                <img
-                  src={previewBanner}
-                  alt="Preview Banner"
-                  className="mt-2 w-16 h-8 object-cover rounded-md" // Cambia las dimensiones aquí
+                  className="mt-2 w-32 h-32 object-cover rounded-md" // Cambia las dimensiones aquí
                 />
               )}
             </div>
