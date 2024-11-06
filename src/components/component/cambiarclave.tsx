@@ -11,7 +11,7 @@ interface DecodedToken {
 
 export function Cambiarclave() {
   const params = useParams(); // Hook para el enrutador de Next.js
-  const token = params.token;
+  const token = Array.isArray(params.token) ? params.token[0] : params.token;
   const router = useRouter(); 
   const [correo, setCorreo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);

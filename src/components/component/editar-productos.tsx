@@ -13,6 +13,7 @@ interface Producto {
   StockProducto: string;
   PrecioProducto: string;
   FotoProductoURL: string;
+  
 }
 
 // Componente de Alerta
