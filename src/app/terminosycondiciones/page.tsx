@@ -1,5 +1,5 @@
 "use client";
-import { Politicas } from '@/components/component/politicas'
+import { Politicas } from '@/components/component/politicas';
 import { CarruselTiendas } from "@/components/component/carrusel-tiendas";
 import { Footer } from "@/components/component/footer";
 import { Tiendas } from "@/components/component/tiendas";
@@ -9,8 +9,8 @@ import { Navbar } from "@/components/component/navbar";
 import Head from "next/head"; // Asegúrate de importar Head correctamente
 import { Busqueda } from "@/components/component/busqueda";
 
-function page() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+function Page() { // Cambia "page" a "Page"
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function page() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }
 
-export default page
+export default Page; // Cambia "page" a "Page" en la exportación
