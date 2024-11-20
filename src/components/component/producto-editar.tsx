@@ -31,6 +31,7 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
   const [isModified, setIsModified] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false); // Controla el estado del diálogo
   const crypto = new NextCrypto('secret key');
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -40,6 +41,7 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
         if (response.ok) {
           const data = await response.json();
           setProducto(data[0]);
+          setSelectedCategory(data[0].IdCategoriaFK.toString()); // Establecer categoría seleccionada
         } else {
           throw new Error("Error fetching product");
         }
@@ -70,7 +72,7 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
       NombreProducto: formData.get("NombreProducto") as string,
       DescripcionProducto: formData.get("DescripcionProducto") as string,
       PrecioProducto: parseFloat(formData.get("PrecioProducto") as string),
-      IdCategoriaFK: parseInt(formData.get("IdCategoriaFK") as string),
+      IdCategoriaFK: parseInt(selectedCategory), // Usar la categoría seleccionada
       StockProducto: producto.StockProducto,
     };
 
@@ -168,10 +170,12 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
               <div className="grid gap-2">
                 <Label htmlFor="category">Categoría</Label>
                 <Select
-                  id="category"
                   name="IdCategoriaFK"
-                  defaultValue={producto.IdCategoriaFK ? producto.IdCategoriaFK.toString() : ""}
-                  onChange={handleInputChange}
+                  value={selectedCategory}
+                  onValueChange={(value) => {
+                    setSelectedCategory(value);
+                    handleInputChange();
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una categoría" />
@@ -207,7 +211,6 @@ function UndoIcon(props: any) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="14 2 18 6 7 17 3 17 3 13 14 2"></polygon>
-      <line x1="3" y1="22" x2="21" y2="22"></line>
     </svg>
   );
 }
