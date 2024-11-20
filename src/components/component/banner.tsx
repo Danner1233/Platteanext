@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Settings, Package } from 'lucide-react';
+import { Settings, Package, NotebookIcon, Notebook, NotebookTabs, NotebookPenIcon } from 'lucide-react';
 import {jwtDecode} from 'jwt-decode';
 
 interface Tienda {
@@ -86,6 +86,9 @@ export function Banner() {
           </Link>
           <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
             <Package className="w-6 h-6" />
+          </Link>
+          <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
+            <NotebookPenIcon className="w-6 h-6" />
           </Link>
         </div>
       )}
