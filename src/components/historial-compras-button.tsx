@@ -1,11 +1,11 @@
 "use client";
-
+import NextCrypto from 'next-crypto'
 import * as React from "react";
 import { X } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useParams, useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -22,102 +22,81 @@ import {
 } from "@/components/ui/table";
 
 // Tipos
-type ProductoVendido = {
-  id: number;
-  nombre: string;
-  cantidad: number;
-  precio: number;
+type Pedido = {
+  IdPedido: number;
+  Nombre: string;
+  CorreoPersona: string;
+  TelefonoPersona: string;
+  Direccion: string;
+  Cantidad: string;
+  FechaPedido: string;
 };
 
-type Comprador = {
-  id: number;
-  nombre: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  fechaCompra: string;
+type ProductoPedido = {
+  IdProducto: number;
+  NombreProducto: string;
+  Cantidad: number;
+  Total: number;
 };
-
-type Tienda = {
-  id: number;
-  nombre: string;
-  productos: ProductoVendido[];
-  compradores: Comprador[];
-};
-
-// Datos de ejemplo (en un caso real, estos datos vendrían de una API o base de datos)
-const tiendas: Tienda[] = [
-  {
-    id: 1,
-    nombre: "Tienda Central",
-    productos: [
-      { id: 1, nombre: "Camiseta", cantidad: 50, precio: 19.99 },
-      { id: 2, nombre: "Pantalón", cantidad: 30, precio: 39.99 },
-    ],
-    compradores: [
-      {
-        id: 1,
-        nombre: "Juan Pérez",
-        email: "juan@example.com",
-        telefono: "+1234567890",
-        direccion: "Calle 123, Ciudad A",
-        fechaCompra: "2023-05-15",
-      },
-      {
-        id: 2,
-        nombre: "María García",
-        email: "maria@example.com",
-        telefono: "+1987654321",
-        direccion: "Avenida 456, Ciudad B",
-        fechaCompra: "2023-05-16",
-      },
-    ],
-  },
-  // Puedes agregar más tiendas aquí si lo deseas
-];
-
-function CompradorItem({
-  comprador,
-  tiendaNombre,
-  onSelect,
-}: {
-  comprador: Comprador;
-  tiendaNombre: string;
-  onSelect: () => void;
-}) {
-  return (
-    <li
-      className="p-4 hover:bg-gray-100 cursor-pointer transition-colors"
-      onClick={onSelect}
-    >
-      <div className="flex justify-between">
-        <div className="text-sm font-medium text-gray-900">
-          {comprador.nombre}
-        </div>
-        <div className="text-sm text-gray-500">{tiendaNombre}</div>
-      </div>
-      <div className="mt-1 text-sm text-gray-500">
-        Fecha de compra: {comprador.fechaCompra}
-      </div>
-    </li>
-  );
-}
 
 export function HistorialComprasButtonComponent() {
+  const params = useParams();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
-  const [selectedTienda, setSelectedTienda] = React.useState<Tienda | null>(
-    null
-  );
-  const [selectedComprador, setSelectedComprador] =
-    React.useState<Comprador | null>(null);
+  const [selectedComprador, setSelectedComprador] = React.useState<Pedido | null>(null);
+  const [pedidos, setPedidos] = React.useState<Pedido[]>([]);
+  const [productosPedidos, setProductosPedidos] = React.useState<ProductoPedido[]>([]);
+  const encryptedIdTienda = params.IdTienda as string;
+  const crypto = new NextCrypto('secret key');
+  // Cambiar el idTienda según el valor real que necesites
+  const idTienda = 32;
 
-  const handleCompradorSelect = (tienda: Tienda, comprador: Comprador) => {
-    setSelectedTienda(tienda);
+  // Obtener pedidos de la API
+  React.useEffect(() => {
+    async function fetchPedidos() {
+      try {
+        const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
+        const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
+        const pedidosResponse = await fetch(
+          `http://localhost:4000/api/tienda/pedidos/${decryptedId}`
+        );
+        const pedidosData = await pedidosResponse.json();
+        setPedidos(pedidosData);
+      } catch (error) {
+        console.error("Error al cargar los datos de pedidos:", error);
+      }
+    }
+
+    fetchPedidos();
+  }, [idTienda]);
+
+  // Obtener productos de la API cuando se selecciona un comprador
+  React.useEffect(() => {
+    async function fetchProductos() {
+      if (selectedComprador) {
+        try {
+          const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
+          const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
+          const productosResponse = await fetch(
+
+           `http://localhost:4000/api/tienda/pedidos/productos/${decryptedId}/${selectedComprador.IdPedido}`
+          );
+          const productosData = await productosResponse.json();
+          setProductosPedidos(productosData);
+        } catch (error) {
+          console.error("Error al cargar los datos de productos:", error);
+        }
+      }
+    }
+
+    fetchProductos();
+  }, [selectedComprador]);
+
+  const handleCompradorSelect = (comprador: Pedido) => {
     setSelectedComprador(comprador);
   };
 
   const handleCloseModal = () => {
-    setSelectedTienda(null);
     setSelectedComprador(null);
   };
 
@@ -134,16 +113,25 @@ export function HistorialComprasButtonComponent() {
             </div>
             <ScrollArea className="flex-1">
               <ul className="divide-y divide-gray-200">
-                {tiendas.flatMap((tienda) =>
-                  tienda.compradores.map((comprador) => (
-                    <CompradorItem
-                      key={comprador.id}
-                      comprador={comprador}
-                      tiendaNombre={tienda.nombre}
-                      onSelect={() => handleCompradorSelect(tienda, comprador)}
-                    />
-                  ))
-                )}
+                {pedidos.map((pedido) => (
+                  <li
+                    key={pedido.IdPedido}
+                    className="p-4 hover:bg-gray-100 cursor-pointer transition-colors"
+                    onClick={() => handleCompradorSelect(pedido)}
+                  >
+                    <div className="flex justify-between">
+                      <div className="text-sm font-medium text-gray-900">
+                        {pedido.Nombre}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {pedido.FechaPedido}
+                      </div>
+                    </div>
+                    <div className="mt-1 text-sm text-gray-500">
+                      {pedido.Direccion}
+                    </div>
+                  </li>
+                ))}
               </ul>
             </ScrollArea>
           </div>
@@ -151,16 +139,14 @@ export function HistorialComprasButtonComponent() {
       </Sheet>
 
       <Dialog
-        open={selectedTienda !== null && selectedComprador !== null}
+        open={selectedComprador !== null}
         onOpenChange={handleCloseModal}
       >
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>
-              {selectedTienda?.nombre} - Detalles de Compra
-            </DialogTitle>
+            <DialogTitle>Detalles de Compra</DialogTitle>
           </DialogHeader>
-          {selectedTienda && selectedComprador && (
+          {selectedComprador && (
             <div className="mt-4">
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
@@ -168,20 +154,19 @@ export function HistorialComprasButtonComponent() {
                     Datos del Comprador
                   </h3>
                   <p>
-                    <strong>Nombre:</strong> {selectedComprador.nombre}
+                    <strong>Nombre:</strong> {selectedComprador.Nombre}
                   </p>
                   <p>
-                    <strong>Email:</strong> {selectedComprador.email}
+                    <strong>Email:</strong> {selectedComprador.CorreoPersona}
                   </p>
                   <p>
-                    <strong>Teléfono:</strong> {selectedComprador.telefono}
+                    <strong>Teléfono:</strong> {selectedComprador.TelefonoPersona}
                   </p>
                   <p>
-                    <strong>Dirección:</strong> {selectedComprador.direccion}
+                    <strong>Dirección:</strong> {selectedComprador.Direccion}
                   </p>
                   <p>
-                    <strong>Fecha de Compra:</strong>{" "}
-                    {selectedComprador.fechaCompra}
+                    <strong>Fecha de Compra:</strong> {selectedComprador.FechaPedido}
                   </p>
                 </div>
                 <div>
@@ -197,14 +182,14 @@ export function HistorialComprasButtonComponent() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedTienda.productos.map((producto) => (
-                        <TableRow key={producto.id}>
-                          <TableCell>{producto.nombre}</TableCell>
+                      {productosPedidos.map((producto) => (
+                        <TableRow key={producto.IdProducto}>
+                          <TableCell>{producto.NombreProducto}</TableCell>
                           <TableCell className="text-right">
-                            {producto.cantidad}
+                            {producto.Cantidad}
                           </TableCell>
                           <TableCell className="text-right">
-                            ${(producto.cantidad * producto.precio).toFixed(2)}
+                            ${producto.Total.toFixed(2)}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -212,12 +197,8 @@ export function HistorialComprasButtonComponent() {
                   </Table>
                   <div className="mt-4 text-right font-semibold">
                     Total: $
-                    {selectedTienda.productos
-                      .reduce(
-                        (sum, producto) =>
-                          sum + producto.cantidad * producto.precio,
-                        0
-                      )
+                    {productosPedidos
+                      .reduce((sum, producto) => sum + producto.Total, 0)
                       .toFixed(2)}
                   </div>
                 </div>
