@@ -28,6 +28,7 @@ export function Tarjeta() {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvc, setCVC] = useState("");
+  const [alertMessage, setAlertMessage] = useState<string | null>(null); // Para mostrar alertas
   const [encryptedId, setEncryptedId] = useState<string | null>(null);
   const router = useRouter();
   const crypto = new NextCrypto('secret key');
@@ -50,29 +51,31 @@ export function Tarjeta() {
 
     // Validar todos los campos
     if (!cardNumber || cardNumber.length < 16) {
-      alert("Por favor ingresa un número de tarjeta válido.");
+      setAlertMessage("Por favor ingresa un número de tarjeta válido.");
       return;
     }
 
     if (!expiryDate || expiryDate.length < 5) {
-      alert("Por favor ingresa una fecha de vencimiento válida.");
+      setAlertMessage("Por favor ingresa una fecha de vencimiento válida.");
       return;
     }
 
     if (!cvc || cvc.length < 3) {
-      alert("Por favor ingresa un CVC válido.");
+      setAlertMessage("Por favor ingresa un CVC válido.");
       return;
     }
 
     if (!address) {
-      alert("Por favor ingresa una dirección.");
+      setAlertMessage("Por favor ingresa una dirección.");
       return;
     }
 
     if (selectedCityId === null) {
-      alert("Por favor selecciona una ciudad.");
+      setAlertMessage("Por favor selecciona una ciudad.");
       return;
     }
+
+    setAlertMessage(null); // Limpiar alertas en caso de éxito
 
     try {
       const token = localStorage.getItem("token");
@@ -86,7 +89,7 @@ export function Tarjeta() {
       const response = await axios.post("http://localhost:4000/api/pedido", {
         IdPersonaFK: IdPersona,
         Direccion: address,
-        Ciudad: selectedCityId, 
+        Ciudad: selectedCityId,
       });
 
       const tiendaId = response.data.idPedido;
@@ -98,39 +101,38 @@ export function Tarjeta() {
 
     } catch (error) {
       console.error("Error al crear el pedido:", error);
-      alert("Hubo un error al crear el pedido. Inténtalo de nuevo.");
+      setAlertMessage("Hubo un error al crear el pedido. Inténtalo de nuevo.");
     }
   };
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, ''); 
-    setCardNumber(value.substring(0, 16)); 
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    setCardNumber(value.substring(0, 16));
   };
 
   const handleExpiryDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, ""); 
-  
+    let value = e.target.value.replace(/\D/g, "");
+
     if (value.length >= 2) {
       value = value.slice(0, 2) + "/" + value.slice(2, 4);
     }
-    
+
     setExpiryDate(value);
   };
-  
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, nextFieldId: string) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const nextField = document.getElementById(nextFieldId);
       if (nextField) {
-        nextField.focus(); 
+        nextField.focus();
       }
     }
   };
-    
 
   const handleCVCChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, ''); 
-    setCVC(value.substring(0, 4)); 
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    setCVC(value.substring(0, 4));
   };
 
   const cityOptions = ciudades.map(ciudad => ({
@@ -148,6 +150,11 @@ export function Tarjeta() {
             <PasarelaPagos />
           </CardHeader>
           <CardContent className="space-y-4">
+            {alertMessage && (
+              <div className="bg-red-100 border border-red-500 text-red-700 px-4 py-3 rounded">
+                {alertMessage}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="card-number">Número de Tarjeta <span className="text-red-500">*</span></Label>
               <Input
@@ -170,7 +177,7 @@ export function Tarjeta() {
                   type="text"
                   value={expiryDate}
                   onChange={handleExpiryDateChange}
-                  onKeyDown={(e) => handleKeyDown(e, 'cvc')} 
+                  onKeyDown={(e) => handleKeyDown(e, 'cvc')}
                   maxLength={5}
                   required
                 />
