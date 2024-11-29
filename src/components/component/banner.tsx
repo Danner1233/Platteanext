@@ -5,12 +5,12 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Settings, Package, NotebookIcon, Notebook, NotebookTabs, NotebookPenIcon } from 'lucide-react';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 interface Tienda {
   IdPersona: number;
   NombreTienda: string;
-  BannerTiendaURL: string;
+  BannerTienda: string;
 }
 
 interface DecodedToken {
@@ -41,13 +41,13 @@ export function Banner() {
         const decryptedId = await crypto.decrypt(decodeURIComponent(encryptedIdTienda));
 
         // Fetch tienda usando el ID desencriptado
-        const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/tienda/${decryptedId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data: Tienda = await response.json();
         setTienda(data);
-        console.log("data",data);
+        console.log("data", data);
       } catch (error: any) {
         setError(error.message || 'An unexpected error occurred');
       } finally {
@@ -63,14 +63,19 @@ export function Banner() {
   return (
     <section className="w-full">
       <div className="relative w-full h-80"> {/* Ajusta la altura según lo que consideres apropiado */}
-        <Image
-          src={tienda?.BannerTiendaURL || '/default-banner.jpg'} // Usar una URL por defecto si no se encuentra la imagen
+        <img
+          src={`${process.env.SERVER_URL}/${tienda?.BannerTienda}` || '/default-banner.jpg'}
           alt="Banner Image"
-          layout="fill" // Ocupar todo el contenedor
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          style={{ aspectRatio: "16/9", objectFit: "cover" }} // Ajusta la proporción según sea necesario
+          className="object-cover w-full"  // Asegura que ocupe el 100% del ancho
+          sizes="(max-width: 768px) 100vw, 100vw"
+          style={{
+            aspectRatio: "16/9",   // Mantiene la proporción de la imagen
+            objectFit: "cover",    // Asegura que la imagen cubra todo el espacio
+            width: "100%",         // Establece el ancho a 100% para ocupar todo el ancho de la página
+            height: "105%",        // Ajusta la altura proporcionalmente al ancho
+          }}
         />
+
       </div>
       <div className="flex flex-col items-center justify-center py-6 md:py-8 lg:py-10">
         <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">
@@ -86,9 +91,6 @@ export function Banner() {
           </Link>
           <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
             <Package className="w-6 h-6" />
-          </Link>
-          <Link href={`/administracioncubiculo/${encryptedIdTienda}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-            <NotebookPenIcon className="w-6 h-6" />
           </Link>
         </div>
       )}

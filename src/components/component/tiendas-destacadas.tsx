@@ -7,7 +7,7 @@ interface Tienda {
   IdTienda: number;
   NombreTienda: string;
   PromedioCalificacion: string;
-  MiniaturaTiendaURL: string;
+  MiniaturaTienda: string;
   DescripcionTienda: string;
 }
 
@@ -21,7 +21,7 @@ export function TiendasDestacadas() {
   useEffect(() => {
     const fetchTiendas = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/tiendastop/`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/tiendastop/`);
 
         if (response.ok) {
           const data: Tienda[] = await response.json();
@@ -81,7 +81,7 @@ export function TiendasDestacadas() {
                 <span className="sr-only">Ver tienda</span>
               </Link>
               <img
-                src={tienda.MiniaturaTiendaURL || "/placeholder.svg"}
+                src={`${process.env.SERVER_URL}/${tienda.MiniaturaTienda}`|| "/placeholder.svg"}
                 alt={tienda.NombreTienda}
                 width={400}
                 height={300}

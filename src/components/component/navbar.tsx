@@ -25,7 +25,7 @@ interface DecodedToken {
 }
 
 interface Navbar {
-  FotoPersonaURL: string;
+  FotoPersona: string;
   idRolFK: number;
   num: number;
 
@@ -46,7 +46,7 @@ export function Navbar({ cartUpdated }: { cartUpdated: boolean }) {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(`http://localhost:4000/api/navbar/${userId}`, {
+        const response = await fetch(`${process.env.SERVER_URL}/api/navbar/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -191,7 +191,7 @@ export function Navbar({ cartUpdated }: { cartUpdated: boolean }) {
             >
 
               <img
-                src={navbar?.FotoPersonaURL || "/placeholder-user.jpg"}
+                src={`${process.env.SERVER_URL}/${navbar?.FotoPersona}` || "/placeholder-user.jpg"}
                 width={36}
                 height={36}
                 alt="Avatar"

@@ -23,7 +23,7 @@ export function Login() {
     setError(""); // Limpiar cualquier error previo
  
     try {
-      const response = await fetch("http://localhost:4000/api/login/", {
+      const response = await fetch(`${process.env.SERVER_URL}/api/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

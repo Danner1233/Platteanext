@@ -11,7 +11,7 @@ interface Tienda {
   NombreTienda: string;
   DescripcionTienda: string;
   DireccionTienda: string;
-  MiniaturaTiendaURL: string;
+  MiniaturaTienda: string;
   CiudadTienda: string;
 }
 
@@ -29,7 +29,7 @@ export function Tiendas() {
   useEffect(() => {
     const fetchTiendas = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/tienda`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/tienda`);
         if (response.ok) {
           const data: Tienda[] = await response.json();
           setTiendas(data);
@@ -98,7 +98,7 @@ export function Tiendas() {
           <Link key={tienda.IdTienda} href={`/shop/${encryptedIds[tienda.IdTienda] || ''}`}>
             <div className="relative overflow-hidden rounded-lg shadow-lg group transition-transform transform hover:scale-105">
               <img
-                src={tienda.MiniaturaTiendaURL}
+                src={`${process.env.SERVER_URL}/${tienda.MiniaturaTienda}`}
                 alt={tienda.NombreTienda}
                 className="object-cover w-full h-60 transition-transform duration-300 ease-in-out"
                 style={{ aspectRatio: "400/300", objectFit: "cover" }}
@@ -140,7 +140,7 @@ export function Tiendas() {
         </Button>
       </div>
       <div className="text-center mt-4">
-        <span className="text-gray-600">Página {currentPage} de {totalPages}</span>
+        <span className="text-gray-600"></span>
       </div>
     </div>
   );

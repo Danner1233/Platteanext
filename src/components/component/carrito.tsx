@@ -76,7 +76,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(`http://localhost:4000/api/carrito/${userId}`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/carrito/${userId}`);
         const data = await response.json();
         setItems(Object.values(data));
         setLoading(false);
@@ -103,7 +103,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
         const userId = decoded.IdPersona;
 
         try {
-          const response = await fetch(`http://localhost:4000/api/carrito/`, {
+          const response = await fetch(`${process.env.SERVER_URL}/api/carrito/`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
@@ -132,7 +132,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
   const handleRemoveItem = async (itemId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/carrito/${itemId}`,
+        `${process.env.SERVER_URL}/api/carrito/${itemId}`,
         {
           method: "DELETE",
         }
@@ -207,7 +207,7 @@ export function Carrito({ onhandleRemoveItem }: ProductoProps) {
                 className="grid grid-cols-[80px_1fr_80px] items-center gap-4 border-b pb-4 sm:grid-cols-[60px_1fr_60px] lg:grid-cols-[100px_1fr_100px]"
               >
                 <img
-                  src={item.FotoProductoURL}
+                  src={`${process.env.SERVER_URL}/${item.FotoProducto}`}
                   alt={item.NombreProducto}
                   width={80}
                   height={80}

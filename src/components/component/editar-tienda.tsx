@@ -15,8 +15,8 @@ interface Tienda {
   DireccionTienda: string;
   CiudadTienda: string;
   TelefonoTienda: string;
-  MiniaturaTiendaURL: string;
-  BannerTiendaURL: string;
+  MiniaturaTienda: string;
+  BannerTienda: string;
   IdCategoriaFK: string;
   EstadoTienda: boolean;
 }
@@ -78,7 +78,7 @@ export function EditarTienda() {
         const safeIdTienda = encryptedIdTienda.replace(/_/g, '/').replace(/-/g, '+');
         const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
-        const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/tienda/${decryptedId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -111,7 +111,7 @@ export function EditarTienda() {
     const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
     try {
-      const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`, {
+      const response = await fetch(`${process.env.SERVER_URL}/api/tienda/${decryptedId}`, {
         method: 'PUT',
         body: formData,
       });
@@ -132,7 +132,7 @@ export function EditarTienda() {
     const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
     try {
-      const response = await fetch(`http://localhost:4000/api/tienda/${decryptedId}`, {
+      const response = await fetch(`${process.env.SERVER_URL}/api/tienda/${decryptedId}`, {
         method: 'PATCH',
       });
 
@@ -238,7 +238,7 @@ export function EditarTienda() {
               <Label htmlFor="bannerTienda">Banner de la Tienda</Label>
               <div className="flex items-center gap-2">
                 <img
-                  src={tienda?.BannerTiendaURL || "/placeholder.svg"}
+                  src={`${process.env.SERVER_URL}/${tienda?.BannerTienda}` || "/placeholder.svg"}
                   alt="Banner de la tienda"
                   width={200}
                   height={100}
@@ -252,7 +252,7 @@ export function EditarTienda() {
               <Label htmlFor="miniaturaTienda">Miniatura de la Tienda</Label>
               <div className="flex items-center gap-2">
                 <img
-                  src={tienda?.MiniaturaTiendaURL || "/placeholder.svg"}
+                  src={`${process.env.SERVER_URL}/${tienda?.MiniaturaTienda}` || "/placeholder.svg"}
                   alt="Miniatura de la tienda"
                   width={100}
                   height={100}

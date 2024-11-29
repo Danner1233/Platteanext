@@ -15,7 +15,7 @@ interface Producto {
   NombreProducto: string;
   DescripcionProducto: string;
   PrecioProducto: string;
-  FotoProductoURL: string;
+  FotoProducto: string;
   NombreTienda: string;
   PromedioCalificacion: number;
 }
@@ -89,7 +89,7 @@ export function Producto({ onAddToCart }: ProductoProps)  {
         const decrypted = await crypto.decrypt(decodedId);
         console.log("ID desencriptado:", decrypted);
 
-        const response = await fetch(`http://localhost:4000/api/producto/${decrypted}`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/producto/${decrypted}`);
         console.log("Response status:", response.status);
         if (response.ok) {
           const data = await response.json();
@@ -128,7 +128,7 @@ export function Producto({ onAddToCart }: ProductoProps)  {
 
       const decoded: DecodedToken = jwtDecode(token);
       const userId = decoded.IdPersona;
-      const response = await fetch("http://localhost:4000/api/carrito", {
+      const response = await fetch(`${process.env.SERVER_URL}/api/carrito`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -173,7 +173,7 @@ export function Producto({ onAddToCart }: ProductoProps)  {
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <img
-              src={producto.FotoProductoURL}
+              src={`${process.env.SERVER_URL}/${producto.FotoProducto}`}
               alt="Product Image"
               width={600}
               height={600}

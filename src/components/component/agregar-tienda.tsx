@@ -53,9 +53,8 @@ const Alert = ({
 
   return (
     <div
-      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-100 transition-all duration-300 ease-in-out ${
-        isExiting ? "animate-fade-out" : "animate-fade-in"
-      }`}
+      className={`fixed top-4 right-4 bg-platteaGreenv2 text-white p-4 rounded-md shadow-lg z-100 transition-all duration-300 ease-in-out ${isExiting ? "animate-fade-out" : "animate-fade-in"
+        }`}
     >
       {message}
     </div>
@@ -104,7 +103,7 @@ export function AgregarTienda() {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/categoria");
+        const response = await fetch(`${process.env.SERVER_URL}/api/categoria`);
         if (!response.ok) throw new Error("Error al cargar las categorías");
         const data = await response.json();
         setCategorias(data);
@@ -168,7 +167,7 @@ export function AgregarTienda() {
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/tienda/persona/",
+        `${process.env.SERVER_URL}/api/tienda/persona/`,
         {
           method: "POST",
           headers: {
@@ -339,15 +338,17 @@ export function AgregarTienda() {
               )}
             </div>
           </div>
+          <div className="absolute top-8 right-4 mt-7 ">
+            <CardFooter>
+              <Button type="submit" className="bg-plattea1">
+                Crear Tienda
+              </Button>
+            </CardFooter>
+          </div>
         </form>
       </CardContent>
-      <div className="absolute top-8 right-4 mt-7 ">
-        <CardFooter>
-          <Button type="submit" className="bg-plattea1">
-            Crear Tienda
-          </Button>
-        </CardFooter>
-      </div>
+
+
     </Card>
   );
 }

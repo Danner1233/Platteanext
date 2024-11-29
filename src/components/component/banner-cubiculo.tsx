@@ -42,7 +42,7 @@ export function BannerCubiculo() {
       }
 
       const response = await fetch(
-        `http://localhost:4000/api/persona/${userId}`, // Cambia la URL a la ruta de tu API para actualizar el banner
+        `${process.env.SERVER_URL}/api/persona/${userId}`, // Cambia la URL a la ruta de tu API para actualizar el banner
         {
           method: "PUT",
           headers: {

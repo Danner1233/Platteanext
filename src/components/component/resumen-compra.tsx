@@ -87,7 +87,7 @@ export function ResumenCompra() {
         const safeIdPedido = encryptedIdPedido.replace(/_/g, "/").replace(/-/g, "+");
         const decodedId = decodeURIComponent(safeIdPedido);
         const decryptedId = await crypto.decrypt(decodedId);
-        const response = await fetch(`http://localhost:4000/api/pedido/${decryptedId}`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/pedido/${decryptedId}`);
         const data: Producto[] = await response.json();
         setProductos(data);
       } catch (error) {
@@ -122,7 +122,7 @@ export function ResumenCompra() {
       const shipping = 15000 * productos.length;
       const total = subtotal + shipping;
 
-      const response = await axios.post("http://localhost:4000/api/confirmarpedido", {
+      const response = await axios.post(`${process.env.SERVER_URL}/api/confirmarpedido`, {
         IdPedido: decryptedId,
         Total: total.toFixed(2),
         IdPersona: IdPersona,

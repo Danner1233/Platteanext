@@ -22,13 +22,13 @@ interface DecodedToken {
 }
 
 interface Profile {
-  FotoPersonaURL: string;
+  FotoPersona: string;
   NombrePersona: string;
   ApellidoPersona: string;
   CorreoPersona: string;
   DescripcionPersona: string;
   TelefonoPersona?: string;
-  bannerPersonaURL?: string;
+  bannerPersona?: string;
 }
 
 export function Configuracion() {
@@ -59,7 +59,7 @@ export function Configuracion() {
         const userId = decoded.IdPersona;
 
         const response = await fetch(
-          `http://localhost:4000/api/persona/${userId}`,
+          `${process.env.SERVER_URL}/api/persona/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -168,7 +168,7 @@ export function Configuracion() {
       }
 
       const response = await fetch(
-        `http://localhost:4000/api/persona/${userId}`,
+        `${process.env.SERVER_URL}/api/persona/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -262,7 +262,7 @@ export function Configuracion() {
               <AvatarImage
                 src={
                   photoPreview ||
-                  profile?.FotoPersonaURL ||
+                  `${process.env.SERVER_URL}/${profile?.FotoPersona}` ||
                   "/placeholder-user.jpg"
                 }
                 alt="Foto de perfil"
@@ -289,7 +289,7 @@ export function Configuracion() {
               <img
                 src={
                   bannerPreview ||
-                  profile?.bannerPersonaURL ||
+                  `${process.env.SERVER_URL}/${profile?.bannerPersona}` ||
                   "/placeholder-banner.jpg"
                 }
                 alt="Banner"

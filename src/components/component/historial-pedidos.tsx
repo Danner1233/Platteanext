@@ -39,7 +39,7 @@ export default function HistorialPedidos() {
         const decoded: DecodedToken = jwtDecode(token);
         const idPersona = decoded.IdPersona;
 
-        const response = await fetch(`http://localhost:4000/api/pedidopersona/${idPersona}`, {
+        const response = await fetch(`${process.env.SERVER_URL}/api/pedidopersona/${idPersona}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

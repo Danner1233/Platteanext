@@ -37,7 +37,7 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
     const fetchProducto = async () => {
       try {
         const decryptedId = await crypto.decrypt(decodeURIComponent(encryptedIdProducto));
-        const response = await fetch(`http://localhost:4000/api/producto/${decryptedId}`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/producto/${decryptedId}`);
         if (response.ok) {
           const data = await response.json();
           setProducto(data[0]);
@@ -84,7 +84,7 @@ export function ProductoEditar({ encryptedIdProducto, onProductoActualizado }: P
     }
 
     try {
-      const response = await fetch(`http://localhost:4000/api/producto/${producto.IdProducto}`, {
+      const response = await fetch(`${process.env.SERVER_URL}/api/producto/${producto.IdProducto}`, {
         method: "PUT",
         body: formData,
       });

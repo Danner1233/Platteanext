@@ -17,7 +17,7 @@ export function CarruselTiendas() {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/categoria/');
+        const response = await fetch(`${process.env.SERVER_URL}/api/categoria/`);
         const data: Categoria[] = await response.json();
         setCategorias(data);
         await encryptCategorias(data); // Encriptar IDs después de obtener las categorías
@@ -57,7 +57,7 @@ export function CarruselTiendas() {
                     prefetch={false}
                   >
                     <img
-                      src={categoria.FotoCategoria || "/about.jpg"} // Usa la foto de la categoría o una por defecto
+                      src={`${process.env.SERVER_URL}/${categoria.FotoCategoria}` || "/about.jpg"} // Usa la foto de la categoría o una por defecto
                       alt={categoria.NombreCategoria}
                       width={400}
                       height={300}

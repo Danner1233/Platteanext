@@ -11,7 +11,7 @@ interface Producto {
   NombreProducto: string;
   DescripcionProducto: string;
   PrecioProducto: string;
-  FotoProductoURL: string;
+  FotoProducto: string;
   NombreTienda: string;
   PromedioCalificacion: number;
 }
@@ -32,7 +32,7 @@ export function Productos() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/producto`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/producto`);
         if (response.ok) {
           let data: Producto[] = await response.json();
           data = mezclarArray(data);
@@ -184,7 +184,7 @@ export function Productos() {
             <div className="relative flex flex-col overflow-hidden transition-transform duration-300 ease-in-out rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2">
               <div className="w-full h-64 overflow-hidden">
                 <img
-                  src={producto.FotoProductoURL}
+                  src={`${process.env.SERVER_URL}/${producto.FotoProducto}`}
                   alt={producto.NombreProducto}
                   width={500}
                   height={400}

@@ -26,7 +26,7 @@ export function ProductosTienda() {
     if (idTienda) {
       const fetchProductos = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/api/tienda/producto/${idTienda}`);
+          const response = await fetch(`${process.env.SERVER_URL}/api/tienda/producto/${idTienda}`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }

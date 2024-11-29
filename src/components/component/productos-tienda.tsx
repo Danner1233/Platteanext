@@ -10,7 +10,7 @@ interface Producto {
   DescripcionProducto: string;
   StockProducto: string;
   PrecioProducto: string;
-  FotoProductoURL: string;
+  FotoProducto: string;
 }
 
 export function ProductosTienda() {
@@ -31,7 +31,7 @@ export function ProductosTienda() {
         const decryptedId = await crypto.decrypt(decodeURIComponent(safeIdTienda));
 
         // Fetch productos usando el ID desencriptado
-        const response = await fetch(`http://localhost:4000/api/tienda/producto/${decryptedId}`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/tienda/producto/${decryptedId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -108,13 +108,12 @@ export function ProductosTienda() {
             >
               <span className="sr-only">View</span>
             </Link>
-            <Image
-              src={producto.FotoProductoURL || "/placeholder.svg"}
+            <img
+              src={`${process.env.SERVER_URL}/${producto.FotoProducto}` || "/placeholder.svg"}
               alt={producto.NombreProducto}
               width={400}
               height={400}
               className="object-cover w-full h-64 group-hover:opacity-75 transition-opacity"
-              quality={100}
             />
             <div className="p-4 flex flex-col justify-between h-full">
               <div className="flex-1">

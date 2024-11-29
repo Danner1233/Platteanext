@@ -35,7 +35,7 @@ export function Tarjeta() {
   useEffect(() => {
     const fetchCiudades = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/ciudades");
+        const response = await axios.get(`${process.env.SERVER_URL}/api/ciudades`);
         setCiudades(response.data);
       } catch (error) {
         console.error("Error fetching cities:", error);
@@ -83,7 +83,7 @@ export function Tarjeta() {
       const decodedToken: JWTDecoded = jwtDecode(token);
       const IdPersona = decodedToken.IdPersona;
 
-      const response = await axios.post("http://localhost:4000/api/pedido", {
+      const response = await axios.post(`${process.env.SERVER_URL}/api/pedido`, {
         IdPersonaFK: IdPersona,
         Direccion: address,
         Ciudad: selectedCityId, 

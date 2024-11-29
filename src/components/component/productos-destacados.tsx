@@ -10,7 +10,7 @@ interface Producto {
   NombreProducto: string;
   PromedioCalificacion: string; // Asegúrate de que este campo existe si lo vas a usar
   PrecioProducto: string; // Asegúrate de que este campo existe si lo vas a usar
-  FotoProductoURL: string;
+  FotoProducto: string;
 }
 
 export function ProductosDestacados() {
@@ -23,7 +23,7 @@ export function ProductosDestacados() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/productosdestacados/`);
+        const response = await fetch(`${process.env.SERVER_URL}/api/productosdestacados/`);
 
         if (response.ok) {
           const data: Producto[] = await response.json();
@@ -87,7 +87,7 @@ export function ProductosDestacados() {
                 <span className="sr-only">Ver producto</span>
               </Link>
               <img
-                src={producto.FotoProductoURL || "/placeholder.svg"}
+                src={`${process.env.SERVER_URL}/${producto.FotoProducto }`|| "/placeholder.svg"}
                 alt={producto.NombreProducto}
                 width={400}
                 height={300}

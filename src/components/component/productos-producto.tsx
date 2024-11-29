@@ -13,7 +13,7 @@ interface Producto {
   NombreProducto: string;
   DescripcionProducto: string;
   PrecioProducto: string;
-  FotoProductoURL: string;
+  FotoProducto: string;
 }
 
 // Interfaz para las props del componente
@@ -35,7 +35,7 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
         const decryptedId = await crypto.decrypt(decodedId);
 
         // Solicitar productos similares con el ID desencriptado
-        const response = await axios.get(`http://localhost:4000/api/productos-similares/${decryptedId}`);
+        const response = await axios.get(`${process.env.SERVER_URL}/api/productos-similares/${decryptedId}`);
         const productos = Array.isArray(response.data) ? response.data : [];
         setProductosSimilares(productos);
 
@@ -95,7 +95,7 @@ export function ProductosProducto({ encryptedIdProducto }: ProductosProductoProp
                         <span className="sr-only">Ver</span>
                       </Link>
                       <img
-                        src={producto.FotoProductoURL || "/placeholder.svg"}
+                        src={`${process.env.SERVER_URL}/${producto.FotoProducto}` || "/placeholder.svg"}
                         alt={producto.NombreProducto}
                         className="absolute top-0 left-0 w-full h-full object-cover"
                       />

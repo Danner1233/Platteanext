@@ -121,7 +121,7 @@ export function AgregarProducto() {
     formData.append("IdTiendaFK", idTienda);
 
     try {
-      const response = await fetch("http://localhost:4000/api/producto/", {
+      const response = await fetch(`${process.env.SERVER_URL}/api/producto/`, {
         method: "POST",
         body: formData,
       });

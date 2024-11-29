@@ -15,7 +15,7 @@ interface Tienda {
   NombreTienda: string;
   DescripcionTienda: string;
   DireccionTienda: string;
-  MiniaturaTiendaURL: string;
+  MiniaturaTienda: string;
 }
 
 export function ProductosPerfil() {
@@ -35,7 +35,7 @@ export function ProductosPerfil() {
         const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.IdPersona;
 
-        const response = await fetch(`http://localhost:4000/api/persona/tienda/${userId}`, {
+        const response = await fetch(`${process.env.SERVER_URL}/api/persona/tienda/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -84,8 +84,8 @@ export function ProductosPerfil() {
           {tiendas.map((tienda, index) => (
             <Link key={tienda.IdTienda} href={`/shop/${encryptedTiendas[index]}`}>
               <div className="relative group overflow-hidden rounded-lg">
-                <Image
-                  src={tienda.MiniaturaTiendaURL || "/placeholder.svg"}
+                <img
+                  src={`${process.env.SERVER_URL}/${tienda.MiniaturaTienda}` || "/placeholder.svg"}
                   width={400}
                   height={400}
                   alt={tienda.NombreTienda}

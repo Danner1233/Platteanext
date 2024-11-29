@@ -15,7 +15,7 @@ export function RecuperarClave() {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:4000/api/request-reset', {
+      const response = await fetch(`${process.env.SERVER_URL}/api/request-reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

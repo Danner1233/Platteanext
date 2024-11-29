@@ -44,7 +44,7 @@ export function Navbar() {
         const userId = decoded.IdPersona;
 
         const response = await fetch(
-          `http://localhost:4000/api/persona/${userId}`,
+          `${process.env.SERVER_URL})/api/persona/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -65,13 +65,13 @@ export function Administrador() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const personasResponse = await axios.get("http://localhost:4000/api/persona/");
+        const personasResponse = await axios.get(`${process.env.SERVER_URL}/api/persona/`);
         setPersonas(personasResponse.data);
 
-        const tiendasResponse = await axios.get("http://localhost:4000/api/tienda/");
+        const tiendasResponse = await axios.get(`${process.env.SERVER_URL}/api/tienda/`);
         setTiendas(tiendasResponse.data);
 
-        const categoriasResponse = await axios.get("http://localhost:4000/api/categoria/");
+        const categoriasResponse = await axios.get(`${process.env.SERVER_URL}/api/categoria/`);
         setCategorias(categoriasResponse.data);
       } catch (error) {
         console.error("Error al cargar los datos:", error);
@@ -85,7 +85,7 @@ export function Administrador() {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este usuario?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:4000/api/persona/${correo}`);
+        await axios.delete(`${process.env.SERVER_URL}/api/persona/${correo}`);
         setPersonas((prev) => prev.filter((persona) => persona.CorreoPersona !== correo));
       } catch (error) {
         console.error("Error al eliminar el usuario:", error);
@@ -96,7 +96,7 @@ export function Administrador() {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta tienda?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:4000/tienda/${id}`);
+        await axios.delete(`${process.env.SERVER_URL}/tienda/${id}`);
         setTiendas((prev) => prev.filter((tienda) => tienda.IdTienda !== id));
       } catch (error) {
         console.error("Error al eliminar la tienda:", error);
@@ -107,7 +107,7 @@ export function Administrador() {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta categoría?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:4000/api/categoria/${id}`);
+        await axios.delete(`${process.env.SERVER_URL}/api/categoria/${id}`);
         setCategorias((prev) => prev.filter((categoria) => categoria.IdCategoria !== id));
       } catch (error) {
         console.error("Error al eliminar la categoría:", error);
@@ -150,7 +150,7 @@ export function Administrador() {
     try {
       if (selectedCategoria) {
         // Editar categoría existente
-        await axios.put(`http://localhost:4000/api/categoria/${selectedCategoria.IdCategoria}`, formData, {
+        await axios.put(`${process.env.SERVER_URL}/api/categoria/${selectedCategoria.IdCategoria}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -165,13 +165,13 @@ export function Administrador() {
         );
       } else {
         // Crear nueva categoría
-        await axios.post("http://localhost:4000/api/categoria/", formData, {
+        await axios.post(`${process.env.SERVER_URL}/api/categoria/`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
         // Refrescar la lista de categorías
-        const categoriasResponse = await axios.get("http://localhost:4000/api/categoria/");
+        const categoriasResponse = await axios.get(`${process.env.SERVER_URL}/api/categoria/`);
         setCategorias(categoriasResponse.data);
       }
     } catch (error) {
@@ -430,7 +430,7 @@ export function Administrador() {
                           </TableCell>
                           <TableCell>
                             <img
-                              src={categoria.FotoCategoria}
+                              src={`${process.env.SERVER_URL}/${categoria.FotoCategoria}`}
                               alt={categoria.NombreCategoria}
                               className="h-16 w-16 object-cover"
                             />

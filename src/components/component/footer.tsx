@@ -40,7 +40,7 @@ export function Footer({ className }: FooterProps) {
         const userId = decoded.IdPersona;
 
         const response = await fetch(
-          `http://localhost:4000/api/persona/${userId}`,
+          `${process.env.SERVER_URL}/api/persona/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -119,7 +119,7 @@ export function Footer({ className }: FooterProps) {
                       <Textarea id="feedback" placeholder="Feedback y Sugerencias" name="comentario" required/>
                       <input type="hidden" name="_captcha" value="false"/>
                       <input type="hidden" name="_template" value="table"/>
-                      <input type="hidden" name="_next" value="http://localhost:3000/"></input>
+                      <input type="hidden" name="_next" value="/"></input>
                       <Button type="submit">Enviar</Button>
                     </form>
                   </div>
@@ -202,7 +202,7 @@ export function Footer({ className }: FooterProps) {
                       <Textarea id="feedback" placeholder="Feedback y Sugerencias" name="comentario" required/>
                       <input type="hidden" name="_captcha" value="false"/>
                       <input type="hidden" name="_template" value="table"/>
-                      <input type="hidden" name="_next" value="http://localhost:3000/"></input>
+                      <input type="hidden" name="_next" value="/"></input>
                       <Button type="submit">Enviar</Button>
                     </form>
                   </div>

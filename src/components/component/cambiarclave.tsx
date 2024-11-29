@@ -46,7 +46,7 @@ export function Cambiarclave() {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/api/reset-password", {
+      const response = await fetch(`${process.env.SERVER_URL}/api/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +74,7 @@ export function Cambiarclave() {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+    <div className="w-full  lg:grid lg:min-h-[600px] lg:grid-cols-2  h-screen">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto w-[350px] space-y-6">
           <div className="space-y-2 text-center">
@@ -94,14 +94,14 @@ export function Cambiarclave() {
           </form>
         </div>
       </div>
-      <div className="hidden bg-muted lg:block">
+      <div className=" bg-muted lg:block ">
         <img
-          src="/placeholder.svg"
-          alt="Paisaje natural"
-          width="1200"
-          height="800"
+          src="/InicioSesion.jpg"
+          alt="Imagen de inicio de sesión"
+          width="1920"
+          height="1080"
           className="h-full w-full object-cover"
-          style={{ aspectRatio: "1200/800", objectFit: "cover" }}
+          style={{ aspectRatio: "1920/1080", objectFit: "cover" }}
         />
       </div>
     </div>

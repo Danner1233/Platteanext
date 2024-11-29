@@ -1,4 +1,5 @@
 "use client";
+
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -9,7 +10,7 @@ interface Tienda {
   NombreTienda: string;
   DescripcionTienda: string;
   DireccionTienda: string;
-  MiniaturaTiendaURL: string;
+  MiniaturaTienda: string;
   CiudadTienda: string;
 }
 
@@ -34,31 +35,32 @@ export function CategoriaRelleno() {
       console.log("encryptedCategoriaId:", encryptedCategoriaId);
 
       if (!encryptedCategoriaId) {
-        setError("No category ID provided.");
+        setError("No se proporcionó un ID de categoría.");
         return;
       }
 
       try {
-        const safeIdProducto = encryptedCategoriaId.replace(/_/g, '/').replace(/-/g, '+');
-        const decodedId = decodeURIComponent(safeIdProducto);
-        const decrypted = await crypto.decrypt(decodedId);
-        console.log("ID desencriptado:", decrypted);
+        // Decodificar y desencriptar el ID de la categoría
+        const safeIdCategoria = encryptedCategoriaId.replace(/_/g, '/').replace(/-/g, '+');
+        const decodedId = decodeURIComponent(safeIdCategoria);
+        const decryptedId = await crypto.decrypt(decodedId);
+        console.log("ID desencriptado:", decryptedId);
 
-        // Fetch tiendas
-        const response = await fetch(`http://localhost:4000/api/tienda/obtenerPorCategoria/${decrypted}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        // Fetch tiendas por categoría
+        const tiendasResponse = await fetch(`${process.env.SERVER_URL}/api/tienda/obtenerPorCategoria/${decryptedId}`);
+        if (!tiendasResponse.ok) {
+          throw new Error(`Error al obtener tiendas. Status: ${tiendasResponse.status}`);
         }
-        const data: Tienda[] = await response.json();
-        setTiendas(data);
-        
+        const tiendasData: Tienda[] = await tiendasResponse.json();
+        setTiendas(tiendasData);
+
         // Encriptar los IDs de las tiendas
         const encryptedIds = await Promise.all(
-          data.map(async (tienda) => {
+          tiendasData.map(async (tienda) => {
             const encryptedId = await crypto.encrypt(tienda.IdTienda);
             return {
               id: tienda.IdTienda,
-              encryptedId: encryptedId,
+              encryptedId: encryptedId.replace(/\//g, '_').replace(/\+/g, '-'),
             };
           })
         );
@@ -70,17 +72,16 @@ export function CategoriaRelleno() {
 
         setEncryptedTiendas(encryptedTiendasObj);
 
-        // Fetch categoria
-        const categoriaResponse = await fetch(`http://localhost:4000/api/categoria/${decrypted}`);
+        // Fetch detalles de la categoría
+        const categoriaResponse = await fetch(`${process.env.SERVER_URL}/api/categoria/${decryptedId}`);
         if (!categoriaResponse.ok) {
-          throw new Error(`HTTP error! Status: ${categoriaResponse.status}`);
+          throw new Error(`Error al obtener la categoría. Status: ${categoriaResponse.status}`);
         }
         const categoriaData: Categoria = await categoriaResponse.json();
-        setNombreCategoria(categoriaData.NombreCategoria); // Asignar el nombre de la categoría
-
-      } catch (error: any) {
-        console.error("Error fetching tiendas data:", error.message);
-        setError("Failed to fetch tiendas data: " + error.message);
+        setNombreCategoria(categoriaData.NombreCategoria);
+      } catch (err) {
+        console.error(err);
+        setError("Error al cargar los datos.");
       }
     };
 
@@ -90,35 +91,37 @@ export function CategoriaRelleno() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <section className="w-full max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-16">
-      <div className="flex items-center justify-between mb-8 md:mb-10">
-        <h2 className="text-2xl md:text-3xl font-bold">{nombreCategoria || "Cargando..."}</h2> {/* Mostrar NombreCategoria */}
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-        {tiendas.length > 0 ? (
-          tiendas.map((tienda) => (
-            <div key={tienda.IdTienda} className="bg-background rounded-lg overflow-hidden shadow-lg group">
-              <Link href={`/shop/${encryptedTiendas[tienda.IdTienda]}`} className="block" prefetch={false}>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">
+        Categoría: {nombreCategoria || "Cargando..."}
+      </h1>
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {tiendas.map((tienda) => (
+          <Link
+            key={tienda.IdTienda}
+            href={`/shop/${encryptedTiendas[tienda.IdTienda] || ''}`} // Enlace encriptado
+            prefetch={false}
+          >
+            <div className="relative flex flex-col overflow-hidden transition-transform duration-300 ease-in-out rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2">
+              <div className="w-full h-64 overflow-hidden">
                 <img
-                  src={tienda.MiniaturaTiendaURL}
+                  src={`${process.env.SERVER_URL}/${tienda.MiniaturaTienda}`}
                   alt={tienda.NombreTienda}
-                  width={400}
-                  height={300}
-                  className="w-full h-60 object-cover group-hover:opacity-90 transition-opacity"
-                  style={{ aspectRatio: "4/3", objectFit: "cover" }}
+                  className="object-cover w-full h-full"
                 />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold mb-1">{tienda.NombreTienda}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{tienda.DescripcionTienda}</p>
-                </div>
-              </Link>
+              </div>
+              <div className="flex flex-col justify-between p-4 bg-background h-full">
+                <h3 className="text-xl font-bold mb-2 truncate">{tienda.NombreTienda}</h3>
+                <p className="text-sm text-muted-foreground h-16 overflow-hidden">
+                  {tienda.DescripcionTienda}
+                </p>
+                <p className="text-sm mt-2">{tienda.DireccionTienda}</p>
+                <p className="text-sm">{tienda.CiudadTienda}</p>
+              </div>
             </div>
-          ))
-        ) : (
-          
-         <p className="text-center text-lg text-gray-600 ">No hay tiendas disponibles en esta categoría.</p>
-        )}
+          </Link>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }

@@ -16,7 +16,7 @@ interface Comentario {
   NombrePersona: string;
   FechaAprobacion: string;
   ComentarioAprobacion: string;
-  FotoPersonaURL: string;
+  FotoPersona: string;
   CalificacionAprobacion: number;
 }
 
@@ -30,7 +30,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
   const [calificacion, setCalificacion] = useState(0);
   const [idPersona, setIdPersona] = useState<number | null>(null);
   const [nombrePersona, setNombrePersona] = useState<string>('');
-  const [fotoPersonaURL, setFotoPersonaURL] = useState<string>('');
+  const [FotoPersona, setFotoPersona] = useState<string>('');
   const [decryptedIdProducto, setDecryptedIdProducto] = useState<string | null>(null); // Estado para el ID desencriptado
   const crypto = new NextCrypto('secret key'); // Instancia de NextCrypto
 
@@ -59,9 +59,10 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
 
         const fetchProfile = async () => {
           try {
-            const response = await axios.get<{ NombrePersona: string, FotoPersonaURL: string }>(`http://localhost:4000/api/persona/${userId}`);
+            const response = await axios.get<{ NombrePersona: string, FotoPersona: string }>(`${process.env.SERVER_URL}/api/persona/${userId}`);
             setNombrePersona(response.data.NombrePersona);
-            setFotoPersonaURL(response.data.FotoPersonaURL);
+            setFotoPersona(response.data.FotoPersona);
+            console.log("setFotoPersona: ",response.data.FotoPersona)
           } catch (error) {
             console.error('Error al obtener el perfil de la persona:', error);
           }
@@ -80,9 +81,10 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
     const fetchComentarios = async () => {
       if (decryptedIdProducto) {
         try {
-          const response = await axios.get<{ [key: string]: Comentario }>(`http://localhost:4000/api/aprobacion/${decryptedIdProducto}`);
+          const response = await axios.get<{ [key: string]: Comentario }>(`${process.env.SERVER_URL}/api/aprobacion/${decryptedIdProducto}`);
           const comentariosArray = Object.values(response.data);
           setComentarios(comentariosArray);
+          console.log("comentariosArray:",comentariosArray)
         } catch (error) {
           console.error('Error al obtener los comentarios:', error);
         }
@@ -105,7 +107,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
     }
 
     try {
-      await axios.post('http://localhost:4000/api/aprobacion/', {
+      await axios.post(`${process.env.SERVER_URL}/api/aprobacion/`, {
         ComentarioAprobacion: comentario,
         CalificacionAprobacion: calificacion,
         IdPersonaFK: idPersona,
@@ -116,7 +118,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
         NombrePersona: nombrePersona,
         FechaAprobacion: new Date().toISOString(),
         ComentarioAprobacion: comentario,
-        FotoPersonaURL: fotoPersonaURL,
+        FotoPersona: FotoPersona,
         CalificacionAprobacion: calificacion
       };
       setComentarios([...comentarios, nuevoComentario]);
@@ -184,7 +186,7 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
         comentarios.map((comentario, index) => (
           <div key={index} className="flex items-start space-x-4 mt-4 ml-4 ">
             <Avatar>
-              <AvatarImage src={comentario.FotoPersonaURL || "/placeholder-user.jpg"} alt="Avatar usuario" />
+              <AvatarImage src={`${process.env.SERVER_URL}/${comentario.FotoPersona}` || "/placeholder-user.jpg"} alt="Avatar usuario" />
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center justify-between">
@@ -197,9 +199,9 @@ export function Comentariodos({ idProducto }: ComentariosProps) {
                     <span><time>{new Date(comentario.FechaAprobacion).toLocaleDateString()}</time></span>
                   </div>
                 </div>
-              </div>
+                </div>
               <p className="mt-2 text-sm">{comentario.ComentarioAprobacion}</p>
-            </div>
+            </div>
           </div>
         ))
       ) : (
